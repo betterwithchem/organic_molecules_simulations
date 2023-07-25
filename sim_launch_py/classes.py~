@@ -1,0 +1,237 @@
+import os
+
+
+class Project():
+
+    def __init__(self,name=None, path=None):
+
+        path=os.path.abspath(path)
+
+        if path.rstrip().endswith("/"):
+            path = path.rstrip()[:-1]
+        
+        self._project_path=path
+        self._mdp_path=path+'/mdp'
+        self._init_struct_path=path+'/Initial_structures'
+        self._topology_path=path+'/Topologies'
+        self._systems_path=path+'/Systems'
+        self._pickle_path=path+'/.multisim.pkl'
+        self._name=name
+        self._systems=list()
+        self._molecules=list()
+
+    @property
+    def project_path(self):
+        return self._project_path
+
+    @property
+    def mdp_path(self):
+        return self._mdp_path
+
+    @property
+    def init_struct_path(self):
+        return self._init_struct_path
+
+    @property
+    def topology_path(self):
+        return self._topology_path
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def systems(self):
+        return self._systems
+    
+    @property
+    def molecules(self):
+        return self._molecules
+
+
+    @staticmethod
+    def help():
+        print("""Help! I need somebody
+Help! Not just anybody
+Help! You know I need someone
+Help!""")
+
+
+    def add_molecule(self,name=None,resname='UNK', structure=None):
+
+        newmolecule=Molecule(name=name,resname=resname,structure=structure)
+        self._molecules.append(newmolecule)
+
+    def add_system(self,name=None):
+
+        newsystem=System(name=name,path=self.project_path+'/'+name)
+        self._systems.append(newsystem)
+
+
+    def new_project(name=None, path=None, overwrite=False):
+
+        from sim_launch_py.utilities import create
+        path=os.path.abspath(path)
+
+        nproject = Project(path=path, name=name)
+
+        if not os.path.exists(nproject._project_path):
+            print("New Project: {}".format(nproject._name))
+            print("=" * 100)
+            create(nproject._project_path, arg_type='dir', backup=False)
+        else:
+            if overwrite:
+                print("New Project: {}".format(nproject._name))
+                print("=" * 100)
+                create(nproject._project_path, arg_type='dir', backup=False)
+            else:
+                print("Error: Folder already exists.\n "
+                      "You can change directory name or overwrite with 'overwrite=True' "
+                      "(everything inside will be deleted)")
+                exit()
+        create(nproject._systems_path, arg_type='dir')
+        create(nproject._init_struct_path, arg_type='dir')
+        create(nproject._topology_path, arg_type='dir')
+        create(nproject._mdp_path, arg_type='dir')
+        
+        return nproject
+
+
+    def save(self):
+        """
+        Save project to project folder.
+        :return:
+        """
+        print("Saving Project...", end="")
+        import pickle
+        import os
+        if os.path.exists(self._pickle_path):
+            os.rename(self._pickle_path, self._project_path+ "/.multisim.bck.pkl")
+        with open(self._pickle_path, "wb") as file_pickle:
+            pickle.dump(self, file_pickle)
+        #self._write_output()
+        print("done")   
+
+        
+class Molecule():
+
+    def __init__(self,name=None, resname='UNK', structure=None):
+
+        self._name=name
+        self._resname=resname
+        self._structure_path=structure
+        self._topology_path=None
+        self._include_path=None
+        self._mw=0
+
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def resname(self):
+        return self._resname
+
+    @property
+    def structure_path(self):
+        return self._structure_path
+
+    @property
+    def topology_path(self):
+        return self._topology_path
+
+    @property
+    def include_path(self):
+        return self._include_path
+
+    @property
+    def mw(self):
+        return self._mw
+
+    @resname.setter
+    def resname(self,resname):
+        self._resname=resname
+
+    @structure_path.setter
+    def structure_path(self,path):
+        self._structure_path=path
+
+    @topology_path.setter
+    def topology_path(self,path):
+        self._topology_path=path
+
+    @include_path.setter
+    def include_path(self,path):
+        self._include_path=path
+
+    @mw.setter
+    def mw(self,mw):
+        self._mw=mw
+
+
+    @staticmethod
+    def help():
+        print("""Class for Molecule objects
+Each Molecule() has the following attributes:
+-name
+-resname 
+-structure_path : name and position of the structure file 
+-topology_path : name and position of the topology (.top) file with all force field parameters, including atom types definition
+-include_path : name and position of the include topology (.itp) file with the definition of the molecule
+-mw : molecular weight in g/mol""")
+    
+
+class System():
+
+    def __init__(self,name=None,path=None):
+
+        self._name=name
+        self._path=path
+        self._molecules=list()
+        self._temperature=0
+        self._box=list()
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def path(self):
+        return self._path
+
+    @property
+    def molecules(self):
+        return self._molecules
+
+    @property
+    def temperature(self):
+        return self._temperature
+
+    @property
+    def box(self):
+        return self._box
+
+    @temperature.setter
+    def temperature(self,T):
+        self._temperature=T
+
+    @box.setter
+    def box(self,box):
+        if isinstance(box,float) or isinstance(box,int) or len(box)==1:
+            self._box=[box, box, box, 90, 90, 90]
+        elif len(box)==6:
+            self._box=box
+
+        
+    def add_molecule(self,name=None,resname='UNK', structure=None):
+
+        newmolecule=Molecule(name=name,resname=resname,structure=structure)
+        self._molecules.append(newmolecule)
+
+
+    #def get_
+    
+
+    
+    

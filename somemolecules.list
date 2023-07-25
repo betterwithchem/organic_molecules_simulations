@@ -1,0 +1,4 @@
+molname		resname	MW	path
+water		WAT	18.0	/home/matteo/Work/solvent_concentration/water
+sulfamerazine	SUR	264.3	/home/matteo/Work/solvent_concentration/sulfamerazine
+sulfadiazine	SUD	250.28	/home/matteo/Work/solvent_concentration/sulfadiazine

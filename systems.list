@@ -1,0 +1,6 @@
+#conc in [g/L]
+mol_1	conc_1	mol_2	conc_2	temperature
+water	1000	sulfamerazine	0	300
+water	1000	sulfamerazine	200	300
+water	1000	sulfadiazine	0	300
+water	1000	sulfadiazine	200	300
