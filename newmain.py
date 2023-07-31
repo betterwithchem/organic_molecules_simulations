@@ -1,18 +1,28 @@
 from sim_launch_py.classes import Project
-from sim_launch_py.ffparms import gaff
+from sim_launch_py.ffparms import gaff, getTop
 import numpy as np
 import pandas as pd
 import os
 import sim_launch_py.utilities as util
 
+
+molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
+systems=pd.read_csv('systems.list',sep='\s+',header=1)
+
+
+ppath='./two_conc'
+
+"""
 ##### create a new project
-project=Project.new_project(name='test',path='./new_test_project',overwrite=True)
+project=Project.new_project(name='two_conc',path=ppath,overwrite=True)
+
+
 
 ##### save it
 #project.save()
 
 ##### load existing project
-#project=Project.load_project("./new_test_project")
+#project=Project.load_project(ppath)
 
 ##### add species that will be used
  
@@ -20,31 +30,32 @@ project=Project.new_project(name='test',path='./new_test_project',overwrite=True
 # it could be a pandas dataframe from a text file or a dict or lists...
 # this is done in order to keep a degree of flexibility in the user experience
 
-molecules=pd.read_csv('somemolecules.list',sep='\s+',header=0)
+
 for i,name in enumerate(molecules.molname):
     project.add_molecule(name=name,
                          resname=molecules.loc[i].at['resname'],
                          structure=molecules.loc[i].at['path']+'/'+name+'.pdb')
 
-##### if necessary, compute force field parameters
+
 ##### this will create also include topology (itp) files and a file with all atom types
 for i,mol in enumerate(project.molecules):
-    #gaff(mol.name, mol.structure_path, project.topology_path,
+    # if necessary, compute force field parameters
+    #gaff(mol, project.topology_path,
     #     res_name=mol.resname, generate_charges='bcc', atomtype='gaff2',
-    #     overwrite=True)
-    gaff(mol, project.topology_path,
-         res_name=mol.resname, generate_charges='bcc', atomtype='gaff2',
-         overwrite=True)    
+    #     overwrite=False)
+
+    # or copy them from a defined location
+    getTop(mol,fromPath="/home/matteo/Work/solvent_concentration/Topologies" ,toPath=project.topology_path)
+
+    # in any case compute molecular weight and number of atoms
     mol.mw=util.molecularWeightFromTop(mol.topology_path)
+    mol.natoms=util.numberOfAtomsFromTop(mol.topology_path)
+   
 
-
-#project.save()
-#exit()
-#project=Project.load_project("./new_test_project")
 
 
 ##### add systems to be simulated
-systems=pd.read_csv('systems.list',sep='\s+',header=1)
+
 
 for i,name in enumerate(systems.mol_1):
     project.add_system(name='s{}'.format(i))
@@ -53,40 +64,72 @@ for i,sys in enumerate(project.systems):
     sys.temperature=systems.loc[i].at['temperature']
     sys.add_molecule(systems.loc[i].at['mol_1'],moltype='solvent',knownmolecules=project.molecules)
     sys.add_molecule(systems.loc[i].at['mol_2'],moltype='solute',knownmolecules=project.molecules)
-    sys.box=5
+    sys.box=systems.loc[i].at['side']
 
-project.save()
-#project=Project.load_project("./new_test_project")
 
-exit()
+
 n=0
+
 for i,sys in enumerate(project.systems):
 
-    print(sys.path)
+    #################################
+    ## all the computation inside this for loop could be included in a method for Gromacs simulations
+    ## something to think about...
+    #################################
+    
+    # build initial configurations:
 
+    # in this example we have a solute in a solvent. We first create a box and fill it with
+    # solvent molecules at a given concentration
+    # then we add solute molecules at a given concentration and remove overlapping solvent molecules
+    # (both done by exploiting gmx tools)
+    
     for mol in sys.molecules:
         if 'solvent' in mol.mol_attributes:
-            sys.createSolventBox(mol,output_structure='solvent_box.pdb',density=1000)
+            solvent=mol
+            sys.createSolventBox(solvent,output_structure='solvent_box.pdb',density=systems.loc[i].at['conc_1'])
 
     for mol in sys.molecules:
         if 'solute' in mol.mol_attributes:
-            sys.insertSolute(mol,solvent_box='solvent_box.pdb',concentration=systems.loc[i].at['conc_2'],output_structure='start.pdb')
-            
+            solute=mol
+            sys.insertSolute(solute,solvent,solvent_box='solvent_box.pdb',concentration=systems.loc[i].at['conc_2'],output_structure='start.pdb')
+
+    # get final number of molecules of each species in order to create the topology file:
+    for mol in sys.molecules:
+        mol.nmols=util.check_number_molecules(sys.path+'/start.pdb',mol)
+    
+    # write topology
+    sys.writeTop(project.topology_path+'atomtypes.itp',solvent,solute)
+
+    # we can now create the files needed for the simulations:
+    # for unbiased simulations we just need mdp files
+
+    
 
     
 
 
-
-    # add solute removing solvent
-
-    # write topology
-
 project.save()
-#project=Project.load_project("./new_test_project")
+
+"""
+project=Project.load_project(ppath)
+
+project.job_script_path='/home/matteo/Work/solvent_concentration/job_scripts'
+
+for sys in project.systems:
+
+    sys.new_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb')
+    sys.new_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp='/home/matteo/Work/solvent_concentration/mdp/mdvvberendsen.mdp',maxwarn=1)
+    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp='/home/matteo/Work/solvent_concentration/mdp/mdvvparrinello.mdp')
+
+    
+
+    sys.print_command('run.sh')
+        
+project.write_sub_command('launch_jobs.sh',system='myriad')
 
 
-
-#for sys in project.systems:
-#    print(sys.name,':',sys.temperature,[mol.name for mol in sys.molecules],sys.box)
+    
+    
     
 
