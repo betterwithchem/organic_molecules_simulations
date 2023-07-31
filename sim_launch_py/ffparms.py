@@ -96,6 +96,8 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
             atomtype))
 
     
+
+    
     # create compound library
     with open("lib.leap",'w') as f:
         f.write("{0}=loadmol2 {0}.mol2\n"
@@ -104,6 +106,9 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
                 "quit".format(res_name))
 
 
+    pmd.load_file('{}.mol2'.format(res_name)).fix_charges(precision=4).save('{}.mol2'.format(res_name))  
+
+        
     os.system(
         path_leap + " -f lib.leap"
         )
@@ -157,13 +162,38 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
     molecule.topology_path=path_output + molecule_name + ".top"
     molecule.include_path=path_output + molecule_name + ".itp"
     
-    molecule.mw=util.molecularWeightFromTop(molecule.topology_path)
+    
     molecule.natoms=util.numberOfAtomsFromTop(molecule.topology_path)
 
 
     os.chdir(project_dir)
     
     return 0
+
+def getTop(molecule,fromPath='',toPath=''):
+
+    fromPath=os.path.abspath(fromPath)
+    toPath=os.path.abspath(toPath)
+    
+    if os.path.isdir(toPath) is False:
+        os.makedirs(toPath)
+
+    if os.path.isfile("{0}/{1.name}.top".format(fromPath,molecule)):
+        shutil.copy(fromPath+"/"+molecule.name+".top",toPath)
+        molecule.topology_path=toPath+"/"+molecule.name+".top"
+    else:
+        print("top file for {0.name} not found".format(mol))
+        exit()
+
+    extract_molecule_from_gmx_top(toPath+"/"+molecule.name+".top",
+                                  toPath+"/"+molecule.name+".itp")
+    molecule.include_path=toPath+"/"+molecule.name+".itp"
+
+    extract_atomtypes_from_gmx_top(toPath+"/"+molecule.name+".top",
+                                   toPath+"/atomtypes.itp")
+
+    
+    
 
 def amb2gmx(molecule_name):
     amber = pmd.load_file('{}.prmtop'.format(molecule_name), '{}.inpcrd'.format(molecule_name))

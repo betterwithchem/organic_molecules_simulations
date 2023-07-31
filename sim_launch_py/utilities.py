@@ -106,9 +106,26 @@ def estimate_n_molecules(box_volume,mass,density):
 
     n = density/mass * 6.022 / 10 * box_volume
     return int(n)
-            
-            
 
+
+def check_number_molecules(structure_file,molecule):
+
+    ext=os.path.splitext(structure_file)
+    
+    if ext[1]=='.pdb':
+        natoms=0
+        with open(structure_file,'r') as f:
+            for line in f:
+                cols=line.split()
+                if line[0:4]=='ATOM' or line[0:6]=='HETATM':
+                    if molecule.resname in line:
+                        natoms+=1
+            nmols=natoms/molecule.natoms
+            return nmols
+    else:
+        print("for the moment only pdb files are supported")
+        exit()
+            
 
 
 

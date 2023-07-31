@@ -3,6 +3,9 @@ import sim_launch_py.utilities as util
 
 class Project():
 
+    """
+    
+    """
     def __init__(self,name=None, path=None):
 
         path=os.path.abspath(path)
@@ -19,6 +22,7 @@ class Project():
         self._name=name
         self._systems=list()
         self._molecules=list()
+        self._job_script_path=None
 
     @property
     def project_path(self):
@@ -37,6 +41,10 @@ class Project():
         return self._topology_path
 
     @property
+    def job_script_path(self):
+        return self._job_script_path
+
+    @property
     def name(self):
         return self._name
 
@@ -47,6 +55,12 @@ class Project():
     @property
     def molecules(self):
         return self._molecules
+
+    @job_script_path.setter
+    def job_script_path(self,sp):
+        self._job_script_path=sp
+        
+    
 
 
     @staticmethod
@@ -68,6 +82,7 @@ Help!""")
         newmolecule=Molecule(name=name,resname=resname,structure=structure)
         self._molecules.append(newmolecule)        
         shutil.copy(structure, self._init_struct_path)
+        
 
         
     def add_system(self,name=None):
@@ -153,6 +168,49 @@ Help!""")
             print("No PyPol project found in '{}'. Use the 'Project.new_project' module to create a new project."
                   "".format(project_folder))
 
+    def write_sub_command(self,scriptname,system='', template=''):
+
+        import shutil
+        recognised_systems=['bash','myriad']
+
+        scriptname=self.project_path+'/'+scriptname
+
+        if template=='':
+            template=self.job_script_path+'/myriad.job'
+        else:
+            template=os.path.abspath(template)
+
+        filename=os.path.basename(template)
+        
+        if system=='bash':
+            for sys in self.systems:
+                print("hey!")
+
+        elif system=='myriad':
+            for sys in self.systems:
+                shutil.copy(template,sys.path)
+                with open(sys.path+'/'+filename,'a') as f:
+                    f.write("\n\n")
+                    for s in sys.simulations:
+                        f.write("# {}\n".format(s.name))
+                        f.write(s.bash_command+'\n\n')
+                sys.run_command='qsub -N {0} {1}\n'.format(self.name+'_'+sys.name, filename)
+
+            with open(scriptname,'w') as f:
+                f.write("#!/bin/bash\n\n")
+                for sys in self.systems:
+                    f.write("cd {}\n".format(sys.path))
+                    f.write(sys.run_command)
+                    f.write("cd {}\n\n".format(self.project_path))
+
+        else:
+            print("ERROR: Type of submission script '{}' not recognized. acceptable values are: ".format(system))
+            for rs in recognised_systems:
+                print("- {}".format(rs))
+            exit()
+                
+
+        
     
 
         
@@ -165,6 +223,9 @@ class System():
         self._molecules=list()
         self._temperature=0
         self._box=list()
+        self._simulations=list()
+        self._run_command=None
+        
 
     @property
     def name(self):
@@ -186,6 +247,14 @@ class System():
     def box(self):
         return self._box
 
+    @property
+    def simulations(self):
+        return self._simulations
+
+    @property
+    def run_command(self):
+        return self._run_command
+    
     @temperature.setter
     def temperature(self,T):
         self._temperature=T
@@ -197,6 +266,11 @@ class System():
         elif len(box)==6:
             self._box=box
 
+    @run_command.setter
+    def run_command(self,command):
+        self._run_command=command
+
+    
     def add_molecule(self,name=None,moltype=None,knownmolecules=None):
 
         for mol in knownmolecules:
@@ -210,33 +284,158 @@ class System():
         exit()
 
 
-    def createSolventBox(self,solvent,output_structure="solvent_box.pdb",density=1000):
+    def createSolventBox(self,solvent,output_structure="solvent_box.pdb",density=None,nmols=None):
 
-        out_path=self.path+'/'+output_structure
         
+        out_path=self.path+'/'+output_structure
+
+        if (density is not None) and (nmols is not None):
+
+            print("Both density and nmol have been defined: changing side of the box.")
+            volume_box=solvent.mw*10/(density*6.022)*nmol
+            self.box[0]=volume_box**(1/3)
+
+        else:
+            volume_box=self.box[0]**3
+            
         os.system("gmx -nobackup editconf -f {0} -o {1} -box {2} {2} {2} -angles 90 90 90 -c".format(solvent.structure_path,
                                                                                            out_path,
                                                                                            self.box[0]))
 
-        nmols=util.estimate_n_molecules(self.box[0]**3,solvent.mw,density)-1
+        nmols=util.estimate_n_molecules(volume_box,solvent.mw,density)-1
         
-        os.system("gmx -nobackup insert-molecules -f {0} -o {0} -ci {0} -nmol {1} -try 10000".format(out_path,
+        os.system("gmx -nobackup insert-molecules -f {0} -o {0} -ci {0} -nmol {1} -try 20000".format(out_path,
                                                                         nmols))
 
+        print("Checking number of molecules..")
+        inserted_mols=util.check_number_molecules(out_path,solvent)
+
+        if inserted_mols!=(nmols+1):
+            print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 20000, inserted_mols))
+            exit()
+
+        
     def insertSolute(self,solute,solvent,solvent_box="solvent_box.pdb",concentration=0, output_structure="start.pdb"):
+
+        in_file=os.path.abspath(self.path+'/'+solvent_box)
+        out_file=os.path.abspath(self.path+'/'+output_structure)
 
         if concentration == 0:
             # then single molecule
             nmols=1
         elif concentration > 0:
             from math import ceil
-            nmols=ceil(util.estimate_n_molecules( self.box[0]**3,solute.mw,concentration ))
+            nmols=util.estimate_n_molecules( self.box[0]**3,solute.mw,concentration )
+
+        #print(self.name,solute.name,solvent.name,concentration,nmols)
+
+        os.system("gmx insert-molecules -f {0} -o {1} -ci {2} -nmol {3} -try 10000 -replace {4} ".format( in_file,
+                                                                                                          out_file,
+                                                                                                          solute.structure_path,
+                                                                                                          nmols,
+                                                                                                          solvent.resname))
+
+        print("Checking number of molecules..")
+        inserted_mols=util.check_number_molecules(out_file,solute)
+
+        if inserted_mols!=nmols:
+            print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 10000, inserted_mols))
+            exit()
+
+    def writeTop(self,atomtypes_path,*molecules):
+
+        with open(self.path+'/topol.top','w') as top:
+
+            top.write(";\n\
+; Topology for system {}\n\
+;\n\n".format(self.name))
+
+            top.write("[ defaults ]\n\
+; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ\n\
+1               2               yes             0.5          0.83333333  \n\
+\n\
+[ atomtypes ]\n\
+; name    at.num    mass    charge ptype  sigma      epsilon\n")
+
+            with open(atomtypes_path,'r') as af:
+                for line in af:
+                    top.write(line)
+
+            top.write("\n\n")
+
+            for mol in molecules:
+                with open(mol.include_path,'r') as itp:
+                    top.write(";\n; {}\n;\n".format(mol.name))
+                    for line in itp:
+                        top.write(line)
+                top.write("\n\n")
+
+            top.write("[ system ]\n; Name\nA bunch of molecules floating around without rhyme or reason\n")
+
+            top.write("[ molecules ]\n")
+            
+            for mol in molecules:
+                top.write("{0}\t{1}\n".format(mol.resname,mol.nmols))
+                    
+
+    def new_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord=''):
+       
+        import sim_launch_py.gromacs as gmx
+
+        if start_coord=='':
+            if len(self.simulations)>0:
+                prev_sim=self.simulations[-1].name
+            else:
+                print("ERROR: 	For the first simulation of the system you need to specify the name of the starting configuration!")
+                exit()
+            start_coord=self.path+'/'+prev_sim+'.gro'
+        else:
+            start_coord=os.path.abspath(start_coord)
+                
+        if simtype=='md':
+            if len(self.simulations)>0:
+                prev_sim=self.simulations[-1].name
+            elif len(self.simulations)==0:
+                prev_sim='start'
+            sim=gmx.MD(name,
+                       mdrun_options=mdrun_options, coord=start_coord, topology=self.path+'/topol.top',
+                       path_mdp=mdp, maxwarn=maxwarn,
+                       path_input=self.path,path_output=self.path,print_bash=True)
+            
+        elif simtype=='em':
+            sim=gmx.EnergyMinimization(name,
+                                       mdrun_options=mdrun_options, coord=start_coord, topology=self.path+'/topol.top',
+                                       path_mdp=mdp, maxwarn=maxwarn,
+                                       path_input=self.path,path_output=self.path,print_bash=True)
+        #elif simtype=='wtmetad':
+        #    sim=gmx.WTMD(name='wtmd')
+        else:
+            print("What are you trying to do?")
+            exit()
+
+        self.simulations.append(sim)
+
+    
+    def print_command(self, bash_file):
+
+        bash_file=self.path+'/'+bash_file
+
+        with open(bash_file,'w') as f:
+            f.write("#!/bin/bash\n\n")
+            for s in self.simulations:
+                f.write("# {}\n".format(s.name))
+                f.write(s.bash_command+'\n\n')
+
+
+                
+            
+        
             
 
     
 
         
-    #def get_
+
     
 
 class Molecule():
@@ -281,6 +480,14 @@ class Molecule():
     @property
     def mol_attributes(self):
         return self._mol_attributes
+
+    @property
+    def natoms(self):
+        return self._natoms
+
+    @property
+    def nmols(self):
+        return self._nmols
     
     @resname.setter
     def resname(self,resname):
@@ -305,7 +512,15 @@ class Molecule():
     @mol_attributes.setter
     def mol_attributes(self,attr):
         self._mol_attributes.append(attr)
-   
+
+    @natoms.setter
+    def natoms(self,n):
+        self._natoms=n
+
+    @nmols.setter
+    def nmols(self,n):
+        self._nmols=n
+
     @staticmethod
     def help():
         print("""Class for Molecule objects

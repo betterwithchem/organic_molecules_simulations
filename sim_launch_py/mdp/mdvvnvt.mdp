@@ -1,0 +1,53 @@
+; NVT Equilibration
+integrator                      = md-vv
+nsteps                          = 3000000
+dt                              = 0.001
+
+; Output
+nstxout-compressed              = 10000
+nstenergy                       = 10000
+nstlog                          = 10000
+
+; Neighborsearching
+cutoff-scheme                   = Verlet
+ns_type                         = grid
+nstlist                         = 10
+rlist                           = 1.00
+
+; Electrostatics
+coulombtype                     = PME
+pme_order                       = 4
+fourierspacing                  = 0.16
+rcoulomb                        = 1.00
+
+; Lennard-Jones PME
+vdwtype                         = PME
+vdw-modifier                    = Potential-shift
+rvdw                            = 1.00
+lj-pme-comb-rule                = Lorentz-Berthelot
+
+; Dispersion correction
+; DispCorr                        = EnerPres
+
+; Temperature coupling
+tcoupl                          = V-rescale
+tc-grps                         = System
+tau_t                           = 0.1
+ref_t                           = 300
+
+; Pressure coupling
+pcoupl                          = no
+
+; Periodic boundary conditions
+pbc                             = xyz
+
+; Velocity generation
+gen_vel                         = yes
+gen_temp                        = 300
+gen_seed                        = -1
+
+; Constrain
+constraint_algorithm            = lincs
+constraints                     = h-bonds
+lincs_iter                      = 1
+lincs_order                     = 4
