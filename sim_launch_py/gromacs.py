@@ -42,7 +42,7 @@ class MD(_Simulation):
     def __init__(self,  name: str, mdrun_options='', coord='', topology='',
                  path_mdp='', path_input='', path_output='', temperature=300, thermostat='vv',
                  pressure=1, barostat='Parrinello-Rahman', nsteps=100, plumed='',
-                 print_bash=False, maxwarn=0):
+                 print_bash=False, maxwarn=0, gmxbin='gmx_mpi'):
 
         super().__init__(name, mdrun_options, topology, path_output)
 
@@ -53,8 +53,8 @@ class MD(_Simulation):
 
         if print_bash:
             mdp=path_mdp
-            self.bash_command="gmx grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn)+\
-                "gmx mdrun -deffnm {} {} {}\n".format(name,mdrun_options,plumed)
+            self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\
+                "{3} mdrun -deffnm {0} {1} {2}\n".format(name,mdrun_options,plumed,gmxbin)
             
 
 class EnergyMinimization(_Simulation):
@@ -62,7 +62,7 @@ class EnergyMinimization(_Simulation):
     def __init__(self,name: str,
                  mdrun_options='', coord='start.pdb', topology='topol.top',
                  path_mdp='', path_input='',path_output='',
-                 print_bash=False,maxwarn=0):
+                 print_bash=False,maxwarn=0,gmxbin='gmx_mpi'):
 
         super().__init__(name, mdrun_options, topology, path_output)
 
@@ -73,8 +73,8 @@ class EnergyMinimization(_Simulation):
 
         if print_bash:            
             mdp=path_mdp
-            self.bash_command="gmx grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn)+\
-                "gmx mdrun -deffnm {} {}\n".format(name,mdrun_options)
+            self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\
+                "{2} mdrun -deffnm {0} {1}\n".format(name,mdrun_options,gmxbin)
                 
             
 

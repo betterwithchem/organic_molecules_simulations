@@ -12,19 +12,18 @@ nstlog                          = 10000
 cutoff-scheme                   = Verlet
 ns_type                         = grid
 nstlist                         = 10
-rlist                           = 1.0
+rlist                           = 1.2
 
 ; Electrostatics
 coulombtype                     = PME
 pme_order                       = 4
 fourierspacing                  = 0.16
-rcoulomb                        = 1.0
+rcoulomb                        = 1.2
 
 ; Lennard-Jones PME
-vdwtype                         = PME
-vdw-modifier                    = Potential-shift
-rvdw                            = 1.0
-lj-pme-comb-rule                = Lorentz-Berthelot
+vdwtype                         = Cut-off
+vdw-modifier                    = None
+rvdw                            = 1.2
 
 ; Dispersion correction
 ; DispCorr                        = EnerPres
@@ -37,10 +36,10 @@ ref_t                           = 300
 
 ; Pressure coupling is off
 pcoupl                          = Parrinello-Rahman
-pcoupltype                      = anisotropic
+pcoupltype                      = isotropic
 tau_p                           = 10.0
-ref_p                           = 1.0 1.0 1.0 0.0 0.0 0.0
-compressibility                 = 1.0e-5 1.0e-5 1.0e-5 1.0e-5 1.0e-5 1.0e-5
+ref_p                           = 1.0
+compressibility                 = 1.0e-5
 
 ; Periodic boundary conditions
 pbc                             = xyz

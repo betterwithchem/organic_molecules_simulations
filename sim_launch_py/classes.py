@@ -297,12 +297,14 @@ class System():
 
         else:
             volume_box=self.box[0]**3
-            
-        os.system("gmx -nobackup editconf -f {0} -o {1} -box {2} {2} {2} -angles 90 90 90 -c".format(solvent.structure_path,
-                                                                                           out_path,
-                                                                                           self.box[0]))
 
         nmols=util.estimate_n_molecules(volume_box,solvent.mw,density)-1
+        
+        os.system("gmx -nobackup editconf -f {0} -o {1} -box {2} {2} {2} -angles 90 90 90 -c".format(solvent.structure_path,
+                                                                                           out_path,
+                                                                                                     self.box[0]*(1.05)))
+
+        
         
         os.system("gmx -nobackup insert-molecules -f {0} -o {0} -ci {0} -nmol {1} -try 20000".format(out_path,
                                                                         nmols))
@@ -378,7 +380,7 @@ class System():
                 top.write("{0}\t{1}\n".format(mol.resname,mol.nmols))
                     
 
-    def new_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord=''):
+    def new_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord='',gmxbin=''):
        
         import sim_launch_py.gromacs as gmx
 
@@ -400,13 +402,13 @@ class System():
             sim=gmx.MD(name,
                        mdrun_options=mdrun_options, coord=start_coord, topology=self.path+'/topol.top',
                        path_mdp=mdp, maxwarn=maxwarn,
-                       path_input=self.path,path_output=self.path,print_bash=True)
+                       path_input=self.path,path_output=self.path,print_bash=True,gmxbin=gmxbin)
             
         elif simtype=='em':
             sim=gmx.EnergyMinimization(name,
                                        mdrun_options=mdrun_options, coord=start_coord, topology=self.path+'/topol.top',
                                        path_mdp=mdp, maxwarn=maxwarn,
-                                       path_input=self.path,path_output=self.path,print_bash=True)
+                                       path_input=self.path,path_output=self.path,print_bash=True, gmxbin=gmxbin)
         #elif simtype=='wtmetad':
         #    sim=gmx.WTMD(name='wtmd')
         else:
