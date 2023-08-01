@@ -17,7 +17,6 @@ ppath='./two_conc'
 project=Project.new_project(name='two_conc',path=ppath,overwrite=True)
 
 
-
 ##### save it
 #project.save()
 
@@ -114,17 +113,15 @@ project.save()
 """
 project=Project.load_project(ppath)
 
-project.job_script_path='/home/matteo/Work/solvent_concentration/job_scripts'
+project.job_script_path='/home/matteo/Work/solvent_concentration/sim_launch_py/job_scripts'
 
 for sys in project.systems:
 
-    sys.new_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb')
-    sys.new_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp='/home/matteo/Work/solvent_concentration/mdp/mdvvberendsen.mdp',maxwarn=1)
-    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp='/home/matteo/Work/solvent_concentration/mdp/mdvvparrinello.mdp')
+    sys.new_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp='/home/matteo/Work/solvent_concentration/sim_launch_py/mdp/em.mdp',gmxbin='gmx_mpi')
+    sys.new_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp='/home/matteo/Work/solvent_concentration/sim_launch_py/mdp/mdvvberendsen.mdp',maxwarn=1, gmxbin='gmx_mpi')
+    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp='/home/matteo/Work/solvent_concentration/sim_launch_py/mdp/mdvvparrinello.mdp', gmxbin='gmx_mpi')
 
-    
-
-    sys.print_command('run.sh')
+    #sys.print_command('run.sh')
         
 project.write_sub_command('launch_jobs.sh',system='myriad')
 
