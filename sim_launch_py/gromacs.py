@@ -1,11 +1,16 @@
 import shutil
 
-
 class _Simulation():
-       
-    def __init__(self, name: str, mdrun_options: str, topology: str,
+        def __init__(self, name: str, mdrun_options: str, topology: str,
                  path: str):
+            """Simulation Class Constructor
 
+            Args:
+                name (str): Name of the simulation
+                mdrun_options (str): options for running MD simulation
+                topology (str): name of the topology file
+                path (str): path definition
+            """
         self._name=name
         self._mdrun_options=mdrun_options
         self._topology=topology
@@ -38,19 +43,41 @@ class _Simulation():
 
 
 class MD(_Simulation):
-
+    
     def __init__(self,  name: str, mdrun_options='', coord='', topology='',
                  path_mdp='', path_input='', path_output='', temperature=300, thermostat='vv',
                  pressure=1, barostat='Parrinello-Rahman', nsteps=100, plumed='',
                  print_bash=False, maxwarn=0, gmxbin='gmx_mpi'):
+        """MD simulation class constructor
 
+        Args:
+            name (str): Name of the system / project
+            mdrun_options (str, optional): MD simulation options. Defaults to ''.
+            coord (str, optional): coordinate file name. Defaults to ''.
+            topology (str, optional): topology file name. Defaults to ''.
+            path_mdp (str, optional): path to mdp. Defaults to ''.
+            path_input (str, optional): path to inout file. Defaults to ''.
+            path_output (str, optional): path to output file. Defaults to ''.
+            temperature (int, optional): temperature of the MD simulation. Defaults to 300.
+            thermostat (str, optional): thermostat. Defaults to 'vv'.
+            pressure (int, optional): pressure. Defaults to 1.
+            barostat (str, optional): barostat. Defaults to 'Parrinello-Rahman'.
+            nsteps (int, optional): number of simulation steps. Defaults to 100.
+            plumed (str, optional): plumed executable. Defaults to ''.
+            print_bash (bool, optional): print a bash string. Defaults to False.
+            maxwarn (int, optional): number of warnings tollerated. Defaults to 0.
+            gmxbin (str, optional): gromacs executable name. Defaults to 'gmx_mpi'.
+        """
+
+        # Inherit properties of the _Simulation Class
         super().__init__(name, mdrun_options, topology, path_output)
 
         self.name=name
-        # copy mdp files
 
+        # copy mdp files
         shutil.copy(path_mdp,path_input)
 
+        # Print bash string
         if print_bash:
             mdp=path_mdp
             self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\
@@ -63,14 +90,29 @@ class EnergyMinimization(_Simulation):
                  mdrun_options='', coord='start.pdb', topology='topol.top',
                  path_mdp='', path_input='',path_output='',
                  print_bash=False,maxwarn=0,gmxbin='gmx_mpi'):
+        """Energy minimization class
 
+        Args:
+            name (str): Name of the system / project
+            mdrun_options (str, optional): MD simulation options. Defaults to ''.
+            coord (str, optional): coordinate file name. Defaults to ''.
+            topology (str, optional): topology file name. Defaults to ''.
+            path_mdp (str, optional): path to mdp. Defaults to ''.
+            path_input (str, optional): path to inout file. Defaults to ''.
+            path_output (str, optional): path to output file. Defaults to ''.
+            print_bash (bool, optional): print a bash string. Defaults to False.
+            maxwarn (int, optional): number of warnings tollerated. Defaults to 0.
+            gmxbin (str, optional): gromacs executable name. Defaults to 'gmx_mpi'.
+        """        
+        # Inherit properties of the _Simulation Class
         super().__init__(name, mdrun_options, topology, path_output)
 
         self.name=name
-        # copy mdp files
 
+        # copy mdp files
         shutil.copy(path_mdp,path_input)
 
+        # Print bash string
         if print_bash:            
             mdp=path_mdp
             self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\

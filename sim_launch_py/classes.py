@@ -2,12 +2,15 @@ import os
 import sim_launch_py.utilities as util
 
 class Project():
-
-    """
-    
+    """Project Class
     """
     def __init__(self,name=None, path=None):
+        """Project Class Constructor
 
+        Args:
+            name (str, optional): Project name. Defaults to None.
+            path (str, optional): Project path. Defaults to None.
+        """
         path=os.path.abspath(path)
 
         if path.rstrip().endswith("/"):
@@ -60,9 +63,6 @@ class Project():
     def job_script_path(self,sp):
         self._job_script_path=sp
         
-    
-
-
     @staticmethod
     def help():
         print("""Help! I need somebody
@@ -72,7 +72,13 @@ Help!""")
 
 
     def add_molecule(self,name=None,resname='UNK', structure=None):
+        """Add molecule to project
 
+        Args:
+            name (str, optional): molecule name. Defaults to None.
+            resname (str, optional): residue name. Defaults to 'UNK'.
+            structure (str, optional): molecular structure file. Defaults to None.
+        """
         import shutil
         for mol in self._molecules:
             if name == mol._name:                
@@ -86,7 +92,11 @@ Help!""")
 
         
     def add_system(self,name=None):
+        """Add system to project
 
+        Args:
+            name (str, optional): system name. Defaults to None.
+        """
         for sys in self._systems:
             if name==sys.name:
                 print("System {} already exists! ###### This will need to be changed to an error ##### ".format(name))
@@ -102,10 +112,19 @@ Help!""")
 
 
     def new_project(name=None, path=None, overwrite=False):
+        """Add new project
 
+        Args:
+            name (str, optional): Project Name. Defaults to None.
+            path (str, optional): Project path. Defaults to None.
+            overwrite (bool, optional): Overwrite previous project? Defaults to False.
+
+        Returns:
+            nproject (class): new project
+        """
         from sim_launch_py.utilities import create
+        
         path=os.path.abspath(path)
-
         nproject = Project(path=path, name=name)
 
         if not os.path.exists(nproject._project_path):

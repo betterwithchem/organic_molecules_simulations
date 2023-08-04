@@ -6,12 +6,17 @@ import shutil
 import sim_launch_py.utilities as util
 
 def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype='gaff2', overwrite=False):
+    """This function is used to compute gaff parameters for small molecules using tleap, and to transform them in a gromacs friendly form. 
 
-    """
-    This function is used to compute gaff parameters for small molecules.
-    Options are:
-    - res_name: name of the residue. For the moment it is used 
-    """
+    Args:
+        molecule (_type_): name of the molecule
+        path_output (_type_): path to output
+        res_name (str, optional): residue name. Defaults to 'UNK'.
+        generate_charges (str, optional): charge assignment method. Defaults to 'bcc'.
+        atomtype (str, optional): atomtype scheme definition (gaff, gaff2). Defaults to 'gaff2'.
+        overwrite (bool, optional): overwrite existing files?. Defaults to False.
+        
+    """   
         
     #path_ambertools='/home/matteo/Source/amber22/bin/'
     #path_parmchk = path_ambertools + "/parmchk2"
@@ -23,7 +28,6 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
     path_leap = "tleap"
     
     # for the moment let's assume that the extension of the coordinates is pdb
-
     available_extensions = ["ac", "mol2", "pdb", "mpdb", "prepi", "prepc", "gzmat", "gcrt", "mopint",
                             "mopcrt", "gout", "mopout", "alc", "csd", "mdl", "hin", "rst"]
 
@@ -36,7 +40,6 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
 
     
     # sanity checks and errors:
-
     project_dir=os.getcwd()
     
     if not os.path.isdir(path_output):
@@ -145,7 +148,6 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
                               molecule_name)
                 )
         
-
     os.system(path_leap + " -f parm.leap")
 
     amb2gmx(molecule_name)
@@ -171,7 +173,13 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
     return 0
 
 def getTop(molecule,fromPath='',toPath=''):
+    """obtain topology file
 
+    Args:
+        molecule (str): molecule name
+        fromPath (str, optional): path where the topology is. Defaults to ''.
+        toPath (str, optional): path where the topology goes. Defaults to ''.
+    """
     fromPath=os.path.abspath(fromPath)
     toPath=os.path.abspath(toPath)
     
@@ -196,18 +204,19 @@ def getTop(molecule,fromPath='',toPath=''):
     
 
 def amb2gmx(molecule_name):
+    """Run amb2gmx for a molecule
+
+    Args:
+        molecule_name (str): molecule name
+    """
     amber = pmd.load_file('{}.prmtop'.format(molecule_name), '{}.inpcrd'.format(molecule_name))
     amber.save('{}.top'.format(molecule_name),overwrite=True)
     amber.save('{}.gro'.format(molecule_name),overwrite=True)
-
-
-
     
 def extract_molecule_from_gmx_top(topfile,path_itp_file):
-
-    # this function takes a gromacs topology file of a single molecule type
-    # and extracts the following sections:
-    # [ moleculetype ], [ atoms ], [ bonds ], [ pairs ], [ angles ], [ dihedrals ])
+    """This function takes a gromacs topology file of a single molecule type and extracts the following sections: 
+    [ moleculetype ], [ atoms ], [ bonds ], [ pairs ], [ angles ], [ dihedrals ])
+    """
 
     print_line=False
     
@@ -223,10 +232,14 @@ def extract_molecule_from_gmx_top(topfile,path_itp_file):
 
     return
 
-def extract_atomtypes_from_gmx_top(topfile,atomtypefile):
 
-    # this function takes a gromacs topology file
-    # and extracts the atom types in the [ atomtypes ] section
+def extract_atomtypes_from_gmx_top(topfile,atomtypefile):
+    """This function takes a gromacs topology file and extracts the atom types in the [ atomtypes ] section
+
+    Args:
+        topfile (str): nameof the top file
+        atomtypefile (str): name of the atom type file
+    """
 
     existing_atypes=[]
 
