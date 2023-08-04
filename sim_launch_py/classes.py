@@ -45,8 +45,6 @@ e given HPC system for each System() and a global bash script to call all the jo
     - addGromacs
 
      #### TODO METHODS ####
-    - _check_needed_binaries(self) : this method, when implemented, looks for gromacs, ambertools (and plumed? and la
-mmps?) binaries and add them to the project. If they are not found, a prompt could ask the user to give them. 
     - change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and 
 change all the pertinent path attributes.
 
@@ -112,11 +110,43 @@ change all the pertinent path attributes.
         
     @staticmethod
     def help():
-        print("""Help! I need somebody
-Help! Not just anybody
-Help! You know I need someone
-Help!""")
+        print("""Attributes:
+    - name : name of the project. This defines the directory where the project will be stored and most of path variables. 
+    - project_path : absolute path of the project. The name of the directory is derived from the name of the project.
+    - systems_path : directory where the data of the simulated systems are stored. This is the parent directory of the systems. 
+    - topology_path : directory where the topology files (.top and .itp) of the molecules used in the project are stored 
+                      and retrieved to be used in each system.
+    - init_struct_path : path where initial structures of the molecules used in the project are stored and retrieved
+                         to be used in each system.
+    - mdp_path : path where default .mdp input files for gromacs are stored.
+    - pickle_path : path where the project is saved in .pkl format.
+    - job_script_path : path where the template files for submission scripts are stored.
+    - systems : list of System() in the project.
+    - molecules : list of Molecule() in the project.
+    - version : version of the code (given in form of a YYYYMMDD date)
 
+    #### TODO ATTRIBUTES ####
+    - gromacs : path of the binary for gromacs
+    - ambertools : path of the directory where the binaries of the antechamber tools are (namely: antechamber, atomtype, leap...)
+    ** these path could be added in an automatic fashion by using shutil.which() on "gmx","gmx_mpi","tleap",... and fail in case they are not found (or give the possibility to add them manually at prompt). I would personally go for the a
+utomated fashion (with clear indication in a log file), because, in any case, they need to be in the environment of the system with all the loaded libraries (so, sourcing need to be done BEFORE than running the project). Also, in the cas
+es where these programs are NOT needed (e.g. when adding molecules to the project/systems and systems to the project, it is not important that they are defined at runtime).
+ 
+    Methods:
+    - help() : print the help for this class.
+    - add_molecule(self,name=None,resname='UNK', structure=None) : add and initialize Molecule() to the Project()
+    - add_system(self,name=None) : add and initialize System() to the Project()
+    - new_project(name=None, path=None, overwrite=False) : create new Project()
+    - save(self) : save Project() in Project().pickle_path
+    - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. 
+    - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.
+
+     #### TODO METHODS ####
+    - _check_needed_binaries(self) : this method, when implemented, looks for gromacs, ambertools (and plumed? and lammps?) binaries and add them to the project. If they are not found, a prompt could ask the user to give them. 
+    - change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.
+    
+
+    """)
 
     def add_molecule(self,name=None,resname='UNK', structure=None):
         """Add molecule to project
@@ -281,8 +311,36 @@ Help!""")
 
         
 class System():
+    """
+    The system class that stores and manage all the information and methods.
+
+    Attributes:
+    - name : name of the system. This is used to create the directory of the system.
+    - path : absolute path of the system.
+    - molecules : list of Molecule() belonging to the system.
+    - box : size of the box (of the initial configuration).
+    - simulations : list of Simulation() performed for the system.
+    - run_command : command lines used to run the simulations.
+
+    Methods:
+    - help() : print the help for this class
+    - add_molecule(self,name,knownmolecules=None,mol_attr: list())
+    - createSolventBox(self,solvent,output_structure="solvent_box.pdb",density=None,nmols=None):  
+    - insertSolute(self,solute,solvent,solvent_box="solvent_box.pdb",concentration=0, output_structure="start.pdb"):
+    - writeTop(self,atomtypes_path,*molecules):
+    - new_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord='',
+gmxbin=''):
+    - print_command(self, bash_file):
+   
+    """
 
     def __init__(self,name=None,path=None):
+        """System Class Constructor
+
+        Args:
+            name (str, optional): Systen name. Defaults to None.
+            path (str, optional): System path. Defaults to None.
+        """
 
         self._name=name
         self._path=path
@@ -346,7 +404,7 @@ class System():
                 self._molecules.append(newmolecule)
                 return
 
-        print("Couldn't add molecule {} to system {}. Molecule unknown.".format(name,self.name))
+        print("Error: Couldn't add molecule {} to system {}. Molecule unknown.".format(name,self.name))
         exit()
 
 
@@ -356,10 +414,10 @@ class System():
         out_path=self.path+'/'+output_structure
 
         if (density is not None) and (nmols is not None):
-
-            print("Both density and nmol have been defined: changing side of the box.")
+            
             volume_box=solvent.mw*10/(density*6.022)*nmol
             self.box[0]=volume_box**(1/3)
+            print("Both density and nmol have been defined: changing side of the box to {}.".format(self.box[0]))
 
         else:
             volume_box=self.box[0]**3
@@ -369,9 +427,7 @@ class System():
         os.system("gmx -nobackup editconf -f {0} -o {1} -box {2} {2} {2} -angles 90 90 90 -c".format(solvent.structure_path,
                                                                                            out_path,
                                                                                                      self.box[0]*(1.05)))
-
-        
-        
+               
         os.system("gmx -nobackup insert-molecules -f {0} -o {0} -ci {0} -nmol {1} -try 20000".format(out_path,
                                                                         nmols))
 
