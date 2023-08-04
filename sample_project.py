@@ -12,7 +12,6 @@ systems=pd.read_csv('systems.list',sep='\s+',header=1)
 
 ppath='./two_conc'
 
-"""
 ##### create a new project
 project=Project.new_project(name='two_conc',path=ppath,overwrite=True)
 
@@ -103,23 +102,18 @@ for i,sys in enumerate(project.systems):
     # we can now create the files needed for the simulations:
     # for unbiased simulations we just need mdp files
 
-    
-
-    
-
-
 project.save()
 
-"""
-project=Project.load_project(ppath)
+#project=Project.load_project(ppath)
 
 project.job_script_path='/home/matteo/Work/solvent_concentration/sim_launch_py/job_scripts'
+mdpdir='home/matteo/Work/solvent_concentration/sim_launch_py/mdp/'
 
 for sys in project.systems:
 
-    sys.new_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp='/home/matteo/Work/solvent_concentration/sim_launch_py/mdp/em.mdp',gmxbin='gmx_mpi')
-    sys.new_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp='/home/matteo/Work/solvent_concentration/sim_launch_py/mdp/mdvvberendsen.mdp',maxwarn=1, gmxbin='gmx_mpi')
-    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp='/home/matteo/Work/solvent_concentration/sim_launch_py/mdp/mdvvparrinello.mdp', gmxbin='gmx_mpi')
+    sys.new_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp=mdpdir+'em.mdp',gmxbin='gmx_mpi')
+    sys.new_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp=mdpdir+'mdvvberendsen.mdp',maxwarn=1, gmxbin='gmx_mpi')
+    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp=mdpdir+'mdvvparrinello.mdp', gmxbin='gmx_mpi')
 
     #sys.print_command('run.sh')
         
