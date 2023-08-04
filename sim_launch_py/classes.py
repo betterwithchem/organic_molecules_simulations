@@ -61,17 +61,26 @@ change all the pertinent path attributes.
         if path.rstrip().endswith("/"):
             path = path.rstrip()[:-1]
         
-        self._project_path=path
-        self._mdp_path=path+'/mdp/'
-        self._init_struct_path=path+'/Initial_structures/'
-        self._topology_path=path+'/Topologies/'
-        self._systems_path=path+'/Systems/'
-        self._pickle_path=path+'/.multisim.pkl'
+        self._name=name
+        self._project_path=os.path.abspath(path)
+        self._mdp_path="{}/mdp".format(path)
+        self._init_struct_path="{}/Initial_structures".format(path)
+        self._topology_path="{}/Topologies".format(path)
+        self._systems_path="{}/Systems".format(path)
+        self._pickle_path="{}/.multisim.pkl".format(path)
+        self._logfile="{}/project.log".format(path)
         self._name=name
         self._systems=list()
         self._molecules=list()
         self._job_script_path=None
+        self._gromacs=None
+        self._ambertools=None
 
+        self.version = '20230804'
+
+        self._checkGromacs()
+        self._checkAmberTools()
+       
     @property
     def project_path(self):
         return self._project_path
@@ -107,6 +116,22 @@ change all the pertinent path attributes.
     @job_script_path.setter
     def job_script_path(self,sp):
         self._job_script_path=sp
+
+    @logfile.setter
+    def logfile(self,log):
+        self._logfile=log
+
+    @systems_path.setter
+    def systems_path(self,p):
+        self._systems_path=p
+
+    @gromacs.setter
+    def gromacs(self,gmx):
+        self._gromacs=gmx
+
+    @ambertools.setter
+    def ambertools(self,amber):
+        self._ambertools=amber
         
     @staticmethod
     def help():
@@ -126,11 +151,6 @@ change all the pertinent path attributes.
     - version : version of the code (given in form of a YYYYMMDD date)
 
     #### TODO ATTRIBUTES ####
-    - gromacs : path of the binary for gromacs
-    - ambertools : path of the directory where the binaries of the antechamber tools are (namely: antechamber, atomtype, leap...)
-    ** these path could be added in an automatic fashion by using shutil.which() on "gmx","gmx_mpi","tleap",... and fail in case they are not found (or give the possibility to add them manually at prompt). I would personally go for the a
-utomated fashion (with clear indication in a log file), because, in any case, they need to be in the environment of the system with all the loaded libraries (so, sourcing need to be done BEFORE than running the project). Also, in the cas
-es where these programs are NOT needed (e.g. when adding molecules to the project/systems and systems to the project, it is not important that they are defined at runtime).
  
     Methods:
     - help() : print the help for this class.
@@ -156,6 +176,10 @@ es where these programs are NOT needed (e.g. when adding molecules to the projec
             resname (str, optional): residue name. Defaults to 'UNK'.
             structure (str, optional): molecular structure file. Defaults to None.
         """
+
+        # restrict resname to a string of capital letters of length 3
+        resname=resname.upper()[0:3]
+        
         import shutil
         for mol in self._molecules:
             if name == mol._name:                
@@ -165,23 +189,25 @@ es where these programs are NOT needed (e.g. when adding molecules to the projec
         newmolecule=Molecule(name=name,resname=resname,structure=structure)
         self._molecules.append(newmolecule)        
         shutil.copy(structure, self._init_struct_path)
-        
 
-        
+
     def add_system(self,name=None):
         """Add system to project
 
         Args:
             name (str, optional): system name. Defaults to None.
         """
+
+        from sim_launch_py.utilities import create
+        
         for sys in self._systems:
             if name==sys.name:
-                print("System {} already exists! ###### This will need to be changed to an error ##### ".format(name))
-                return
+                print("Error: System {} already exists!".format(name))
+                exit()
 
         syspath=self.project_path+'/'+name
         if os.path.isdir(syspath) is False:
-            os.makedirs(syspath)
+            create(syspath, arg_type='dir')
         
         newsystem=System(name=name,path=syspath)
         self._systems.append(newsystem)
@@ -238,7 +264,6 @@ es where these programs are NOT needed (e.g. when adding molecules to the projec
             os.rename(self._pickle_path, self._project_path+ "/.multisim.bck.pkl")
         with open(self._pickle_path, "wb") as file_pickle:
             pickle.dump(self, file_pickle)
-        #self._write_output()
         print("done")
 
 
@@ -261,28 +286,35 @@ es where these programs are NOT needed (e.g. when adding molecules to the projec
                 project.projecy_path = project_folder
             return project
         else:
-            print("No PyPol project found in '{}'. Use the 'Project.new_project' module to create a new project."
+            print("No project found in '{}'. Use the 'Project.new_project' module to create a new project."
                   "".format(project_folder))
 
-    def write_sub_command(self,scriptname,system='', template=''):
-
+    def write_sub_command(self,scriptname,system='', template=None):
+        """
+        For each system Write a script to run the simulations and write a global bash script to initiate all systems.
+        :param scriptname: name of the global bash script.
+        :param system: type of script for the systems. Supported are 'bash' and 'myriad' (GridEngine format on Myriad cluster at UCL).
+        :param template: custom template to be used for the local script. 
+        """
         import shutil
         recognised_systems=['bash','myriad']
 
         scriptname=self.project_path+'/'+scriptname
 
-        if template=='':
-            template=self.job_script_path+'/myriad.job'
-        else:
-            template=os.path.abspath(template)
-
-        filename=os.path.basename(template)
         
         if system=='bash':
             for sys in self.systems:
                 print("hey!")
 
         elif system=='myriad':
+
+            if template==None:
+                template=self.job_script_path+'/myriad.job'
+            else:
+                template=os.path.abspath(template)
+
+            filename=os.path.basename(template)
+
             for sys in self.systems:
                 shutil.copy(template,sys.path)
                 with open(sys.path+'/'+filename,'a') as f:
@@ -305,9 +337,6 @@ es where these programs are NOT needed (e.g. when adding molecules to the projec
                 print("- {}".format(rs))
             exit()
                 
-
-        
-    
 
         
 class System():
