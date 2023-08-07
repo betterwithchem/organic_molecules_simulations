@@ -226,7 +226,7 @@ change all the pertinent path attributes.
         if os.path.isdir(syspath) is False:
             create(syspath, arg_type='dir')
         
-        newsystem=System(name=name,path=syspath)
+        newsystem=System(name=name,path=syspath,gromacs=self._gromacs)
         self._systems.append(newsystem)
         
 
@@ -412,7 +412,7 @@ gmxbin=''):
    
     """
 
-    def __init__(self,name=None,path=None):
+    def __init__(self,name=None,path=None,gromacs=None):
         """System Class Constructor
 
         Args:
@@ -427,6 +427,7 @@ gmxbin=''):
         self._box=list()
         self._simulations=list()
         self._run_command=None
+        self._gromacs=gromacs
         
 
     @property
@@ -456,6 +457,14 @@ gmxbin=''):
     @property
     def run_command(self):
         return self._run_command
+
+    @property
+    def gromacs(self):
+        return self._gromacs
+
+    @gromacs.setter
+    def gromacs(self,gmx):
+        self._gromacs=gmx
     
     @temperature.setter
     def temperature(self,T):
@@ -502,11 +511,11 @@ gmxbin=''):
 
         nmols=util.estimate_n_molecules(volume_box,solvent.mw,density)-1
         
-        os.system("gmx -nobackup editconf -f {0} -o {1} -box {2} {2} {2} -angles 90 90 90 -c".format(solvent.structure_path,
+        os.system("{0} -nobackup editconf -f {1} -o {2} -box {3} {3} {3} -angles 90 90 90 -c".format(self.gromacs,solvent.structure_path,
                                                                                            out_path,
                                                                                                      self.box[0]*(1.05)))
                
-        os.system("gmx -nobackup insert-molecules -f {0} -o {0} -ci {0} -nmol {1} -try 20000".format(out_path,
+        os.system("{0} -nobackup insert-molecules -f {1} -o {1} -ci {1} -nmol {2} -try 20000".format(self.gromacs,out_path,
                                                                         nmols))
 
         print("Checking number of molecules..")
@@ -531,7 +540,8 @@ gmxbin=''):
 
         #print(self.name,solute.name,solvent.name,concentration,nmols)
 
-        os.system("gmx insert-molecules -f {0} -o {1} -ci {2} -nmol {3} -try 10000 -replace {4} ".format( in_file,
+        os.system("{0} insert-molecules -f {1} -o {2} -ci {3} -nmol {4} -try 10000 -replace {5} ".format( self.gromacs,
+                                                                                                          in_file,
                                                                                                           out_file,
                                                                                                           solute.structure_path,
                                                                                                           nmols,

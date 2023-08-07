@@ -155,14 +155,14 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
     shutil.copy("{}.top".format(molecule_name), path_output)
 
     os.chdir(path_output)
-    extract_molecule_from_gmx_top(path_output + molecule_name + ".top",
-                                  path_output + molecule_name + ".itp")
+    extract_molecule_from_gmx_top("{}/{}.top".format(path_output,molecule_name),
+                                  "{}/{}.itp".format(path_output,molecule_name))
 
-    extract_atomtypes_from_gmx_top(path_output + molecule_name + ".top",
-                                   path_output + "atomtypes.itp")
+    extract_atomtypes_from_gmx_top("{}/{}.top".format(path_output,molecule_name),
+                                   "{}/atomtypes.itp".format(path_output))
 
-    molecule.topology_path=path_output + molecule_name + ".top"
-    molecule.include_path=path_output + molecule_name + ".itp"
+    molecule.topology_path="{}/{}.top".format(path_output,molecule_name)
+    molecule.include_path="{}/{}.itp".format(path_output,molecule_name)
     
     
     molecule.natoms=util.numberOfAtomsFromTop(molecule.topology_path)
@@ -190,7 +190,7 @@ def getTop(molecule,fromPath='',toPath=''):
         shutil.copy(fromPath+"/"+molecule.name+".top",toPath)
         molecule.topology_path=toPath+"/"+molecule.name+".top"
     else:
-        print("top file for {0.name} not found".format(mol))
+        print("top file for {0.name} not found".format(molecule))
         exit()
 
     extract_molecule_from_gmx_top(toPath+"/"+molecule.name+".top",

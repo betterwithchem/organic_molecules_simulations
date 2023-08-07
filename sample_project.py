@@ -9,7 +9,6 @@ import sim_launch_py.utilities as util
 molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
 systems=pd.read_csv('systems.list',sep='\s+',header=1)
 
-
 ppath='./two_conc'
 
 ##### create a new project
@@ -38,12 +37,12 @@ for i,name in enumerate(molecules.molname):
 ##### this will create also include topology (itp) files and a file with all atom types
 for i,mol in enumerate(project.molecules):
     # if necessary, compute force field parameters
-    #gaff(mol, project.topology_path,
+    #gaff(mol, os.path.abspath(project.topology_path),
     #     res_name=mol.resname, generate_charges='bcc', atomtype='gaff2',
     #     overwrite=False)
 
     # or copy them from a defined location
-    getTop(mol,fromPath="/home/matteo/Work/solvent_concentration/Topologies" ,toPath=project.topology_path)
+    getTop(mol,fromPath="/home/ucecmpa/Scratch/organic_molecules_simulations/Topologies" ,toPath=project.topology_path)
 
     # in any case compute molecular weight and number of atoms
     mol.mw=util.molecularWeightFromTop(mol.topology_path)
@@ -85,6 +84,7 @@ for i,sys in enumerate(project.systems):
     for mol in sys.molecules:
         if 'solvent' in mol.mol_attributes:
             solvent=mol
+            print(sys.gromacs)
             sys.createSolventBox(solvent,output_structure='solvent_box.pdb',density=systems.loc[i].at['conc_1'])
 
     for mol in sys.molecules:
@@ -106,7 +106,7 @@ project.save()
 
 #project=Project.load_project(ppath)
 
-project.job_script_path='/home/matteo/Work/solvent_concentration/sim_launch_py/job_scripts'
+project.job_script_path='sim_launch_py/job_scripts'
 mdpdir='sim_launch_py/mdp/'
 
 for sys in project.systems:
