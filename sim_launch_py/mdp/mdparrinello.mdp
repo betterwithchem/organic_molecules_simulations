@@ -1,7 +1,7 @@
-; NPT with Berendsen barostat
-integrator                      = md-vv
-nsteps                          = 1000000
-dt                              = 0.001
+; NPT with Parrinello-Rahman barostat
+integrator                      = md
+nsteps                          = 3000000
+dt                              = 0.002
 
 ; Output
 nstxout-compressed              = 10000
@@ -35,10 +35,10 @@ tau_t                           = 0.1
 ref_t                           = 300
 
 ; Pressure coupling is off
-pcoupl                          = Berendsen
+pcoupl                          = Parrinello-Rahman
 pcoupltype                      = isotropic
-tau_p                           = 2.0
-ref_p                           = 1.0 
+tau_p                           = 10.0
+ref_p                           = 1.0
 compressibility                 = 1.0e-5
 
 ; Periodic boundary conditions

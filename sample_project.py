@@ -113,7 +113,7 @@ for sys in project.systems:
 
     sys.new_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp=mdpdir+'em.mdp',gmxbin=project.gromacs)
     sys.new_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp=mdpdir+'mdvvberendsen.mdp',maxwarn=1, gmxbin=project.gromacs)
-    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp=mdpdir+'mdvvparrinello.mdp', gmxbin=project.gromacs)
+    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp=mdpdir+'mdparrinello.mdp', gmxbin=project.gromacs)
 
     #sys.print_command('run.sh')
         
