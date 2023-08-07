@@ -113,6 +113,23 @@ change all the pertinent path attributes.
     def molecules(self):
         return self._molecules
 
+    @property
+    def logfile(self):
+        return self._logfile
+
+    @property
+    def systems_path(self):
+        return self._systems_path
+
+    @property
+    def gromacs(self):
+        return self._gromacs
+
+    @property
+    def ambertools(self):
+        return self._ambertools
+    
+
     @job_script_path.setter
     def job_script_path(self,sp):
         self._job_script_path=sp
@@ -205,7 +222,7 @@ change all the pertinent path attributes.
                 print("Error: System {} already exists!".format(name))
                 exit()
 
-        syspath=self.project_path+'/'+name
+        syspath=self._systems_path+'/'+name
         if os.path.isdir(syspath) is False:
             create(syspath, arg_type='dir')
         
@@ -336,7 +353,39 @@ change all the pertinent path attributes.
             for rs in recognised_systems:
                 print("- {}".format(rs))
             exit()
-                
+
+    def _checkGromacs(self):
+        """                                                                                                          
+        Look for Gromacs binary and add it to the project                                                            
+        The value of the attribute is the actual path of the binary (/path/to/gmx or /path/to/gmx_mpi or /path/to/gm\
+x_bin_custom_name)                                                                                                   
+        """
+        import shutil
+
+        if self.gromacs is None:
+            if shutil.which('gmx') is not None:
+                self.gromacs=shutil.which('gmx')
+            elif shutil.which('gmx_mpi') is not None:
+                self.gromacs=shutil.which('gmx_mpi')
+            else:
+                self.gromacs=input("I couldn't find gromacs command, you can add it manually: ")
+        elif self.gromacs=='':
+            exit("Error: gromacs command is not in the PATH and is not added to the project")
+
+    def _checkAmberTools(self):
+        """                                                                                                          
+        Look for AmberTools binaries path and add it to the project                                                  
+        The value of the attribute is the path to the directory where the binaries are (/path/to/amber/bin)          
+        """
+        import shutil
+        if self.ambertools is None:
+            if shutil.which('antechamber') is not None:
+                self.ambertools=shutil.which('antechamber')
+            else:
+                self.ambertools=input("I couldn't find ambertools binaries directory, you can add it manually: ")
+        elif self.ambertools=='':
+            exit("Error: ambertools binaries is not in the PATH and is not added to the project")
+
 
         
 class System():

@@ -97,7 +97,7 @@ for i,sys in enumerate(project.systems):
         mol.nmols=util.check_number_molecules(sys.path+'/start.pdb',mol)
     
     # write topology
-    sys.writeTop(project.topology_path+'atomtypes.itp',solvent,solute)
+    sys.writeTop(project.topology_path+'/atomtypes.itp',solvent,solute)
 
     # we can now create the files needed for the simulations:
     # for unbiased simulations we just need mdp files
@@ -107,13 +107,13 @@ project.save()
 #project=Project.load_project(ppath)
 
 project.job_script_path='/home/matteo/Work/solvent_concentration/sim_launch_py/job_scripts'
-mdpdir='home/matteo/Work/solvent_concentration/sim_launch_py/mdp/'
+mdpdir='sim_launch_py/mdp/'
 
 for sys in project.systems:
 
-    sys.new_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp=mdpdir+'em.mdp',gmxbin='gmx_mpi')
-    sys.new_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp=mdpdir+'mdvvberendsen.mdp',maxwarn=1, gmxbin='gmx_mpi')
-    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp=mdpdir+'mdvvparrinello.mdp', gmxbin='gmx_mpi')
+    sys.new_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp=mdpdir+'em.mdp',gmxbin=project.gromacs)
+    sys.new_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp=mdpdir+'mdvvberendsen.mdp',maxwarn=1, gmxbin=project.gromacs)
+    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp=mdpdir+'mdvvparrinello.mdp', gmxbin=project.gromacs)
 
     #sys.print_command('run.sh')
         

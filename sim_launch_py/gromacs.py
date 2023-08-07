@@ -1,6 +1,8 @@
 import shutil
+import os
 
 class _Simulation():
+
         def __init__(self, name: str, mdrun_options: str, topology: str,
                  path: str):
             """Simulation Class Constructor
@@ -11,11 +13,11 @@ class _Simulation():
                 topology (str): name of the topology file
                 path (str): path definition
             """
-        self._name=name
-        self._mdrun_options=mdrun_options
-        self._topology=topology
-        #self._run_options=run_options
-        self._path=path
+            self._name=name
+            self._mdrun_options=mdrun_options
+            self._topology=topology
+            #self._run_options=run_options
+            self._path=path
 
         @property
         def name(self):
@@ -72,14 +74,14 @@ class MD(_Simulation):
         # Inherit properties of the _Simulation Class
         super().__init__(name, mdrun_options, topology, path_output)
 
-        self.name=name
+        self._name=name
 
         # copy mdp files
         shutil.copy(path_mdp,path_input)
 
         # Print bash string
         if print_bash:
-            mdp=path_mdp
+            mdp=os.path.basename(path_mdp)
             self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\
                 "{3} mdrun -deffnm {0} {1} {2}\n".format(name,mdrun_options,plumed,gmxbin)
             
@@ -107,14 +109,14 @@ class EnergyMinimization(_Simulation):
         # Inherit properties of the _Simulation Class
         super().__init__(name, mdrun_options, topology, path_output)
 
-        self.name=name
+        self._name=name
 
         # copy mdp files
         shutil.copy(path_mdp,path_input)
 
         # Print bash string
-        if print_bash:            
-            mdp=path_mdp
+        if print_bash:
+            mdp=os.path.basename(path_mdp)
             self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\
                 "{2} mdrun -deffnm {0} {1}\n".format(name,mdrun_options,gmxbin)
                 
