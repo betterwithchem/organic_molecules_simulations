@@ -508,10 +508,12 @@ gmxbin=''):
            moltype (str, optional): generic attribute of the molecule. Defaults to None.
            knownmolecules (list of Molecule(), optional): molecules already present in the project.
         """
+
+        import copy
         
         for mol in knownmolecules:
             if name==mol.name:
-                newmolecule=mol
+                newmolecule=copy.deepcopy(mol)
                 newmolecule._mol_attributes=moltype
                 self._molecules.append(newmolecule)
                 return
@@ -521,7 +523,6 @@ gmxbin=''):
 
 
     def createSolventBox(self,solvent,output_structure="solvent_box.pdb",density=None,nmols=None):
-
         
         out_path=output_structure
 
@@ -552,7 +553,7 @@ gmxbin=''):
 
         solvent.nmols=nmols
 
-        self.updateComposition()
+        self._updateComposition()
 
 
         
@@ -582,7 +583,7 @@ gmxbin=''):
             exit()
 
         solute.nmols=nmols
-        self.updateComposition()
+        self._updateComposition()
 
     def writeTop(self,atomtypes_path,*molecules):
 
@@ -672,7 +673,7 @@ gmxbin=''):
                 f.write(s.bash_command+'\n\n')
 
 
-    def updateComposition(self):
+    def _updateComposition(self):
 
         import copy
         
@@ -687,19 +688,22 @@ gmxbin=''):
                     self._atoms.append(new_atom)
 
         self._natoms=len(self._atoms)
-        self.updateAtomID()
+        self._updateAtomID()
         
 
-    def updateAtomID(self):
+    def _updateAtomID(self):
 
         iatom=0
+        molatom=0
         
         for imol,mol in enumerate(self.molecules):
             for n in range(self.composition[imol]):
                 for i in range(mol._natoms):
                     self._atoms[iatom]._atomID=iatom+1
+                    mol._atoms[molatom]._atomID=iatom+1
                     iatom+=1
-                
+                    molatom+=1
+                molatom=0
                 
             
         
@@ -741,10 +745,6 @@ class Molecule():
                                 
                 self._mw+=u.atoms.masses[iatom]
                 self._atoms.append(new_atom)
-
-            
-                
-                            
 
 
     @property

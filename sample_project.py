@@ -5,6 +5,7 @@ import pandas as pd
 import os
 import sim_launch_py.utilities as util
 
+from sim_launch_py.molecules import findTorsionalAngles
 
 molecules=pd.read_csv('somemolecules.list',sep='\s+',header=0)
 systems=pd.read_csv('systems.list',sep='\s+',header=1)
@@ -46,8 +47,8 @@ for i,mol in enumerate(project.molecules):
     #getTop(mol,fromPath="/home/ucecmpa/Scratch/organic_molecules_simulations/Structures/{}".format(mol.name) ,toPath=project.topology_path)
 
     # in any case compute molecular weight and number of atoms
-    mol.mw=util.molecularWeightFromTop(mol.topology_path)
-    mol.natoms=util.numberOfAtomsFromTop(mol.topology_path)
+    #mol.mw=util.molecularWeightFromTop(mol.topology_path)
+    #mol.natoms=util.numberOfAtomsFromTop(mol.topology_path)
    
 
 
@@ -94,8 +95,8 @@ for i,sys in enumerate(project.systems):
             sys.insertSolute(solute,solvent,solvent_box='solvent_box.pdb',concentration=systems.loc[i].at['conc_2'],output_structure='start.pdb')
 
     # get final number of molecules of each species in order to create the topology file:
-    for mol in sys.molecules:
-        mol.nmols=util.check_number_molecules(sys.path+'/start.pdb',mol)
+    #for mol in sys.molecules:
+    #    mol.nmols=util.check_number_molecules(sys.path+'/start.pdb',mol)
     
     # write topology
     sys.writeTop(project.topology_path+'/atomtypes.itp',solvent,solute)
@@ -109,26 +110,35 @@ project.save()
 project=Project.load_project(ppath)
 
 
-
-project.job_script_path='sim_launch_py/job_scripts'
-mdpdir='sim_launch_py/mdp/'
+project.job_script_path=os.path.abspath('sim_launch_py/job_scripts')
+mdpdir=os.path.abspath('sim_launch_py/mdp/')
 
 for sys in project.systems:
 
-    sys.add_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp=mdpdir+'em.mdp',gmxbin=project.gromacs)
-    sys.add_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp=mdpdir+'mdvvberendsen.mdp',maxwarn=1, gmxbin=project.gromacs)
+    sys.add_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp="{}/em.mdp".format(mdpdir),gmxbin=project.gromacs)
+    sys.add_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp="{}/mdvvberendsen.mdp".format(mdpdir),maxwarn=1, gmxbin=project.gromacs)
 
     ### prepare plumed file and cvs
     # >>> HERE <<< #    
-    md=sys.add_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp=mdpdir+'mdparrinello.mdp', gmxbin=project.gromacs, plumed="plumed.dat" )
+    md=sys.add_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp="{}/mdparrinello.mdp".format(mdpdir), gmxbin=project.gromacs, plumed="plumed.dat" )
 
-    md.add_cv('dih','torsion',atoms=[1,2,3,4])
+    mol=sys.molecules[-1]
+    dihangles=findTorsionalAngles(mol.structure_path)
 
-    print(md)
+    
+    
+    #print(dihangles)
+
+    for iangle,angle in enumerate(dihangles):
+        md.add_cv('dih_{}'.format(iangle),'torsion',atoms=[mol.atoms[i].atomID for i in angle])
+
+    print([[cv.name,cv.atoms] for cv in md.cvs])
 
     
     #sys.print_command('run.sh')
-        
+
+#project.save()
+    
 project.write_sub_command('launch_jobs.sh',system='myriad')
 
 

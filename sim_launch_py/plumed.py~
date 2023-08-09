@@ -3,32 +3,22 @@
 
 class _CV():
 
-    def __init__(self, name: str, print_cv=True):
+    def __init__(self, name: str):
         """CV Class Constructur
    
         Args:
            name (str): Name of the collective variable
-           print_cv (bool, optional): Print the value of the variable? Defaults to True.
         """
         
         self._name=name
-        self._print_cv=print_cv
 
-    @property
-    def name(self):
-        return self._name
+        @property
+        def name(self):
+            return self._name
 
-    @property
-    def print_cv(self):
-        return self._print_cv
-
-    @name.setter
-    def name(self,n):
-        self._name=n
-
-    @print_cv.setter
-    def print_cv(self,p):
-        self._print_cv=p
+        @name.setter
+        def name(self,n):
+            self._name=n
 
 class Torsion(_CV):
 
@@ -36,8 +26,8 @@ class Torsion(_CV):
         """Torsion collective variable class constructor
  
         Args:
-            name(str) : Name of the collective variable. 
-            atoms(list) : List of atom ids that compose the dihedral angle. 
+            name(str) : Name of the torsional collective variable. 
+            atoms(list) : List of atom ids that compose the torsional angle. 
         """
 
         # Inherit properties of the _CV Class
@@ -55,22 +45,19 @@ class Torsion(_CV):
     def atoms(self):
         return self._atoms
 
-    
-
-"""      
 class Group():
 
     def __init__(self, name: str, atoms=[],
                  universe=None, selection=''):
         
-        ""Group Class Constructor
+        """Group Class Constructor
 
         Args:
             name (str): Name of the simulation
             atoms (list, optional): list of atoms in the group. Defaults to [].
             universe (MDAnalysis.Universe, optional): Universe of the system. Defaults to None.
             selection (str, optional): selection for the Universe. Defaults to ''.
-        ""
+        """
         
         self._name=name
         self._atoms=atoms
@@ -113,7 +100,7 @@ class Group():
         self._selection=s
 
     
-
+       
 def writePlumedFile(simulation,plumed_file):
 
     import os
@@ -128,57 +115,6 @@ def writePlumedFile(simulation,plumed_file):
         for group in simulation.groups:
             f.write("GROUP ATOMS")
 
-
-
-class _Bias():
-
-    def __init__(self,name: str):
-#        ""Bias Class Constructor
-#
-#        Args:
-#           name (str): Name of the bias attribute
-#        ""
-
-        self._name=name
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self,n):
-        self._name=n
-
-
-
-class UpperWalls(_Bias):
-
-    def __init__(self, name: str, cv: str, kharm: float, at: float, exp=2, eps=1, offset=0.):
-        ""UpperWalls bias class constructor
-
-        Args:
-           name (str): Label for the bias.
-           cv (str): Collective variables to which the bias is applied.
-           kharm (float): Force constant for the walls.
-           at (float): Position of the wall.
-           exp (float, optional): Powers for the walls. Defaults to 2 for each cv.
-           eps (float, optional): Normalization for the walls. Defaults to 1 for each cv.
-           offset (float, optional): Offset for the start of the wall. Defaults to 0 for each cv.
-        "" 
-
-        # Inherit properties of the _Bias Class
-        super().__init__(name)
-
-        self._name=name
-
-        if isinstance(cv,list):
-            n_walls = len(cv)
-        elif isinstance(cv,str):
-            n_walls = 1
-            cv = [ cv ]
-
-        
-"""
         
 
         
