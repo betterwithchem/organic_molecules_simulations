@@ -1,5 +1,6 @@
 import shutil
 import os
+import sim_launch_py.plumed as plumed
 
 class _Simulation():
 
@@ -48,8 +49,9 @@ class MD(_Simulation):
     
     def __init__(self,  name: str, mdrun_options='', coord='', topology='',
                  path_mdp='', path_input='', path_output='', temperature=300, thermostat='vv',
-                 pressure=1, barostat='Parrinello-Rahman', nsteps=100, plumed='',
-                 print_bash=False, maxwarn=0, gmxbin='gmx_mpi'):
+                 pressure=1, barostat='Parrinello-Rahman', nsteps=100,
+                 print_bash=False, maxwarn=0, gmxbin='gmx_mpi',
+                 plumed=None):
         """MD simulation class constructor
 
         Args:
@@ -75,6 +77,7 @@ class MD(_Simulation):
         super().__init__(name, mdrun_options, topology, path_output)
 
         self._name=name
+        self._cvs=[]
 
         # copy mdp files
         shutil.copy(path_mdp,path_input)
@@ -83,8 +86,21 @@ class MD(_Simulation):
         if print_bash:
             mdp=os.path.basename(path_mdp)
             self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\
-                "{3} mdrun -deffnm {0} {1} {2}\n".format(name,mdrun_options,plumed,gmxbin)
-            
+                    "{3} mdrun -deffnm {0} {1} {2}\n".format(name,mdrun_options,plumed,gmxbin)
+
+
+    @property
+    def cvs(self):
+        return self._cvs
+
+    def add_cv(self,name,cvtype,**kwargs):
+
+        
+        if cvtype.upper()=='TORSION':
+            new_cv=plumed.Torsion(name,kwargs['atoms'])
+            self._cvs.append(new_cv)
+
+    
 
 class EnergyMinimization(_Simulation):
 
@@ -165,7 +181,8 @@ class Metad(MD, _Simulation):
             f.write("gmx mdrun -deffnm md -v -plumed {0} ".format())
 """
 
-        
+
+            
         
         
 

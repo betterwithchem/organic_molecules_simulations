@@ -6,11 +6,12 @@ import os
 import sim_launch_py.utilities as util
 
 
-molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
+molecules=pd.read_csv('somemolecules.list',sep='\s+',header=0)
 systems=pd.read_csv('systems.list',sep='\s+',header=1)
 
 ppath='./two_conc'
 
+"""
 ##### create a new project
 project=Project.new_project(name='two_conc',path=ppath,overwrite=True)
 
@@ -37,12 +38,12 @@ for i,name in enumerate(molecules.molname):
 ##### this will create also include topology (itp) files and a file with all atom types
 for i,mol in enumerate(project.molecules):
     # if necessary, compute force field parameters
-    #gaff(mol, os.path.abspath(project.topology_path),
-    #     res_name=mol.resname, generate_charges='bcc', atomtype='gaff2',
-    #     overwrite=False)
+    gaff(mol, os.path.abspath(project.topology_path),
+         res_name=mol.resname, generate_charges='bcc', atomtype='gaff2',
+         overwrite=False)
 
     # or copy them from a defined location
-    getTop(mol,fromPath="/home/ucecmpa/Scratch/organic_molecules_simulations/Topologies" ,toPath=project.topology_path)
+    #getTop(mol,fromPath="/home/ucecmpa/Scratch/organic_molecules_simulations/Structures/{}".format(mol.name) ,toPath=project.topology_path)
 
     # in any case compute molecular weight and number of atoms
     mol.mw=util.molecularWeightFromTop(mol.topology_path)
@@ -104,17 +105,28 @@ for i,sys in enumerate(project.systems):
 
 project.save()
 
-#project=Project.load_project(ppath)
+"""
+project=Project.load_project(ppath)
+
+
 
 project.job_script_path='sim_launch_py/job_scripts'
 mdpdir='sim_launch_py/mdp/'
 
 for sys in project.systems:
 
-    sys.new_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp=mdpdir+'em.mdp',gmxbin=project.gromacs)
-    sys.new_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp=mdpdir+'mdvvberendsen.mdp',maxwarn=1, gmxbin=project.gromacs)
-    sys.new_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp=mdpdir+'mdparrinello.mdp', gmxbin=project.gromacs)
+    sys.add_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp=mdpdir+'em.mdp',gmxbin=project.gromacs)
+    sys.add_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp=mdpdir+'mdvvberendsen.mdp',maxwarn=1, gmxbin=project.gromacs)
 
+    ### prepare plumed file and cvs
+    # >>> HERE <<< #    
+    md=sys.add_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp=mdpdir+'mdparrinello.mdp', gmxbin=project.gromacs, plumed="plumed.dat" )
+
+    md.add_cv('dih','torsion',atoms=[1,2,3,4])
+
+    print(md)
+
+    
     #sys.print_command('run.sh')
         
 project.write_sub_command('launch_jobs.sh',system='myriad')

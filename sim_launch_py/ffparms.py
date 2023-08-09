@@ -191,6 +191,7 @@ def getTop(molecule,fromPath='',toPath=''):
         molecule.topology_path=toPath+"/"+molecule.name+".top"
     else:
         print("top file for {0.name} not found".format(molecule))
+        print("looked into {}/{}.top".format(fromPath,molecule.name))
         exit()
 
     extract_molecule_from_gmx_top(toPath+"/"+molecule.name+".top",

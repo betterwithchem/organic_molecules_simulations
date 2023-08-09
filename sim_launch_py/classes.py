@@ -185,11 +185,11 @@ change all the pertinent path attributes.
 
     """)
 
-    def add_molecule(self,name=None,resname='UNK', structure=None):
+    def add_molecule(self,name,resname='UNK', structure=None):
         """Add molecule to project
 
         Args:
-            name (str, optional): molecule name. Defaults to None.
+            name (str): molecule name. Defaults to None.
             resname (str, optional): residue name. Defaults to 'UNK'.
             structure (str, optional): molecular structure file. Defaults to None.
         """
@@ -203,7 +203,8 @@ change all the pertinent path attributes.
                 print("Ignoring molecule {} ({}), it already exists a molecule with the same name in the project.".format(name,resname))
                 return
 
-        newmolecule=Molecule(name=name,resname=resname,structure=structure)
+        newmolecule=Molecule(name=name,resname=resname,structure=os.path.abspath(structure))
+
         self._molecules.append(newmolecule)        
         shutil.copy(structure, self._init_struct_path)
 
@@ -406,18 +407,19 @@ class System():
     - createSolventBox(self,solvent,output_structure="solvent_box.pdb",density=None,nmols=None):  
     - insertSolute(self,solute,solvent,solvent_box="solvent_box.pdb",concentration=0, output_structure="start.pdb"):
     - writeTop(self,atomtypes_path,*molecules):
-    - new_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord='',
+    - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord='',
 gmxbin=''):
     - print_command(self, bash_file):
    
     """
 
-    def __init__(self,name=None,path=None,gromacs=None):
+    def __init__(self,name,path=None,gromacs=None):
         """System Class Constructor
 
         Args:
-            name (str, optional): Systen name. Defaults to None.
+            name (str): Systen name
             path (str, optional): System path. Defaults to None.
+            gromacs (str, optional): Gromacs binary name. Defaults to None.
         """
 
         self._name=name
@@ -428,7 +430,10 @@ gmxbin=''):
         self._simulations=list()
         self._run_command=None
         self._gromacs=gromacs
-        
+
+        self.composition=list()
+        self._atoms=list()
+        self._natoms=0        
 
     @property
     def name(self):
@@ -462,6 +467,14 @@ gmxbin=''):
     def gromacs(self):
         return self._gromacs
 
+    @property
+    def atoms(self):
+        return self._atoms
+
+    @property
+    def natoms(self):
+        return self._natoms
+
     @gromacs.setter
     def gromacs(self,gmx):
         self._gromacs=gmx
@@ -469,6 +482,10 @@ gmxbin=''):
     @temperature.setter
     def temperature(self,T):
         self._temperature=T
+
+    @natoms.setter
+    def natoms(self,n):
+        self._natoms=n
 
     @box.setter
     def box(self,box):
@@ -482,8 +499,16 @@ gmxbin=''):
         self._run_command=command
 
     
-    def add_molecule(self,name=None,moltype=None,knownmolecules=None):
+    def add_molecule(self,name,moltype=None,knownmolecules=None):
 
+        """Add new molecule type to the system.
+
+        Args:
+           name (str): name of the molecule.
+           moltype (str, optional): generic attribute of the molecule. Defaults to None.
+           knownmolecules (list of Molecule(), optional): molecules already present in the project.
+        """
+        
         for mol in knownmolecules:
             if name==mol.name:
                 newmolecule=mol
@@ -498,7 +523,7 @@ gmxbin=''):
     def createSolventBox(self,solvent,output_structure="solvent_box.pdb",density=None,nmols=None):
 
         
-        out_path=self.path+'/'+output_structure
+        out_path=output_structure
 
         if (density is not None) and (nmols is not None):
             
@@ -525,11 +550,13 @@ gmxbin=''):
             print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 20000, inserted_mols))
             exit()
 
+        solvent.nmols=nmols
+
+        self.updateComposition()
+
+
         
     def insertSolute(self,solute,solvent,solvent_box="solvent_box.pdb",concentration=0, output_structure="start.pdb"):
-
-        in_file=os.path.abspath(self.path+'/'+solvent_box)
-        out_file=os.path.abspath(self.path+'/'+output_structure)
 
         if concentration == 0:
             # then single molecule
@@ -541,18 +568,21 @@ gmxbin=''):
         #print(self.name,solute.name,solvent.name,concentration,nmols)
 
         os.system("{0} insert-molecules -f {1} -o {2} -ci {3} -nmol {4} -try 10000 -replace {5} ".format( self.gromacs,
-                                                                                                          in_file,
-                                                                                                          out_file,
+                                                                                                          solvent_box,
+                                                                                                          output_structure,
                                                                                                           solute.structure_path,
                                                                                                           nmols,
                                                                                                           solvent.resname))
 
         print("Checking number of molecules..")
-        inserted_mols=util.check_number_molecules(out_file,solute)
+        inserted_mols=util.check_number_molecules(output_structure,solute)
 
         if inserted_mols!=nmols:
             print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 10000, inserted_mols))
             exit()
+
+        solute.nmols=nmols
+        self.updateComposition()
 
     def writeTop(self,atomtypes_path,*molecules):
 
@@ -588,9 +618,10 @@ gmxbin=''):
             
             for mol in molecules:
                 top.write("{0}\t{1}\n".format(mol.resname,mol.nmols))
-                    
 
-    def new_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord='',gmxbin=''):
+            
+
+    def add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord='',gmxbin='',plumed=None):
        
         import sim_launch_py.gromacs as gmx
 
@@ -627,6 +658,8 @@ gmxbin=''):
 
         self.simulations.append(sim)
 
+        return sim
+
     
     def print_command(self, bash_file):
 
@@ -639,6 +672,34 @@ gmxbin=''):
                 f.write(s.bash_command+'\n\n')
 
 
+    def updateComposition(self):
+
+        import copy
+        
+        self.composition=[0 for mol in self.molecules]
+        self._atoms=[]
+
+        for imol,mol in enumerate(self.molecules):
+            self.composition[imol]=mol.nmols
+            for i in range(mol.nmols):
+                for iatom,atom in enumerate(mol.atoms):
+                    new_atom=copy.deepcopy(mol.atoms[iatom])
+                    self._atoms.append(new_atom)
+
+        self._natoms=len(self._atoms)
+        self.updateAtomID()
+        
+
+    def updateAtomID(self):
+
+        iatom=0
+        
+        for imol,mol in enumerate(self.molecules):
+            for n in range(self.composition[imol]):
+                for i in range(mol._natoms):
+                    self._atoms[iatom]._atomID=iatom+1
+                    iatom+=1
+                
                 
             
         
@@ -663,6 +724,27 @@ class Molecule():
         self._mol_attributes=[]
         self._nmols=0
         self._natoms=0
+        self._atoms=list()
+
+        if structure is not None:
+
+            import MDAnalysis as mda
+            import warnings
+            warnings.filterwarnings('ignore')
+
+            u=mda.Universe(structure)
+            self._natoms=u.atoms.n_atoms
+            for iatom in range(self._natoms):
+
+                new_atom=Atom(u.atoms.names[iatom],atomID=u.atoms.ids[iatom],resname=resname,
+                         mass=u.atoms.masses[iatom],element=u.atoms.types[iatom])
+                                
+                self._mw+=u.atoms.masses[iatom]
+                self._atoms.append(new_atom)
+
+            
+                
+                            
 
 
     @property
@@ -700,6 +782,10 @@ class Molecule():
     @property
     def nmols(self):
         return self._nmols
+
+    @property
+    def atoms(self):
+        return self._atoms
     
     @resname.setter
     def resname(self,resname):
@@ -744,9 +830,89 @@ Each Molecule() has the following attributes:
 -include_path : name and position of the include topology (.itp) file with the definition of the molecule
 -mw : molecular weight in g/mol""")
 
+ 
+class Atom():
 
+    def __init__(self,name: str, mass=0, atomtype=None, atomID=0, resnum=0, resname=None, element=None):
+        """Atom Class Constructor
+
+        Args:
+            name (str): Atom name. Defaults to None.
+            mass (float, optional): Mass of the atom. Defaults to 0.
+            atomtype (str, optional): AtomType of the atom. Defaults to None.
+            atomID (int, optional): AtomID of the atom. Defaults to 0.
+            resnum (int, optional): Residue Number of the atom. Defaults to 0.
+            resname (str, optional): Residue Name of the atom. Defaults to None.
+            element (str, optional): Element of the atom. Defaults to None.
+        """
+
+        self._name=name
+        self._mass=mass
+        self._atomtype=atomtype
+        self._atomID=atomID
+        self._resnum=resnum
+        self._resname=resname
+        self._element=element
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def mass(self):
+        return self._mass
+
+    @property
+    def atomtype(self):
+        return self._atomtype
+
+    @property
+    def atomID(self):
+        return self._atomID
+
+    @property
+    def resnum(self):
+        return self._resnum
+
+    @property
+    def resname(self):
+        return self._resname
+
+    @property
+    def element(self):
+        return self._element
+
+    @name.setter
+    def name(self,n):
+        self._name=n
+
+    @mass.setter
+    def mass(self,mw):
+        self._mass=mw
+
+    @atomtype.setter
+    def atomtype(self,atype):
+        self._atomtype=atype
+
+    @atomID.setter
+    def atomID(self,aid):
+        self._atomID=aid
+
+    @resnum.setter
+    def resnum(self,rn):
+        self._resnum=rn
+
+    @resname.setter
+    def resname(self,rn):
+        self._resname=rn
+
+    @element.setter
+    def element(self,el):
+        self._element=el
 
     
 
+
+    
     
     
