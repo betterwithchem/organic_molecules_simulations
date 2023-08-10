@@ -11,11 +11,11 @@ from sim_launch_py.external.molecules import findTorsionalAngles
 molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
 systems=pd.read_csv('systems.list',sep='\s+',header=1)
 
-ppath='./two_conc'
+ppath='./metad'
 
 
 ##### create a new project
-project=Project.new_project(name='two_conc',path=ppath,overwrite=True)
+project=Project.new_project(name='metad',path=ppath,overwrite=True)
 
 
 ##### save it
@@ -116,6 +116,9 @@ for sys in project.systems:
 
     for iangle,angle in enumerate(dihangles):
         md.add_cv('dih_{}'.format(iangle),'torsion',atoms=[mol.atoms[i].atomID for i in angle])
+        md.add_bias('metad_dih_{}'.format(iangle),'metad',cv='dih_{}'.format(iangle),sigma=5*np.pi/180,
+                    height=1.5, temp=300, pace=500, hills_file='HILLS_dih{}'.format(iangle),
+                    biasfactor=5, grid_min='-pi', grid_max='pi', grid_spacing=2.5*np.pi/180)
 
     plumed.writePlumedFile("{}/plumed.dat".format(sys.path),md,colvar="COLVAR",printstride=500)
 

@@ -78,6 +78,7 @@ class MD(_Simulation):
 
         self._name=name
         self._cvs=[]
+        self._biases=[]
 
         # copy mdp files
         shutil.copy(path_mdp,path_input)
@@ -104,11 +105,32 @@ class MD(_Simulation):
     def cvs(self):
         return self._cvs
 
+    @property
+    def biases(self):
+        return self._biases
+
     def add_cv(self,name,cvtype,**kwargs):
         
         if cvtype.upper()=='TORSION':
             new_cv=plumed.Torsion(name,kwargs['atoms'])
             self._cvs.append(new_cv)
+        else:
+            print("Error: for the moment only TORSION is supported as collective variable... sorry")
+            exit()
+    
+    def add_bias(self,name,biastype,**kwargs):
+
+        if biastype.upper()=='METAD':
+            new_bias=plumed.Metad(name,**kwargs)
+            self._biases.append(new_bias)
+        else:
+            print("Error: for the moment only METAD is supported as bias... sorry")
+            exit()
+                        
+            
+            
+
+                
 
 
 class EnergyMinimization(_Simulation):

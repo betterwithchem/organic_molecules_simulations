@@ -68,6 +68,100 @@ class Torsion(_CV):
         return self._directive
 
 
+
+class _Bias():
+
+    def __init__(self,name: str):
+        """Bias Class Constructor
+
+        Args:
+           name (str): Name of the bias attribute
+        """
+
+        self._name=name
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self,n):
+        self._name=n
+
+        
+class Metad(_Bias):
+
+    def __init__(self, name: str, cv=None, sigma=None, height=None, temp=300, pace=500,
+                 hills_file='HILLS', biasfactor=None,
+                 grid_min=None, grid_max=None, grid_spacing=None):
+        """Metadynamics class constructor
+     
+        Args:
+           name (str): label for the metadynamics directive
+           cv (str or list of str): collective variables to bias
+           hills_file (str, optional): 
+        """
+
+        # Inherit properties of the _Bias Class
+        super().__init__(name)
+
+        self._name=name
+
+        if isinstance(cv,str):
+            ncvs=1
+            cv=[cv]
+        elif isinstance(cv,list):
+            ncvs=len(cv)
+
+        if ncvs==0:
+            print("Error: you need at least one CV to apply bias!")
+            exit()
+            
+        if isinstance(sigma,float):
+            if ncvs==1:
+                sigma=[sigma]
+
+        if len(cv)!=len(sigma):
+            print("Error: The number of sigma values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} sigma values ({})".format(len(cv),cv,len(sigma),sigma))
+            exit()
+
+        do_grid=False
+        if any([grid_min, grid_max, grid_spacing]):
+            if all([grid_min, grid_max, grid_spacing]):
+                do_grid=True
+            else:
+                print("Error: To use grids during a Metadynamics simulation all grid-related variables need to be provided (grid_min, grid_max, grid_spacing).")
+                exit()
+        
+        
+        self.directive="METAD ...\n"\
+            "    ARG="
+        for var in cv:
+            self.directive+="{},".format(var)
+        self.directive+="\n"\
+            "    FILE={}\n".format(hills_file)
+        self.directive+="    SIGMA="
+        for s in sigma:
+            self.directive+="{},".format(s)
+        self.directive+="\n"\
+            "    HEIGHT={}\n"\
+            "    PACE={}\n".format(height,pace)
+
+        if biasfactor is not None:
+            self.directive+="    BIASFACTOR={}\n"\
+                "    TEMP={}\n".format(biasfactor,temp)
+        if do_grid:
+            self.directive+="    GRID_MIN={}\n"\
+            "    GRID_MAX={}\n"\
+            "    GRID_SPACING={}\n".format(grid_min,grid_max,grid_spacing)
+    
+        self.directive+="... METAD\n"
+
+
+
+
+    
 def writePlumedFile(plumed_file: str, simulation: object, colvar=None,printstride=500):
 
     """Write Plumed File
@@ -101,7 +195,7 @@ colvar (str, optional): name of the colvar file where values of CVs will be save
         if hasattr(simulation,'biases'):
             f.write("\n# Bias section\n\n")
             for ibias,bias in enumerate(simulation.biases):
-                f.write("{}\n".format(cv.biases))
+                f.write("{}\n".format(bias.directive))
 
         if  hasattr(simulation,'cvs') and colvar is not None:
             f.write("\n# Print section\n\n")
@@ -175,24 +269,6 @@ class Group():
         self._selection=s
 
 
-class _Bias():
-
-    def __init__(self,name: str):
-#        ""Bias Class Constructor
-#
-#        Args:
-#           name (str): Name of the bias attribute
-#        ""
-
-        self._name=name
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self,n):
-        self._name=n
 
 
 
