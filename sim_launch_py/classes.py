@@ -619,7 +619,7 @@ gmxbin=''):
                         top.write(line)
                 top.write("\n\n")
 
-            top.write("[ system ]\n; Name\nA bunch of molecules floating around without rhyme or reason\n")
+            top.write("[ system ]\n; Name\nA bunch of molecules floating around without rhyme or reason\n\n")
 
             top.write("[ molecules ]\n")
             

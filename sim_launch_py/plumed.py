@@ -51,7 +51,7 @@ class Torsion(_CV):
         
         self._atoms=atoms
 
-        self._directive="{}: TORSION ATOMS:{},{},{},{}".format(name,
+        self._directive="{}: TORSION ATOMS={},{},{},{}".format(name,
                                                               atoms[0],
                                                               atoms[1],
                                                               atoms[2],
