@@ -44,16 +44,79 @@ class Torsion(_CV):
         super().__init__(name)
 
         self._name=name
-
+        
         if len(atoms)!=4:
             print("ERROR: Exactly 4 atoms are needed to define a Torsion angle. {} given {}.".format(len(atoms),atoms))
             exit()
         
         self._atoms=atoms
 
+        self._directive="{}: TORSION ATOMS:{},{},{},{}".format(name,
+                                                              atoms[0],
+                                                              atoms[1],
+                                                              atoms[2],
+                                                              atoms[3])
+
+        
+
     @property
     def atoms(self):
         return self._atoms
+
+    @property
+    def directive(self):
+        return self._directive
+
+
+def writePlumedFile(plumed_file: str,simulation: object,colvar=None,printstride=500):
+
+    """Write Plumed File
+    
+    Args:
+       plumed_file (str): path of the output plumed file.
+       simulation (simulation object): simulation with groups, cvs, and biases to use.
+       colvar (str, optional): name of the colvar file where values of CVs will be saved. Defaults to None.
+       printstride (int, optional): stride for output of colvar file. Defaults to 500 steps.
+    """
+
+    import os
+    import shutil
+    
+    if os.path.isfile(plumed_file):
+        location=os.path
+        shutil.copy(plumed_file,"{}.bkp".format(plumed_file))
+        
+    with open(plumed_file,'w') as f:
+
+
+        if hasattr(simulation,'groups'):
+            f.write("# Groups section\n\n")
+            for igroup,group in enumerate(simulation.groups):
+                f.write("{}\n".format(group.directive))
+
+        if hasattr(simulation,'cvs'):
+            f.write("\n# CV section\n\n")
+            for icv,cv in enumerate(simulation.cvs):
+                f.write("{}\n".format(cv.directive))
+
+        if hasattr(simulation,'biases'):
+            f.write("\n# Bias section\n\n")
+            for ibias,bias in enumerate(simulation.biases):
+                f.write("{}\n".format(cv.biases))
+
+        if  hasattr(simulation,'cvs') and colvar is not None:
+            f.write("\n# Print section\n\n")
+            f.write("PRINT ...\n"
+                    "\tFILE={0}\n"
+                    "\tSTRIDE={1}\n"
+                    "\tARG=".format(colvar,printstride))
+            for icv,cv in enumerate(simulation.cvs):
+                f.write("{},".format(cv.name))
+            f.write("\n")
+            f.write("... PRINT\n")
+
+            
+                
 
     
 

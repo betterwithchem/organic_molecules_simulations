@@ -214,6 +214,8 @@ change all the pertinent path attributes.
 
         Args:
             name (str, optional): system name. Defaults to None.
+        Returns:
+            newsystem (class): new system
         """
 
         from sim_launch_py.utilities import create
@@ -229,6 +231,8 @@ change all the pertinent path attributes.
         
         newsystem=System(name=name,path=syspath,gromacs=self._gromacs)
         self._systems.append(newsystem)
+
+        return newsystem
         
 
 
@@ -507,6 +511,8 @@ gmxbin=''):
            name (str): name of the molecule.
            moltype (str, optional): generic attribute of the molecule. Defaults to None.
            knownmolecules (list of Molecule(), optional): molecules already present in the project.
+        Return: 
+           newmolecule (class): new molecule
         """
 
         import copy
@@ -516,16 +522,15 @@ gmxbin=''):
                 newmolecule=copy.deepcopy(mol)
                 newmolecule._mol_attributes=moltype
                 self._molecules.append(newmolecule)
-                return
+                return newmolecule
 
         print("Error: Couldn't add molecule {} to system {}. Molecule unknown.".format(name,self.name))
         exit()
+        
 
 
     def createSolventBox(self,solvent,output_structure="solvent_box.pdb",density=None,nmols=None):
         
-        out_path=output_structure
-
         if (density is not None) and (nmols is not None):
             
             volume_box=solvent.mw*10/(density*6.022)*nmol
@@ -538,14 +543,14 @@ gmxbin=''):
         nmols=util.estimate_n_molecules(volume_box,solvent.mw,density)-1
         
         os.system("{0} -nobackup editconf -f {1} -o {2} -box {3} {3} {3} -angles 90 90 90 -c".format(self.gromacs,solvent.structure_path,
-                                                                                           out_path,
+                                                                                           output_structure,
                                                                                                      self.box[0]*(1.05)))
                
-        os.system("{0} -nobackup insert-molecules -f {1} -o {1} -ci {1} -nmol {2} -try 20000".format(self.gromacs,out_path,
+        os.system("{0} -nobackup insert-molecules -f {1} -o {1} -ci {1} -nmol {2} -try 20000".format(self.gromacs,output_structure,
                                                                         nmols))
 
         print("Checking number of molecules..")
-        inserted_mols=util.check_number_molecules(out_path,solvent)
+        inserted_mols=util.check_number_molecules(output_structure,solvent)
 
         if inserted_mols!=(nmols+1):
             print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 20000, inserted_mols))
@@ -557,8 +562,10 @@ gmxbin=''):
 
 
         
-    def insertSolute(self,solute,solvent,solvent_box="solvent_box.pdb",concentration=0, output_structure="start.pdb"):
+    def insertSolute(self,solute,solvent,solvent_box="solvent_box.pdb",concentration=0, output_structure="start.pdb"):        
 
+        from sim_launch_py.utilities import check_number_molecules as cnm
+        
         if concentration == 0:
             # then single molecule
             nmols=1
@@ -582,6 +589,7 @@ gmxbin=''):
             print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 10000, inserted_mols))
             exit()
 
+        solvent.nmols=cnm(output_structure,solvent)
         solute.nmols=nmols
         self._updateComposition()
 

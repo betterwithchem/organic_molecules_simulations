@@ -1,0 +1,4 @@
+molname		resname	MW	path
+water		WAT	18.0	/home/matteo/Work/organic_molecules_simulations/Structures/water
+toluene		TOL	92.12	/home/matteo/Work/organic_molecules_simulations/Structures/toluene
+sulfamerazine	SUR	264.3	/home/matteo/Work/organic_molecules_simulations/Structures/sulfamerazine

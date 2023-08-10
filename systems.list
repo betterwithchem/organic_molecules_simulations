@@ -2,4 +2,7 @@
 mol_1	conc_1	mol_2	conc_2	temperature	side
 water	1000	sulfamerazine	0	300	2.5
 toluene	870	sulfamerazine	0	300	2.5
+water	1000	ccdc-xxxii	0	300	5
+toluene	870	ccdc-xxxii	0	300	5
+
 

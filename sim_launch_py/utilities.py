@@ -121,7 +121,7 @@ def check_number_molecules(structure_file,molecule):
                     if molecule.resname in line:
                         natoms+=1
             nmols=natoms/molecule.natoms
-            return nmols
+            return int(nmols)
     else:
         print("for the moment only pdb files are supported")
         exit()

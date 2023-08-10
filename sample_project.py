@@ -4,15 +4,16 @@ import numpy as np
 import pandas as pd
 import os
 import sim_launch_py.utilities as util
+import sim_launch_py.plumed as plumed
 
 from sim_launch_py.molecules import findTorsionalAngles
 
-molecules=pd.read_csv('somemolecules.list',sep='\s+',header=0)
+molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
 systems=pd.read_csv('systems.list',sep='\s+',header=1)
 
 ppath='./two_conc'
 
-"""
+
 ##### create a new project
 project=Project.new_project(name='two_conc',path=ppath,overwrite=True)
 
@@ -39,12 +40,12 @@ for i,name in enumerate(molecules.molname):
 ##### this will create also include topology (itp) files and a file with all atom types
 for i,mol in enumerate(project.molecules):
     # if necessary, compute force field parameters
-    gaff(mol, os.path.abspath(project.topology_path),
-         res_name=mol.resname, generate_charges='bcc', atomtype='gaff2',
-         overwrite=False)
+    #gaff(mol, os.path.abspath(project.topology_path),
+    #     res_name=mol.resname, generate_charges='bcc', atomtype='gaff2',
+    #     overwrite=False)
 
     # or copy them from a defined location
-    #getTop(mol,fromPath="/home/ucecmpa/Scratch/organic_molecules_simulations/Structures/{}".format(mol.name) ,toPath=project.topology_path)
+    getTop(mol,fromPath=os.path.abspath("Topologies") ,toPath=project.topology_path)
 
     # in any case compute molecular weight and number of atoms
     #mol.mw=util.molecularWeightFromTop(mol.topology_path)
@@ -66,15 +67,9 @@ for i,sys in enumerate(project.systems):
     sys.box=systems.loc[i].at['side']
 
 
-
 n=0
 
 for i,sys in enumerate(project.systems):
-
-    #################################
-    ## all the computation inside this for loop could be included in a method for Gromacs simulations
-    ## something to think about...
-    #################################
     
     # build initial configurations:
 
@@ -87,16 +82,12 @@ for i,sys in enumerate(project.systems):
         if 'solvent' in mol.mol_attributes:
             solvent=mol
             print(sys.gromacs)
-            sys.createSolventBox(solvent,output_structure='solvent_box.pdb',density=systems.loc[i].at['conc_1'])
+            sys.createSolventBox(solvent,output_structure='{}/solvent_box.pdb'.format(sys.path),density=systems.loc[i].at['conc_1'])
 
     for mol in sys.molecules:
         if 'solute' in mol.mol_attributes:
             solute=mol
-            sys.insertSolute(solute,solvent,solvent_box='solvent_box.pdb',concentration=systems.loc[i].at['conc_2'],output_structure='start.pdb')
-
-    # get final number of molecules of each species in order to create the topology file:
-    #for mol in sys.molecules:
-    #    mol.nmols=util.check_number_molecules(sys.path+'/start.pdb',mol)
+            sys.insertSolute(solute,solvent,solvent_box='{}/solvent_box.pdb'.format(sys.path),concentration=systems.loc[i].at['conc_2'],output_structure='{}/start.pdb'.format(sys.path))
     
     # write topology
     sys.writeTop(project.topology_path+'/atomtypes.itp',solvent,solute)
@@ -106,8 +97,8 @@ for i,sys in enumerate(project.systems):
 
 project.save()
 
-"""
-project=Project.load_project(ppath)
+
+#project=Project.load_project(ppath)
 
 
 project.job_script_path=os.path.abspath('sim_launch_py/job_scripts')
@@ -125,17 +116,14 @@ for sys in project.systems:
     mol=sys.molecules[-1]
     dihangles=findTorsionalAngles(mol.structure_path)
 
-    
-    
-    #print(dihangles)
-
     for iangle,angle in enumerate(dihangles):
         md.add_cv('dih_{}'.format(iangle),'torsion',atoms=[mol.atoms[i].atomID for i in angle])
+        #print(md.cvs[-1].directive)
+    #sys.print_command('run.sh')
 
-    print([[cv.name,cv.atoms] for cv in md.cvs])
+    plumed.writePlumedFile("{}/plumed.dat".format(sys.path),md,colvar="COLVAR",printstride=500)
 
     
-    #sys.print_command('run.sh')
 
 #project.save()
     
