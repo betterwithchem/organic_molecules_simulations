@@ -6,7 +6,7 @@ import os
 import sim_launch_py.utilities as util
 import sim_launch_py.plumed as plumed
 
-from sim_launch_py.molecules import findTorsionalAngles
+from sim_launch_py.external.molecules import findTorsionalAngles
 
 molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
 systems=pd.read_csv('systems.list',sep='\s+',header=1)
@@ -95,7 +95,7 @@ for i,sys in enumerate(project.systems):
     # we can now create the files needed for the simulations:
     # for unbiased simulations we just need mdp files
 
-project.save()
+#project.save()
 
 
 #project=Project.load_project(ppath)
@@ -109,8 +109,6 @@ for sys in project.systems:
     sys.add_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp="{}/em.mdp".format(mdpdir),gmxbin=project.gromacs)
     sys.add_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp="{}/mdvvberendsen.mdp".format(mdpdir),maxwarn=1, gmxbin=project.gromacs)
 
-    ### prepare plumed file and cvs
-    # >>> HERE <<< #    
     md=sys.add_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp="{}/mdparrinello.mdp".format(mdpdir), gmxbin=project.gromacs, plumed="plumed.dat" )
 
     mol=sys.molecules[-1]
@@ -118,14 +116,12 @@ for sys in project.systems:
 
     for iangle,angle in enumerate(dihangles):
         md.add_cv('dih_{}'.format(iangle),'torsion',atoms=[mol.atoms[i].atomID for i in angle])
-        #print(md.cvs[-1].directive)
-    #sys.print_command('run.sh')
 
     plumed.writePlumedFile("{}/plumed.dat".format(sys.path),md,colvar="COLVAR",printstride=500)
 
     
 
-#project.save()
+project.save()
     
 project.write_sub_command('launch_jobs.sh',system='myriad')
 

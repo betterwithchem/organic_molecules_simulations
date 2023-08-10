@@ -68,14 +68,14 @@ class Torsion(_CV):
         return self._directive
 
 
-def writePlumedFile(plumed_file: str,simulation: object,colvar=None,printstride=500):
+def writePlumedFile(plumed_file: str, simulation: object, colvar=None,printstride=500):
 
     """Write Plumed File
     
-    Args:
-       plumed_file (str): path of the output plumed file.
+    Args:       
        simulation (simulation object): simulation with groups, cvs, and biases to use.
-       colvar (str, optional): name of the colvar file where values of CVs will be saved. Defaults to None.
+       plumed_file (str): path of the output plumed file.
+colvar (str, optional): name of the colvar file where values of CVs will be saved. Defaults to None.
        printstride (int, optional): stride for output of colvar file. Defaults to 500 steps.
     """
 
@@ -87,7 +87,6 @@ def writePlumedFile(plumed_file: str,simulation: object,colvar=None,printstride=
         shutil.copy(plumed_file,"{}.bkp".format(plumed_file))
         
     with open(plumed_file,'w') as f:
-
 
         if hasattr(simulation,'groups'):
             f.write("# Groups section\n\n")
@@ -174,23 +173,6 @@ class Group():
     @selection.setter
     def selection(self,s):
         self._selection=s
-
-    
-
-def writePlumedFile(simulation,plumed_file):
-
-    import os
-    import shutil
-    
-    if os.isfile(plumed_file):
-        location=os.path
-        shutil.copy(plumed_file,"{}.bkp".format(plumed_file))
-        
-    with(plumed_file,'w') as f:
-        
-        for group in simulation.groups:
-            f.write("GROUP ATOMS")
-
 
 
 class _Bias():

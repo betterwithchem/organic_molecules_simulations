@@ -67,7 +67,7 @@ class MD(_Simulation):
             pressure (int, optional): pressure. Defaults to 1.
             barostat (str, optional): barostat. Defaults to 'Parrinello-Rahman'.
             nsteps (int, optional): number of simulation steps. Defaults to 100.
-            plumed (str, optional): plumed executable. Defaults to ''.
+            plumed (str, optional): plumed file. Defaults to None.
             print_bash (bool, optional): print a bash string. Defaults to False.
             maxwarn (int, optional): number of warnings tollerated. Defaults to 0.
             gmxbin (str, optional): gromacs executable name. Defaults to 'gmx_mpi'.
@@ -85,8 +85,19 @@ class MD(_Simulation):
         # Print bash string
         if print_bash:
             mdp=os.path.basename(path_mdp)
-            self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\
-                    "{3} mdrun -deffnm {0} {1} {2}\n".format(name,mdrun_options,plumed,gmxbin)
+
+            grompp = "{0} grompp -f {1} -p {2} -c {3} -o {4}.tpr -maxwarn {5}".format(gmxbin,
+                                                                                          mdp,
+                                                                                          topology,
+                                                                                          coord,
+                                                                                          name,
+                                                                                          maxwarn)
+            mdrun = "{0} mdrun -deffnm {1} {2}".format(gmxbin,name,mdrun_options)
+                       
+            if plumed is not None:
+                    mdrun +=" -plumed {}".format(plumed)
+
+            self.bash_command="{}\n{}\n".format(grompp,mdrun)
 
 
     @property
@@ -94,13 +105,11 @@ class MD(_Simulation):
         return self._cvs
 
     def add_cv(self,name,cvtype,**kwargs):
-
         
         if cvtype.upper()=='TORSION':
             new_cv=plumed.Torsion(name,kwargs['atoms'])
             self._cvs.append(new_cv)
 
-    
 
 class EnergyMinimization(_Simulation):
 

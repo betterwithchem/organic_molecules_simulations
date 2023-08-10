@@ -549,7 +549,6 @@ gmxbin=''):
         os.system("{0} -nobackup insert-molecules -f {1} -o {1} -ci {1} -nmol {2} -try 20000".format(self.gromacs,output_structure,
                                                                         nmols))
 
-        print("Checking number of molecules..")
         inserted_mols=util.check_number_molecules(output_structure,solvent)
 
         if inserted_mols!=(nmols+1):
@@ -582,7 +581,6 @@ gmxbin=''):
                                                                                                           nmols,
                                                                                                           solvent.resname))
 
-        print("Checking number of molecules..")
         inserted_mols=util.check_number_molecules(output_structure,solute)
 
         if inserted_mols!=nmols:
@@ -652,7 +650,7 @@ gmxbin=''):
             sim=gmx.MD(name,
                        mdrun_options=mdrun_options, coord=start_coord, topology=self.path+'/topol.top',
                        path_mdp=mdp, maxwarn=maxwarn,
-                       path_input=self.path,path_output=self.path,print_bash=True,gmxbin=gmxbin)
+                       path_input=self.path,path_output=self.path,print_bash=True,gmxbin=gmxbin,plumed=plumed)
             
         elif simtype=='em':
             sim=gmx.EnergyMinimization(name,
