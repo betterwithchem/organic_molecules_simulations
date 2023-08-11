@@ -7,10 +7,11 @@ from scipy.optimize import curve_fit
 """
 
 
-def histogram(dihedral_angles: str, probcutoff=0.001):
+def histogram(dihedral_angles: str, datacol=1, probcutoff=0.001):
     """Compute the probability distribution given a timeseries of dihedral angles
     Args:
        dihedral_angles (str) : text file with the timeseries. Angle values are assumed to be in the second column of the file.
+       datacol (int, optional) : column (0-indexed) where data is. Defaults to 1.
        probcutoff (float, optional) : cutoff value for the population of a bin to take into account in the final histogram.
 
     Returns:
@@ -32,7 +33,7 @@ def histogram(dihedral_angles: str, probcutoff=0.001):
         for line in f:
             if line[0] not in commentchars:
                 cols=line.split()
-                b=int((float(cols[1])-l)/bw)
+                b=int((float(cols[datacol])-l)/bw)
                 histo[b]+=1
                 n+=1
 
