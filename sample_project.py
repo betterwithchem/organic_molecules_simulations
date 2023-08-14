@@ -11,7 +11,7 @@ from sim_launch_py.external.molecules import findTorsionalAngles
 molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
 systems=pd.read_csv('systems.list',sep='\s+',header=1)
 
-pname='metad'
+pname='single_mol'
 ppath='./{}'.format(pname)
 
 
