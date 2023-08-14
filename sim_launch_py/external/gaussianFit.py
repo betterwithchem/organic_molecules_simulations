@@ -110,7 +110,13 @@ def gaussianFit(dihedral_angles: str, datacol=1, plotFit=False):
 
     sumf = sumGaussFunct(bincenters,guess_a,guess_mu,guess_sigma)
 
-    popt,pcov=curve_fit(sumGaussFunct,bincenters,histo,p0=[guess_a,guess_mu,guess_sigma])
+
+    bounds=[ tuple(np.array([0]*ngauss+[-10]*ngauss*2).flatten()), tuple(np.array([10]*ngauss*3).flatten())  ]
+
+    print(bounds)
+    print(np.array([guess_a,guess_mu,guess_sigma]).flatten())
+    
+    popt,pcov=curve_fit(sumGaussFunct,bincenters,histo,p0=np.array([guess_a,guess_mu,guess_sigma]).flatten(),bounds=bounds)
 
     if (peaks[0]+(len(histo)-peaks[-1])<cutoffdist):
 

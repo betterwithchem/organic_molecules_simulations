@@ -11,11 +11,12 @@ from sim_launch_py.external.molecules import findTorsionalAngles
 molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
 systems=pd.read_csv('systems.list',sep='\s+',header=1)
 
-ppath='./metad'
+pname='metad'
+ppath='./{}'.format(pname)
 
 
 ##### create a new project
-project=Project.new_project(name='metad',path=ppath,overwrite=True)
+project=Project.new_project(name=pname,path=ppath,overwrite=True)
 
 
 ##### save it
@@ -64,10 +65,8 @@ for i,sys in enumerate(project.systems):
     sys.temperature=systems.loc[i].at['temperature']
     sys.add_molecule(systems.loc[i].at['mol_1'],moltype='solvent',knownmolecules=project.molecules)
     sys.add_molecule(systems.loc[i].at['mol_2'],moltype='solute',knownmolecules=project.molecules)
-    sys.box=systems.loc[i].at['side']
+    
 
-
-n=0
 
 for i,sys in enumerate(project.systems):
     
@@ -77,6 +76,9 @@ for i,sys in enumerate(project.systems):
     # solvent molecules at a given concentration
     # then we add solute molecules at a given concentration and remove overlapping solvent molecules
     # (both done by exploiting gmx tools)
+
+    sys.addBox(systems.loc[i].at['side'],shape='dodecahedron')
+
     
     for mol in sys.molecules:
         if 'solvent' in mol.mol_attributes:

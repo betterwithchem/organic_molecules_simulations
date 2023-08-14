@@ -110,7 +110,7 @@ class MD(_Simulation):
         return self._biases
 
     def add_cv(self,name,cvtype,**kwargs):
-        
+    
         if cvtype.upper()=='TORSION':
             new_cv=plumed.Torsion(name,kwargs['atoms'])
             self._cvs.append(new_cv)

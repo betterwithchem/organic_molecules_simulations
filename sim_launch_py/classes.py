@@ -1,5 +1,6 @@
 import os
 import sim_launch_py.utilities as util
+import numpy as np
 
 class Project():
     """
@@ -431,6 +432,7 @@ gmxbin=''):
         self._molecules=list()
         self._temperature=0
         self._box=list()
+        self._boxshape=None
         self._simulations=list()
         self._run_command=None
         self._gromacs=gromacs
@@ -458,6 +460,10 @@ gmxbin=''):
     @property
     def box(self):
         return self._box
+
+    @property
+    def boxshape(self):
+        return self._boxshape
 
     @property
     def simulations(self):
@@ -493,10 +499,11 @@ gmxbin=''):
 
     @box.setter
     def box(self,box):
-        if isinstance(box,float) or isinstance(box,int) or len(box)==1:
-            self._box=[box, box, box, 90, 90, 90]
-        elif len(box)==6:
-            self._box=box
+        self._box=box
+
+    @boxshape.setter
+    def boxshape(self,shape):
+        self._boxshape=shape
 
     @run_command.setter
     def run_command(self,command):
@@ -528,6 +535,17 @@ gmxbin=''):
         exit()
         
 
+    def addBox(self,box_side,shape='cubic'):
+
+        self.boxshape=shape
+        
+        if shape=='cubic':
+            self.box=[box_side]*3+[90.0]*3
+        elif shape=='dodecahedron':
+            self.box=[box_side, box_side, 0.5*np.sqrt(2)*box_side] + [60.0]*3
+        elif shape=='octahedron':
+            self.box=[box_side, 2/3*np.sqrt(2)*box_side, 1/3*np.sqrt(6)*box_side]+[71.53, 109.47, 71.53]
+            
 
     def createSolventBox(self,solvent,output_structure="solvent_box.pdb",density=None,nmols=None):
         
@@ -538,13 +556,19 @@ gmxbin=''):
             print("Both density and nmol have been defined: changing side of the box to {}.".format(self.box[0]))
 
         else:
-            volume_box=self.box[0]**3
+            if self.boxshape=='cubic':
+                volume_box=self.box[0]**3
+            elif self.boxshape=='dodecahedron':
+                volume_box=0.5*np.sqrt(2)*self.box[0]**3
+            elif self.boxshape=='octahedron':
+                volume_box=4/9*np.sqrt(3)*self.box[0]**3
 
         nmols=util.estimate_n_molecules(volume_box,solvent.mw,density)-1
         
-        os.system("{0} -nobackup editconf -f {1} -o {2} -box {3} {3} {3} -angles 90 90 90 -c".format(self.gromacs,solvent.structure_path,
-                                                                                           output_structure,
-                                                                                                     self.box[0]*(1.05)))
+        os.system("{0} -nobackup editconf -f {1} -o {2} -box {3} -bt {4}  -c".format(self.gromacs,solvent.structure_path,
+                                                                                     output_structure,
+                                                                                     self.box[0],
+                                                                                     self.boxshape))
                
         os.system("{0} -nobackup insert-molecules -f {1} -o {1} -ci {1} -nmol {2} -try 20000".format(self.gromacs,output_structure,
                                                                         nmols))

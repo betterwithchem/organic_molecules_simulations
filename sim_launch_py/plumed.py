@@ -13,6 +13,7 @@ class _CV():
         
         self._name=name
         self._print_cv=print_cv
+        self._cvtype=None
 
     @property
     def name(self):
@@ -22,6 +23,10 @@ class _CV():
     def print_cv(self):
         return self._print_cv
 
+    @property
+    def cvtype(self):
+        return self._cvtype
+
     @name.setter
     def name(self,n):
         self._name=n
@@ -29,6 +34,10 @@ class _CV():
     @print_cv.setter
     def print_cv(self,p):
         self._print_cv=p
+
+    @cvtype.setter
+    def cvtype(self,cv):
+        self._cvtype=cv
 
 class Torsion(_CV):
 
@@ -44,6 +53,7 @@ class Torsion(_CV):
         super().__init__(name)
 
         self._name=name
+        self._cvtype='TORSION'
         
         if len(atoms)!=4:
             print("ERROR: Exactly 4 atoms are needed to define a Torsion angle. {} given {}.".format(len(atoms),atoms))
