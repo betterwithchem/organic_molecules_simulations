@@ -116,11 +116,20 @@ for sys in project.systems:
     mol=sys.molecules[-1]
     dihangles=findTorsionalAngles(mol.structure_path)
 
+    md.add_cv('ene', 'energy')
+    
     for iangle,angle in enumerate(dihangles):
-        md.add_cv('dih_{}'.format(iangle),'torsion',atoms=[mol.atoms[i].atomID for i in angle])
-        md.add_bias('metad_dih_{}'.format(iangle),'metad',cv='dih_{}'.format(iangle),sigma=5*np.pi/180,
+        md.add_cv('dih_{}'.format(iangle), 'torsion', atoms=[mol.atoms[i].atomID for i in angle])   
+
+        md.add_bias('metad_dih_{}'.format(iangle),'metad','dih_{}'.format(iangle),sigma=5*np.pi/180,
                     height=1.5, temp=300, pace=500, hills_file='HILLS_dih{}'.format(iangle),
                     biasfactor=5, grid_min='-pi', grid_max='pi', grid_spacing=2.5*np.pi/180)
+
+
+        md.add_bias('UW_dih_{}'.format(iangle), 'upper_walls', 'dih_{}'.format(iangle), at=0 , kappa=100)
+        md.add_bias('LW_dih_{}'.format(iangle), 'lower_walls', 'dih_{}'.format(iangle), at=0, kappa=100)
+            
+
 
     plumed.writePlumedFile("{}/plumed.dat".format(sys.path),md,colvar="COLVAR",printstride=50)
 

@@ -43,10 +43,10 @@ for isys,sys in enumerate(project.systems):
             sigma_cv=min(sigma)/2
 
             metad.add_cv('dih_{}'.format(iangle),'torsion',atoms=cv.atoms)
-            metad.add_bias('metad_dih_{}'.format(iangle), 'metad', cv='dih_{}'.format(iangle),
+            metad.add_bias('metad_dih_{}'.format(iangle), 'metad', 'dih_{}'.format(iangle),
                            sigma=np.min(sigma_cv), height=1.5, temp=300, pace=500, hills_file='HILLS_dih{}'.format(iangle),
                            biasfactor=10, grid_min='-pi', grid_max='pi', grid_spacing=min(2.5*np.pi/180,np.min(sigma_cv)/2))
-            
+
             iangle+=1
             icol+=1
 

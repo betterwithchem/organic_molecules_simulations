@@ -1,6 +1,4 @@
 
-
-
 class _CV():
 
     def __init__(self, name: str, print_cv=True):
@@ -78,6 +76,27 @@ class Torsion(_CV):
         return self._directive
 
 
+class PotentialEnergy(_CV):
+
+    def __init__(self, name: str):
+        """Potential Energy collective variable class constructor
+
+        Args:
+           name (str) : Name of the collective variable.
+        """
+
+        # Inherit properties of the _CV Class
+        super().__init__(name)
+
+        self._name=name
+        self._cvtype='ENERGY'
+
+        self._directive="{}: ENERGY".format(name)
+
+    @property
+    def directive(self):
+        return self._directive
+    
 
 class _Bias():
 
@@ -101,10 +120,10 @@ class _Bias():
         
 class Metad(_Bias):
 
-    def __init__(self, name: str, cv=None, sigma=None, height=None, temp=300, pace=500,
+    def __init__(self, name: str, cv: str, sigma=None, height=None, temp=300, pace=500,
                  hills_file='HILLS', biasfactor=None,
                  grid_min=None, grid_max=None, grid_spacing=None):
-        """Metadynamics class constructor
+        """Metadynamics bias class constructor
      
         Args:
            name (str): label for the metadynamics directive
@@ -115,7 +134,7 @@ class Metad(_Bias):
         # Inherit properties of the _Bias Class
         super().__init__(name)
 
-        self._name=name
+        #self._name=name
 
         if isinstance(cv,str):
             ncvs=1
@@ -127,7 +146,7 @@ class Metad(_Bias):
             print("Error: you need at least one CV to apply bias!")
             exit()
             
-        if isinstance(sigma,float):
+        if isinstance(sigma,float) or isinstance(sigma,int):
             if ncvs==1:
                 sigma=[sigma]
 
@@ -169,7 +188,233 @@ class Metad(_Bias):
         self.directive+="... METAD\n"
 
 
+class UpperWalls(_Bias):
 
+    def __init__(self, name: str, cv: str, kappa=None, at=None, exp=None, eps=None, offset=None):
+        """Upper Walls bias class constructor
+
+        Args:
+           name (str) : label of the Upper Walls directive.
+           cv (str or list of str): collective variables to bias.          
+           at (float or list of float) : position of the wall.
+           kappa (float or list of float) : energy constant of the wall. 
+           exp (float or list of float, optional) : exponent determining the power law. Defaults to 2 for all walls.
+           eps (float or list of float ,optional) : rescaling factor. Defaults to 1 for all walls.
+           offset (float or list of float, optional) : offset for the definition of the wall. Defaults to 0 for all walls.
+        """
+
+        # Inherit properties of the _Bias Class
+        super().__init__(name)
+
+        #self._name=name
+
+        if isinstance(cv,str):
+            ncvs=1
+            cv=[cv]
+        elif isinstance(cv,list):
+            ncvs=len(cv)
+
+        if ncvs==0:
+            print("Error: you need at least one CV to apply bias!")
+            exit()
+
+        if isinstance(at,float) or isinstance(at,int):
+            if ncvs==1:
+                at=[at]
+
+        if len(cv)!=len(at):
+             print("Error: The number of wall position values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} at values ({})".format(len(cv),cv,len(at),at))
+             exit()
+
+        if isinstance(kappa,float) or isinstance(kappa,int):
+            if ncvs==1:
+                kappa=[kappa]
+
+        if len(cv)!=len(kappa):
+             print("Error: The number of kappa values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} kappa values ({})".format(len(cv),cv,len(kappa),kappa))
+             exit()
+
+        if exp==None:
+            exp=[2 for c in cv]
+        else:
+            if isinstance(exp,float) or isinstance(exp,int):
+                if ncvs==1:
+                    exp=[exp]
+
+            if len(cv)!=len(exp):
+                print("Error: The number of exp values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} exp values ({})".format(len(cv),cv,len(exp),exp))
+                exit()
+
+        if eps==None:
+            eps=[1 for c in cv]
+        else:
+            if isinstance(eps,float) or isinstance(eps,int):
+                if ncvs==1:
+                    eps=[eps]
+
+            if len(cv)!=len(eps):
+                print("Error: The number of epsilon values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} epsilon values ({})".format(len(cv),cv,len(eps),eps))
+                exit()
+
+        if offset==None:
+            offset=[0 for c in cv]
+        else:
+            if isinstance(offset,float) or isinstance(offset,int):
+                if ncvs==1:
+                    offset=[offset]
+
+            if len(cv)!=len(offset):
+                print("Error: The number of offset values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} offset values ({})".format(len(cv),cv,len(offset),offset))
+                exit()
+
+        self.directive="UPPER_WALLS ...\n"
+        self.directive+="    LABEL={}\n"\
+            "    ARG=".format(name)
+        for c in cv:
+            self.directive+="{},".format(c)
+        self.directive+="\n"
+        self.directive+="    AT="
+        for a in at:
+            self.directive+="{},".format(a)
+        self.directive+="\n"
+        self.directive+="    KAPPA="
+        for k in kappa:
+            self.directive+="{},".format(k)
+        self.directive+="\n"
+        self.directive+="    EXP="
+        for e in exp:
+            self.directive+="{},".format(e)
+        self.directive+="\n"
+        self.directive+="    EPS="
+        for e in eps:
+            self.directive+="{},".format(e)
+        self.directive+="\n"
+        self.directive+="    OFFSET="
+        for o in offset:
+            self.directive+="{},".format(o)
+        self.directive+="\n... UPPER_WALLS\n\n"
+
+
+class LowerWalls(_Bias):
+
+    def __init__(self, name: str, cv: str, at=None, kappa=None,
+                 exp=None, eps=None, offset=None):
+        """Lower Walls bias class constructor
+
+        Args:
+           name (str) : label of the Lower Walls directive.
+           cv (str or list of str): collective variables to bias.          
+           at (float or list of float) : position of the wall.
+           kappa (float or list of float) : energy constant of the wall. 
+           exp (float or list of float, optional) : exponent determining the power law. Defaults to 2 for all walls.
+           eps (float or list of float ,optional) : rescaling factor. Defaults to 1 for all walls.
+           offset (float or list of float, optional) : offset for the definition of the wall. Defaults to 0 for all walls.
+        """
+
+        # Inherit properties of the _Bias Class
+        super().__init__(name)
+
+        #self._name=name
+
+        if isinstance(cv,str):
+            ncvs=1
+            cv=[cv]
+        elif isinstance(cv,list):
+            ncvs=len(cv)
+
+        if ncvs==0:
+            print("Error: you need at least one CV to apply bias!")
+            exit()
+
+        if isinstance(at,float) or isinstance(at,int):
+            if ncvs==1:
+                at=[at]
+
+        if len(cv)!=len(at):
+             print("Error: The number of wall position values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} at values ({})".format(len(cv),cv,len(at),at))
+             exit()
+
+        if isinstance(kappa,float) or isinstance(kappa,int):
+            if ncvs==1:
+                kappa=[kappa]
+
+        if len(cv)!=len(kappa):
+             print("Error: The number of kappa values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} kappa values ({})".format(len(cv),cv,len(kappa),kappa))
+             exit()
+
+        if exp==None:
+            exp=[2 for c in cv]
+        else:
+            if isinstance(exp,float) or isinstance(exp,int):
+                if ncvs==1:
+                    exp=[exp]
+
+            if len(cv)!=len(exp):
+                print("Error: The number of exp values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} exp values ({})".format(len(cv),cv,len(exp),exp))
+                exit()
+
+        if eps==None:
+            eps=[1 for c in cv]
+        else:
+            if isinstance(eps,float) or isinstance(eps,int):
+                if ncvs==1:
+                    eps=[eps]
+
+            if len(cv)!=len(eps):
+                print("Error: The number of epsilon values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} epsilon values ({})".format(len(cv),cv,len(eps),eps))
+                exit()
+
+        if offset==None:
+            offset=[0 for c in cv]
+        else:
+            if isinstance(offset,float) or isinstance(offset,int):
+                if ncvs==1:
+                    offset=[offset]
+
+            if len(cv)!=len(offset):
+                print("Error: The number of offset values need to be equal to the number of collective variables."\
+                  "Given {} cv values ({}) and {} offset values ({})".format(len(cv),cv,len(offset),offset))
+                exit()
+
+        self.directive="LOWER_WALLS ...\n"
+        self.directive+="    LABEL={}\n"\
+            "    ARG=".format(name)
+        for c in cv:
+            self.directive+="{},".format(c)
+        self.directive+="\n"
+        self.directive+="    AT="
+        for a in at:
+            self.directive+="{},".format(a)
+        self.directive+="\n"
+        self.directive+="    KAPPA="
+        for k in kappa:
+            self.directive+="{},".format(k)
+        self.directive+="\n"
+        self.directive+="    EXP="
+        for e in exp:
+            self.directive+="{},".format(e)
+        self.directive+="\n"
+        self.directive+="    EPS="
+        for e in eps:
+            self.directive+="{},".format(e)
+        self.directive+="\n"
+        self.directive+="    OFFSET="
+        for o in offset:
+            self.directive+="{},".format(o)
+        self.directive+="\n... LOWER_WALLS\n\n"
+
+        
+
+            
 
     
 def writePlumedFile(plumed_file: str, simulation: object, colvar=None,printstride=500):
@@ -219,98 +464,3 @@ colvar (str, optional): name of the colvar file where values of CVs will be save
             f.write("... PRINT\n")
 
             
-                
-
-    
-
-"""      
-class Group():
-
-    def __init__(self, name: str, atoms=[],
-                 universe=None, selection=''):
-        
-        ""Group Class Constructor
-
-        Args:
-            name (str): Name of the simulation
-            atoms (list, optional): list of atoms in the group. Defaults to [].
-            universe (MDAnalysis.Universe, optional): Universe of the system. Defaults to None.
-            selection (str, optional): selection for the Universe. Defaults to ''.
-        ""
-        
-        self._name=name
-        self._atoms=atoms
-        self._universe=universe
-        self._selection=selection
-
-        self._natoms=len(atoms)
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def atoms(self):
-        return self._atoms
-
-    @property
-    def universe(self):
-        return self._universe
-
-    @property
-    def selection(self):
-        return self._selection
-
-    @property
-    def natoms(self):
-        return self._natoms
-
-    @atoms.setter
-    def atoms(self,a):
-        self._atoms=a
-        self._natoms=len(a)
-
-    @universe.setter
-    def universe(self,u):
-        self._universe=u
-        
-    @selection.setter
-    def selection(self,s):
-        self._selection=s
-
-
-
-
-
-class UpperWalls(_Bias):
-
-    def __init__(self, name: str, cv: str, kharm: float, at: float, exp=2, eps=1, offset=0.):
-        ""UpperWalls bias class constructor
-
-        Args:
-           name (str): Label for the bias.
-           cv (str): Collective variables to which the bias is applied.
-           kharm (float): Force constant for the walls.
-           at (float): Position of the wall.
-           exp (float, optional): Powers for the walls. Defaults to 2 for each cv.
-           eps (float, optional): Normalization for the walls. Defaults to 1 for each cv.
-           offset (float, optional): Offset for the start of the wall. Defaults to 0 for each cv.
-        "" 
-
-        # Inherit properties of the _Bias Class
-        super().__init__(name)
-
-        self._name=name
-
-        if isinstance(cv,list):
-            n_walls = len(cv)
-        elif isinstance(cv,str):
-            n_walls = 1
-            cv = [ cv ]
-
-        
-"""
-        
-
-        
-        

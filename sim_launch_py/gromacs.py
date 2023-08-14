@@ -110,23 +110,34 @@ class MD(_Simulation):
         return self._biases
 
     def add_cv(self,name,cvtype,**kwargs):
-    
+
+        supported=['TORSION','ENERGY']
+        
         if cvtype.upper()=='TORSION':
             new_cv=plumed.Torsion(name,kwargs['atoms'])
             self._cvs.append(new_cv)
+        elif cvtype.upper()=='ENERGY':
+            new_cv=plumed.PotentialEnergy(name)
+            self._cvs.append(new_cv)
         else:
-            print("Error: for the moment only TORSION is supported as collective variable... sorry")
+            print("Error: for the moment only {} are supported as collective variables... sorry".format(supported))
             exit()
     
-    def add_bias(self,name,biastype,**kwargs):
+    def add_bias(self,name,biastype,cv,**kwargs):
+
+        supported=["METAD","UPPER_WALLS","LOWER_WALLS"]
 
         if biastype.upper()=='METAD':
-            new_bias=plumed.Metad(name,**kwargs)
-            self._biases.append(new_bias)
+            new_bias=plumed.Metad(name,cv,**kwargs)            
+        elif biastype.upper()=="UPPER_WALLS":
+            new_bias=plumed.UpperWalls(name,cv,**kwargs)
+        elif biastype.upper()=="LOWER_WALLS":
+            new_bias=plumed.LowerWalls(name,cv,**kwargs)                            
         else:
-            print("Error: for the moment only METAD is supported as bias... sorry")
+            print("Error: for the moment only {} are supported as bias... sorry".format(supported))
             exit()
-                        
+
+        self._biases.append(new_bias)
             
             
 
