@@ -41,6 +41,12 @@ def histogram(dihedral_angles: str, datacol=1, probcutoff=0.001):
         histo[b]/=n
         real_histo=histo
         histo[b]*=(histo[b]>probcutoff)
+
+    # in order to be able to treat also the cases where the peak is located around +-pi [rad]
+    # the histogram is replicated between -3*pi and 3*pi
+    # this increases the number of peaks that are found at a very low computational cost.
+    centers=[c-2*np.pi for c in centers]+centers+[c+2*np.pi for c in centers]
+    histo=histo*3
         
     return centers,histo
 
@@ -78,7 +84,7 @@ def sumGaussFunct(x,*args):
 
 
 
-def gaussianFit(dihedral_angles: str, datacol=1):
+def gaussianFit(dihedral_angles: str, datacol=1, plotFit=False):
     """Estimate fit parameters
 
     Args:
@@ -90,9 +96,9 @@ def gaussianFit(dihedral_angles: str, datacol=1):
        sigma (list) : standard deviation values of each Gaussian curve obtained from the fit.
     """
     
-    bincenters,histo=histogram(dihedral_angles)
+    bincenters,histo=histogram(dihedral_angles,datacol=datacol)
 
-    cutoffdist=20
+    cutoffdist=10
     
     # look for peaks with a inter-peak distance of at least cutoffdist
     peaks,properties=sig.find_peaks(histo, distance=cutoffdist)  
@@ -100,7 +106,7 @@ def gaussianFit(dihedral_angles: str, datacol=1):
     ngauss=len(peaks)
     guess_a=[ histo[p] for p in peaks ]
     guess_mu=[ bincenters[p] for p in peaks ]
-    guess_sigma=[5*np.pi/180 for p in peaks ]   # 5 degrees
+    guess_sigma=[2*np.pi/180 for p in peaks ]   # 5 degrees
 
     sumf = sumGaussFunct(bincenters,guess_a,guess_mu,guess_sigma)
 
@@ -125,7 +131,23 @@ def gaussianFit(dihedral_angles: str, datacol=1):
     
     centers=[popt[ngauss:2*ngauss]]
     sigma=[popt[2*ngauss:3*ngauss]]
+
+    # for debug purposes it is possible to plot the original
+    # histogram and the fitted gaussians
+    if plotFit:
     
+        import matplotlib.pyplot as plt
+
+        fig,ax=plt.subplots()
+
+        ax.set_xlim([-1.5*np.pi,1.5*np.pi])
+        
+        ax.plot(bincenters,histo,label='data')
+        ax.plot(bincenters,fitFunct,label='fit')
+
+        ax.legend()
+        
+        plt.show()
     
     return centers,sigma
 
