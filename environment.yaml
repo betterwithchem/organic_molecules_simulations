@@ -1,0 +1,11 @@
+name: mppy
+dependencies:
+  - python=3.8
+  - numpy
+  - pandas
+  - scipy
+  - conda-forge::rdkit
+  - conda-forge::mdanalysis
+  - conda-forge::matplotlib
+  
+  
