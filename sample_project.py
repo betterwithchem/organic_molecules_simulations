@@ -133,6 +133,7 @@ for sys in project.systems:
 
     plumed.writePlumedFile("{}/plumed.dat".format(sys.path),md,colvar="COLVAR",printstride=50)
 
+    sys.setSimsToRun(sys.simulations)
     
 
 project.save()

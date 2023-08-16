@@ -25,7 +25,7 @@ for isys,sys in enumerate(project.systems):
     md=sys.simulations[-1]
 
     # create the MetaD simulation
-    metad=sys.add_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp="{}/mdparrinello.mdp".format(mdpdir), gmxbin=project.gromacs, plumed="plumed.dat")
+    metad=sys.add_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp="{}/mdparrinello.mdp".format(mdpdir), gmxbin=project.gromacs, plumed="metad.dat")
     
     # data file to be used to estimate the parameters
     colvar="{}/COLVAR".format(md.path)
@@ -36,8 +36,6 @@ for isys,sys in enumerate(project.systems):
     for cv in md.cvs:
         if cv.cvtype=='TORSION':
 
-            print(isys,iangle)
-            
             centers,sigma=gaussfit(colvar,datacol=icol+1)
 
             sigma_cv=min(sigma)/2
@@ -51,6 +49,7 @@ for isys,sys in enumerate(project.systems):
             icol+=1
 
     plumed.writePlumedFile("{}/metad.dat".format(metad.path),metad,colvar="METAD_COLVAR",printstride=50)
+    sys.setSimsToRun([sys.simulations[-1]])
 
 project.save()
 

@@ -19,6 +19,7 @@ class _Simulation():
             self._topology=topology
             #self._run_options=run_options
             self._path=path
+            self._run=False
 
         @property
         def name(self):
@@ -32,6 +33,10 @@ class _Simulation():
         def topology(self):
             return self._topology
 
+        @property
+        def run(self):
+            return self._run
+
         #@property
         #def run_options(self):
         #    return self._run_options
@@ -43,6 +48,10 @@ class _Simulation():
         @name.setter
         def name(self,n):
             self._name=n
+
+        @run.setter
+        def run(self,r):
+            self._run=r
 
 
 class MD(_Simulation):

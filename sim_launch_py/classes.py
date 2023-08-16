@@ -327,7 +327,7 @@ change all the pertinent path attributes.
         
         if system=='bash':
             for sys in self.systems:
-                print("hey!")
+                print("Sorry... for the moment this doesn't do anything...")                
 
         elif system=='myriad':
 
@@ -343,8 +343,9 @@ change all the pertinent path attributes.
                 with open(sys.path+'/'+filename,'a') as f:
                     f.write("\n\n")
                     for s in sys.simulations:
-                        f.write("# {}\n".format(s.name))
-                        f.write(s.bash_command+'\n\n')
+                        if s.run:
+                            f.write("# {}\n".format(s.name))
+                            f.write(s.bash_command+'\n\n')
                 sys.run_command='qsub -N {0} {1}\n'.format(self.name+'_'+sys.name, filename)
 
             with open(scriptname,'w') as f:
@@ -690,6 +691,15 @@ gmxbin=''):
         self.simulations.append(sim)
 
         return sim
+
+    def setSimsToRun(self,sims_to_run):
+
+        for sim in self.simulations:
+            sim.run=False
+
+        for sim in sims_to_run:
+            sim.run=True
+            
 
     
     def print_command(self, bash_file):
