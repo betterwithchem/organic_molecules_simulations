@@ -7,32 +7,18 @@ class Project():
     The project class that stores and manage all the information and methods.
 
     Attributes:
-    - name : name of the project. This defines the directory where the project will be stored and most of path variab
-les. 
+    - name : name of the project. This defines the directory where the project will be stored and most of path variables. 
     - project_path : absolute path of the project. The name of the directory is derived from the name of the project.
-    - systems_path : directory where the data of the simulated systems are stored. This is the parent directory of th
-e systems. 
-    - topology_path : directory where the topology files (.top and .itp) of the molecules used in the project are sto
-red 
-                      and retrieved to be used in each system.
-    - init_struct_path : path where initial structures of the molecules used in the project are stored and retrieved
-                         to be used in each system.
+    - systems_path : directory where the data of the simulated systems are stored. This is the parent directory of the systems. 
+    - topology_path : directory where the topology files (.top and .itp) of the molecules used in the project are stored and retrieved to be used in each system.
+    - init_struct_path : path where initial structures of the molecules used in the project are stored and retrieved to be used in each system.
     - mdp_path : path where default .mdp input files for gromacs are stored.
     - pickle_path : path where the project is saved in .pkl format.
     - job_script_path : path where the template files for submission scripts are stored.
-    - systems : list of System() in the project.
-    - molecules : list of Molecule() in the project.
-    - version : version of the code (given in form of a YYYYMMDD date)
+    - systems : list of System() objects in the project.
+    - molecules : list of Molecule() objects in the project.
     - gromacs : path to gromacs binary
     - ambertools : path to ambertools binaries directory
-
-    #### TODO ATTRIBUTES ####
-    ** these path could be added in an automatic fashion by using shutil.which() on "gmx","gmx_mpi","tleap",... and f
-ail in case they are not found (or give the possibility to add them manually at prompt). I would personally go for th
-e automated fashion (with clear indication in a log file), because, in any case, they need to be in the environment o
-f the system with all the loaded libraries (so, sourcing need to be done BEFORE than running the project). Also, in t
-he cases where these programs are NOT needed (e.g. when adding molecules to the project/systems and systems to the pr
-oject, it is not important that they are defined at runtime).
  
     Methods:
     - help() : print the help for this class.
@@ -41,15 +27,15 @@ oject, it is not important that they are defined at runtime).
     - new_project(name=None, path=None, overwrite=False) : create new Project()
     - save(self) : save Project() in Project().pickle_path
     - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. 
-    - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for th
-e given HPC system for each System() and a global bash script to call all the job scripts.
+    - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.
     - addGromacs
 
      #### TODO METHODS ####
-    - change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and 
+    - change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and
 change all the pertinent path attributes.
 
     """
+
     def __init__(self,name=None, path=None):
         """Project Class Constructor
 
@@ -76,8 +62,6 @@ change all the pertinent path attributes.
         self._job_script_path=None
         self._gromacs=None
         self._ambertools=None
-
-        self.version = '20230804'
 
         self._checkGromacs()
         self._checkAmberTools()
@@ -129,8 +113,7 @@ change all the pertinent path attributes.
     @property
     def ambertools(self):
         return self._ambertools
-    
-
+   
     @job_script_path.setter
     def job_script_path(self,sp):
         self._job_script_path=sp
@@ -157,19 +140,14 @@ change all the pertinent path attributes.
     - name : name of the project. This defines the directory where the project will be stored and most of path variables. 
     - project_path : absolute path of the project. The name of the directory is derived from the name of the project.
     - systems_path : directory where the data of the simulated systems are stored. This is the parent directory of the systems. 
-    - topology_path : directory where the topology files (.top and .itp) of the molecules used in the project are stored 
-                      and retrieved to be used in each system.
-    - init_struct_path : path where initial structures of the molecules used in the project are stored and retrieved
-                         to be used in each system.
+    - topology_path : directory where the topology files (.top and .itp) of the molecules used in the project are stored and retrieved to be used in each system.
+    - init_struct_path : path where initial structures of the molecules used in the project are stored and retrieved to be used in each system.
     - mdp_path : path where default .mdp input files for gromacs are stored.
     - pickle_path : path where the project is saved in .pkl format.
     - job_script_path : path where the template files for submission scripts are stored.
     - systems : list of System() in the project.
     - molecules : list of Molecule() in the project.
-    - version : version of the code (given in form of a YYYYMMDD date)
-
-    #### TODO ATTRIBUTES ####
- 
+     
     Methods:
     - help() : print the help for this class.
     - add_molecule(self,name=None,resname='UNK', structure=None) : add and initialize Molecule() to the Project()
@@ -180,10 +158,7 @@ change all the pertinent path attributes.
     - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.
 
      #### TODO METHODS ####
-    - _check_needed_binaries(self) : this method, when implemented, looks for gromacs, ambertools (and plumed? and lammps?) binaries and add them to the project. If they are not found, a prompt could ask the user to give them. 
     - change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.
-    
-
     """)
 
     def add_molecule(self,name,resname='UNK', structure=None):
@@ -413,8 +388,7 @@ class System():
     - createSolventBox(self,solvent,output_structure="solvent_box.pdb",density=None,nmols=None):  
     - insertSolute(self,solute,solvent,solvent_box="solvent_box.pdb",concentration=0, output_structure="start.pdb"):
     - writeTop(self,atomtypes_path,*molecules):
-    - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord='',
-gmxbin=''):
+    - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0,start_coord='',gmxbin=''):
     - print_command(self, bash_file):
    
     """
@@ -746,14 +720,6 @@ gmxbin=''):
                 molatom=0
                 
             
-        
-            
-
-    
-
-        
-
-    
 
 class Molecule():
 
@@ -950,9 +916,3 @@ class Atom():
     def element(self,el):
         self._element=el
 
-    
-
-
-    
-    
-    
