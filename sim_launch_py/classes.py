@@ -184,7 +184,7 @@ change all the pertinent path attributes.
                 print("Error: a molecule with name {} ({}) already exists in the project!".format(name,resname))
                 exit()
 
-        newmolecule=Molecule(name=name,resname=resname,structure=os.path.abspath(structure))
+        newmolecule=Molecule(name,resname=resname,structure=os.path.abspath(structure))
 
         self._molecules.append(newmolecule)        
         shutil.copy(structure, self._init_struct_path)
@@ -562,7 +562,7 @@ class System():
             elif self.boxshape=='octahedron':
                 volume_box=4/9*np.sqrt(3)*self.box[0]**3
 
-        nmols=util.estimate_n_molecules(volume_box,solvent.mw,density)-1
+        nmols=util.estimateNumMolecules(volume_box,solvent.mw,density)-1
         
         os.system("{0} -nobackup editconf -f {1} -o {2} -box {3} -bt {4}  -c".format(self.gromacs,solvent.structure_path,
                                                                                      output_structure,
@@ -572,7 +572,7 @@ class System():
         os.system("{0} -nobackup insert-molecules -f {1} -o {1} -ci {1} -nmol {2} -try 20000".format(self.gromacs,output_structure,
                                                                         nmols))
 
-        inserted_mols=util.check_number_molecules(output_structure,solvent)
+        inserted_mols=util.countMolecules(output_structure,solvent)
 
         if inserted_mols!=(nmols+1):
             print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 20000, inserted_mols))
@@ -595,15 +595,13 @@ class System():
            concentration (float, optional) : desired concentration of solute molecules in [g/L]. A density of 0 is a flag for simulations of dilute systems with only 1 solute molecule.
            output_structure (str, optional) : structure file where to save the final configuration. Defaults to 'start.pdb'.
         """
-
-        from sim_launch_py.utilities import check_number_molecules as cnm
         
         if concentration == 0:
             # then single molecule
             nmols=1
         elif concentration > 0:
             from math import ceil
-            nmols=util.estimate_n_molecules( self.box[0]**3,solute.mw,concentration )
+            nmols=util.estimateNumMolecules( self.box[0]**3,solute.mw,concentration )
 
         os.system("{0} insert-molecules -f {1} -o {2} -ci {3} -nmol {4} -try 10000 -replace {5} ".format( self.gromacs,
                                                                                                           solvent_box,
@@ -612,13 +610,13 @@ class System():
                                                                                                           nmols,
                                                                                                           solvent.resname))
 
-        inserted_mols=util.check_number_molecules(output_structure,solute)
+        inserted_mols=util.countMolecules(output_structure,solute)
 
         if inserted_mols!=nmols:
             print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 10000, inserted_mols))
             exit()
 
-        solvent.nmols=cnm(output_structure,solvent)
+        solvent.nmols=util.countMolecules(output_structure,solvent)
         solute.nmols=nmols
         self._updateComposition()
 
@@ -648,7 +646,7 @@ class System():
 
             top.write("\n\n")
 
-            for mol in molecules:
+            for mol in self.molecules:
                 with open(mol.include_path,'r') as itp:
                     top.write(";\n; {}\n;\n".format(mol.name))
                     for line in itp:
@@ -789,19 +787,33 @@ class System():
             
 
 class Molecule():
-    """
-    The molecule class that stores and manage all the information and methods.
+    """The molecule class that stores and manage all the information and methods.
 
     Attributes:
-
+       name : name of the molecule type
+       resname : residue name
+       structure_path : location of the structure of the molecule type
+       topology_path : location of the topology (.top) file of the molecule type
+       include_path : location of the include topology (.itp) file of the molecule type 
+       mw : molecular weight in [g/mol]
+       mol_attributes : arbitrary attributes of the molecule
+       nmols : number of molecules of this type
+       natoms : number of atoms per molecule 
+       atoms : list of atom types of the molecule type
 
     Methods:
-
-
+       help(): print the help for this class.
     """
 
 
-    def __init__(self,name=None, resname='UNK', structure=None):
+    def __init__(self,name: str, resname='UNK', structure=None):
+        """Molecule Class Constructor
+  
+        Args: 
+           name (str) : name of the molecule
+           resname (str, optional) : residue name for the molecule. Defaults to 'UNK'.
+           structure_path (str, optional) : position of the structure file. Defaults to None.
+        """
 
         self._name=name
         self._resname=resname
@@ -905,18 +917,38 @@ class Molecule():
 
     @staticmethod
     def help():
-        print("""Class for Molecule objects
-Each Molecule() has the following attributes:
--name
--resname 
--structure_path : name and position of the structure file 
--topology_path : name and position of the topology (.top) file with all force field parameters, including atom types definition
--include_path : name and position of the include topology (.itp) file with the definition of the molecule
--mw : molecular weight in g/mol""")
+        print("""The molecule class that stores and manage all the information and methods.
+
+    Attributes:
+       name : name of the molecule type
+       resname : residue name
+       structure_path : location of the structure of the molecule type
+       topology_path : location of the topology (.top) file of the molecule type
+       include_path : location of the include topology (.itp) file of the molecule type 
+       mw : molecular weight in [g/mol]
+       mol_attributes : arbitrary attributes of the molecule
+       nmols : number of molecules of this type
+       natoms : number of atoms per molecule 
+       atoms : list of atom types of the molecule type
+
+    Methods:
+       help(): print the help for this class.
+    """)
 
  
 class Atom():
+    """
+    The atom class that stores and manage all the information and methods.
 
+    Attributes:
+       name (str) : name of the atom.
+       mass (float) : atomic mass.
+       atomtype (str) : atom type.
+       atomID (int) : atom ID.
+       resnum (int) : number of the residue the atom is part of.
+       resname (str) : name of the residue the atom is part of.
+       element (str) : chemical element of the atom.
+    """
     def __init__(self,name: str, mass=0, atomtype=None, atomID=0, resnum=0, resname=None, element=None):
         """Atom Class Constructor
 

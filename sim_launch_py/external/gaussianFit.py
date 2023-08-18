@@ -2,10 +2,11 @@ import numpy as np
 from scipy import signal as sig
 from scipy.optimize import curve_fit
 
-"""Fit a distribution of dihedral angles to a sum of Gaussian distributions 
-   and returns the mean and sigma values for each Gaussian 
-"""
+"""Functions to fit a distribution of dihedral angles to a sum of Gaussian distributions 
+   and returns the mean and sigma values for each Gaussian.
 
+   Adapted from code by Alexandre Ferreira. 
+"""
 
 def histogram(dihedral_angles: str, datacol=1, probcutoff=0.001):
     """Compute the probability distribution given a timeseries of dihedral angles
@@ -90,6 +91,7 @@ def gaussianFit(dihedral_angles: str, datacol=1, plotFit=False):
     Args:
        dihedral_angles (str) : text file with the values of dihedral angles
        datacol (int, optional) : column (0-indexed) where data is. Defaults to 1.
+       plotFit (bool, optional) : plot the original histogram and the fitted gaussians? Defaults to False.
 
     Returns:
        centers (list) : mean values of each Gaussian curve obtained from the fit.

@@ -33,7 +33,7 @@ project=Project.new_project(pname,ppath,overwrite=True)
 
 
 for i,name in enumerate(molecules.molname):
-    project.add_molecule(name=name,
+    project.add_molecule(name,
                          resname=molecules.loc[i].at['resname'],
                          structure=molecules.loc[i].at['path']+'/'+name+'.pdb')
 

@@ -4,8 +4,7 @@ import sim_launch_py.plumed as plumed
 
 class _Simulation():
 
-        def __init__(self, name: str, mdrun_options: str, topology: str,
-                 path: str):
+        def __init__(self, name: str, mdrun_options: str, topology: str, path: str):
             """Simulation Class Constructor
 
             Args:
@@ -80,6 +79,7 @@ class MD(_Simulation):
             print_bash (bool, optional): print a bash string. Defaults to False.
             maxwarn (int, optional): number of warnings tollerated. Defaults to 0.
             gmxbin (str, optional): gromacs executable name. Defaults to 'gmx_mpi'.
+
         """
 
         # Inherit properties of the _Simulation Class
@@ -109,6 +109,7 @@ class MD(_Simulation):
 
             self.bash_command="{}\n{}\n".format(grompp,mdrun)
 
+    ###
 
     @property
     def cvs(self):
@@ -118,8 +119,18 @@ class MD(_Simulation):
     def biases(self):
         return self._biases
 
-    def add_cv(self,name,cvtype,**kwargs):
+    def add_cv(self, name: str ,cvtype: str ,**kwargs):
+        """ Add a collective variable to the simulation
+ 
+        Args:
+           name (str) : name of the cv
+           cvtype (str) : type of cv
+           **kwargs : keyword arguments that depend on the specific CV
 
+        Return:
+          new_cv (_CV object) : the new collective variable
+        """
+        
         supported=['TORSION','ENERGY']
         
         if cvtype.upper()=='TORSION':
@@ -131,8 +142,21 @@ class MD(_Simulation):
         else:
             print("Error: for the moment only {} are supported as collective variables... sorry".format(supported))
             exit()
+
+        return new_cv
     
-    def add_bias(self,name,biastype,cv,**kwargs):
+    def add_bias(self, name: str ,biastype: str ,cv: object ,**kwargs):
+        """ Add a bias to the simulation
+       
+        Args: 
+           name (str): name of the bias
+           biastype (str): type of bias
+           cv (_CV object): collective variable to bias 
+           **kwargs: keyword arguments that depend on the specific bias
+
+        Return:
+           new_bias (_Bias object): the new bias
+        """           
 
         supported=["METAD","UPPER_WALLS","LOWER_WALLS"]
 
@@ -147,12 +171,9 @@ class MD(_Simulation):
             exit()
 
         self._biases.append(new_bias)
+
+        return new_bias
             
-            
-
-                
-
-
 class EnergyMinimization(_Simulation):
 
     def __init__(self,name: str,
@@ -187,50 +208,6 @@ class EnergyMinimization(_Simulation):
             self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\
                 "{2} mdrun -deffnm {0} {1}\n".format(name,mdrun_options,gmxbin)
                 
-            
-
-        
-
-
-
-"""
-class Metad(MD, _Simulation):
-
-    def __init__(self,plumedfile='plumed.dat'):
-
-        super().__init__()
-
-        self._plumedfile=plumedfile
-
-    @property
-    def plumedfile(self):
-        return self._plumedfile
-
-    @plumedfile.setter
-    def plumedfile(self,p):
-        self._plumedfile=p
-        
-    def add_cv(self):
-
-        newcv=CV()
-        self.append(newcv)
-
-
-    def add_metad(self):
-
-        newmetad=Metad()
-        self.append(newmetad)
-
-    def writePlumedFile(self):
-
-        with open(self.plumedfile,'w') as f:
-            f.write("# do nothing")
-
-    def writeRunFile(self,runfile):
-
-        with open(runfile,'w') as f:
-            f.write("gmx mdrun -deffnm md -v -plumed {0} ".format())
-"""
 
 
             
