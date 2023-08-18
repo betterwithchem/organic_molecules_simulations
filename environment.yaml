@@ -4,6 +4,7 @@ dependencies:
   - numpy
   - pandas
   - scipy
+  - conda-forge::parmed
   - conda-forge::rdkit
   - conda-forge::mdanalysis
   - conda-forge::matplotlib
