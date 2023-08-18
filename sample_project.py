@@ -16,7 +16,7 @@ ppath='./{}'.format(pname)
 
 
 ##### create a new project
-project=Project.new_project(name=pname,path=ppath,overwrite=True)
+project=Project.new_project(pname,ppath,overwrite=True)
 
 
 ##### save it
@@ -40,6 +40,7 @@ for i,name in enumerate(molecules.molname):
 
 ##### this will create also include topology (itp) files and a file with all atom types
 for i,mol in enumerate(project.molecules):
+
     # if necessary, compute force field parameters
     #gaff(mol, os.path.abspath(project.topology_path),
     #     res_name=mol.resname, generate_charges='bcc', atomtype='gaff2',
@@ -48,18 +49,11 @@ for i,mol in enumerate(project.molecules):
     # or copy them from a defined location
     getTop(mol,fromPath=os.path.abspath("Topologies") ,toPath=project.topology_path)
 
-    # in any case compute molecular weight and number of atoms
-    #mol.mw=util.molecularWeightFromTop(mol.topology_path)
-    #mol.natoms=util.numberOfAtomsFromTop(mol.topology_path)
-   
-
-
 
 ##### add systems to be simulated
 
-
 for i,name in enumerate(systems.mol_1):
-    project.add_system(name='s{}'.format(i))
+    project.add_system('s{}'.format(i))
 
 for i,sys in enumerate(project.systems):
     sys.temperature=systems.loc[i].at['temperature']
@@ -72,13 +66,11 @@ for i,sys in enumerate(project.systems):
     
     # build initial configurations:
 
-    # in this example we have a solute in a solvent. We first create a box and fill it with
-    # solvent molecules at a given concentration
-    # then we add solute molecules at a given concentration and remove overlapping solvent molecules
-    # (both done by exploiting gmx tools)
+    # in this example we have a solute in a solvent. We first create a box, then we fill it with
+    # solvent molecules at a given concentration. Finally, we add solute molecules at a given
+    # concentration and remove overlapping solvent molecules
 
     sys.addBox(systems.loc[i].at['side'],shape='dodecahedron')
-
     
     for mol in sys.molecules:
         if 'solvent' in mol.mol_attributes:
@@ -92,7 +84,7 @@ for i,sys in enumerate(project.systems):
             sys.insertSolute(solute,solvent,solvent_box='{}/solvent_box.pdb'.format(sys.path),concentration=systems.loc[i].at['conc_2'],output_structure='{}/start.pdb'.format(sys.path))
     
     # write topology
-    sys.writeTop(project.topology_path+'/atomtypes.itp',solvent,solute)
+    sys.writeTop(project.topology_path+'/atomtypes.itp') #,solvent,solute)
 
     # we can now create the files needed for the simulations:
     # for unbiased simulations we just need mdp files
@@ -108,10 +100,10 @@ mdpdir=os.path.abspath('sim_launch_py/mdp/')
 
 for sys in project.systems:
 
-    sys.add_simulation('em',name='em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp="{}/em.mdp".format(mdpdir),gmxbin=project.gromacs)
-    sys.add_simulation('md',name='npt',mdrun_options='-v -nsteps 100000',mdp="{}/mdvvberendsen.mdp".format(mdpdir),maxwarn=1, gmxbin=project.gromacs)
+    sys.add_simulation('em','em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp="{}/em.mdp".format(mdpdir))
+    sys.add_simulation('npt','md',mdrun_options='-v -nsteps 100000',mdp="{}/mdvvberendsen.mdp".format(mdpdir),maxwarn=1)
 
-    md=sys.add_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp="{}/mdparrinello.mdp".format(mdpdir), gmxbin=project.gromacs, plumed="plumed.dat" )
+    md=sys.add_simulation('md','md',mdrun_options='-v -nsteps 10000000',mdp="{}/mdparrinello.mdp".format(mdpdir), plumed="plumed.dat" )
 
     mol=sys.molecules[-1]
     dihangles=findTorsionalAngles(mol.structure_path)

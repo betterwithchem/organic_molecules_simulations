@@ -25,7 +25,7 @@ for isys,sys in enumerate(project.systems):
     md=sys.simulations[-1]
 
     # create the MetaD simulation
-    metad=sys.add_simulation('md',name='md',mdrun_options='-v -nsteps 10000000',mdp="{}/mdparrinello.mdp".format(mdpdir), gmxbin=project.gromacs, plumed="metad.dat")
+    metad=sys.add_simulation('metad','md',mdrun_options='-v -nsteps 10000000',mdp="{}/mdparrinello.mdp".format(mdpdir), plumed="metad.dat")
     
     # data file to be used to estimate the parameters
     colvar="{}/COLVAR".format(md.path)
