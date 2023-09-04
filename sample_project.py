@@ -117,12 +117,6 @@ for sys in project.systems:
                     height=1.5, temp=300, pace=500, hills_file='HILLS_dih{}'.format(iangle),
                     biasfactor=5, grid_min='-pi', grid_max='pi', grid_spacing=2.5*np.pi/180)
 
-
-        md.add_bias('UW_dih_{}'.format(iangle), 'upper_walls', 'dih_{}'.format(iangle), at=0 , kappa=100)
-        md.add_bias('LW_dih_{}'.format(iangle), 'lower_walls', 'dih_{}'.format(iangle), at=0, kappa=100)
-            
-
-
     plumed.writePlumedFile("{}/plumed.dat".format(sys.path),md,colvar="COLVAR",printstride=50)
 
     sys.setSimsToRun(sys.simulations)
