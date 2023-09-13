@@ -161,8 +161,7 @@ change all the pertinent path attributes.
     
 
      #### TODO METHODS ####
-    - change_project_path(self, newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.
-    """)
+    - change_project_path(self, newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.""")
 
     def add_molecule(self, name: str, resname='UNK', structure=None):
         """Add molecule to project
@@ -295,6 +294,19 @@ change all the pertinent path attributes.
             print("No project found in '{}'. Use the 'Project.new_project' module to create a new project."
                   "".format(project_folder))
 
+    #def change_project_path(self, newpath: str):
+    #    """Change the path of the project and all the relevant paths in the objects in the project (systems, simulations...)
+    #
+    #    This involves changing all the relevant variables (e.g., project_path, systems_path, topology_path...), 
+    #    and copying the existing files to the new location. 
+    #    """
+    #
+    #    oldpath=self.project_path        
+    #    self._project_path=os.path.abspath(path)
+
+        
+
+    
     def write_sub_command(self,scriptname: str,system='myriad', template=None):
         """For each system Write a script to run the simulations and write a global bash script to initiate all systems.
 
@@ -496,6 +508,31 @@ class System():
     @run_command.setter
     def run_command(self,command):
         self._run_command=command
+
+    @staticmethod
+    def help():
+        print("""Attributes:
+    - name : name of the system. This is used to create the directory of the system.
+    - path : absolute path of the system.
+    - molecules : list of Molecule() objects belonging to the system.
+    - box : size of the box (of the initial configuration).
+    - boxshape : shape of the simulation box.
+    - simulations : list of Simulation() objects of the system.
+    - run_command : command lines to be used to run the simulations.
+    - gromacs : gromacs binary path, inherited from the Project(). 
+    - composition : composition of the system. Order of values is the same of the order in self.molecules.
+    - atoms : list of Atom() objects in the system.
+    - natoms : total numer of atoms in the systems.
+
+Methods:
+    - help() : print the help for this class
+    - add_molecule(self, name: str, moltype=None, knownmolecules=None) : add species to the system.
+    - add_box(self, box_side: float, shape='cubic') : create simulation box.
+    - createSolventBox(self, solvent: object, output_structure="solvent_box.pdb", density=None, nmols=None): add solvent molecules to the simulation box.  
+    - insertSolute(self, solute: object, solvent: object, solvent_box="solvent_box.pdb", concentration=0, output_structure="start.pdb"): add solute molecules to the box and remove excess solvent molecules.
+    - writeTop(self, atomtypes_path: str, *molecules: objects): write the topology file for the system in gromacs format.
+    - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''): add simulation to the system.
+    - print_command(self, bash_file): print the bash script file to run the simulations.""")
     
     def add_molecule(self, name: str, moltype=None, knownmolecules=None):
         """Add new molecule type to the system.
@@ -917,9 +954,7 @@ class Molecule():
 
     @staticmethod
     def help():
-        print("""The molecule class that stores and manage all the information and methods.
-
-    Attributes:
+        print("""Attributes:
        name : name of the molecule type
        resname : residue name
        structure_path : location of the structure of the molecule type
@@ -931,7 +966,7 @@ class Molecule():
        natoms : number of atoms per molecule 
        atoms : list of atom types of the molecule type
 
-    Methods:
+Methods:
        help(): print the help for this class.
     """)
 
