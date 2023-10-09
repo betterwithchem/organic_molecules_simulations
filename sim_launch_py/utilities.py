@@ -146,4 +146,94 @@ def countMolecules(structure_file,molecule):
         print("for the moment only pdb files are supported")
         exit()
             
+            
+def get_distance(sel_coords,ref=[0, 0, 0],box=None):
 
+    d=0
+    
+    import numpy as np
+
+    deg2rad=np.pi/180
+
+
+    d_v=np.array(sel_coords)-np.array(ref)
+    d=(d_v**2).sum()
+    d=np.sqrt(d)
+
+
+    """
+    if box is not None:
+        n2=(np.cos(box[3]*deg2rad)-np.cos(box[5]*deg2rad)*np.cos(box[4]*deg2rad))/np.sin(box[5]*deg2rad)
+        M=np.array([[box[0], 0, 0],
+                   [box[0]*np.cos(box[5]*deg2rad), box[1]*np.sin(box[5]*deg2rad), 0],
+                   [box[0]*np.cos(box[4]*deg2rad), box[1]*n2, box[2]*np.sqrt(np.sin(box[4]*deg2rad)**2-n2*n2)]])
+
+        M_inv=np.linalg.inv(M)
+
+        frac_sel_coords=M_inv.dot(sel_coords)
+        frac_ref_coords=M_inv.dot(ref)
+
+        sij=frac_sel_coords-frac_ref_coords
+        sij-=np.rint(sij)
+        rij=M.dot(sij)
+
+        d=(rij**2).sum()
+        
+
+        print(sel_coords,ref,d,rij,box)
+
+        d=np.sqrt(d)
+
+        return d
+
+    else:
+
+        print("this shouldn't happen...")
+        return None
+    """
+
+    return d
+
+    
+        
+    
+def calc_fractional_coords(coords,box=None):
+
+    d=0
+    
+    import numpy as np
+
+    deg2rad=np.pi/180
+
+    frac_coords=[]
+
+    print(box)
+    
+    if box is not None:
+        n2=(np.cos(box[3]*deg2rad)-np.cos(box[5]*deg2rad)*np.cos(box[4]*deg2rad))/np.sin(box[5]*deg2rad)
+        M=np.array([[box[0], 0, 0],
+                   [box[0]*np.cos(box[5]*deg2rad), box[1]*np.sin(box[5]*deg2rad), 0],
+                   [box[0]*np.cos(box[4]*deg2rad), box[1]*n2, box[2]*np.sqrt(np.sin(box[4]*deg2rad)**2-n2*n2)]])
+
+
+        M_inv=np.linalg.inv(M)
+
+        frac_ref_coords=M_inv.dot(np.array([0, 0, 0]))
+
+        for icoord,coord in enumerate(coords):
+            frac_sel_coords=M_inv.dot(coord)
+           
+            sij=frac_sel_coords-frac_ref_coords
+            sij-=np.rint(sij)
+           
+            frac_coords.append(sij)
+
+            rij=M.dot(sij)
+
+            d=(rij**2).sum()
+
+            #print(sel_coords,ref,d,rij,box)
+
+            #d=np.sqrt(d)
+
+        return frac_coords

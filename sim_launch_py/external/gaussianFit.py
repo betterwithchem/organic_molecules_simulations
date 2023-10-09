@@ -144,7 +144,7 @@ def gaussianFit(dihedral_angles: str, datacol=1, plotFit=False):
 
         fig,ax=plt.subplots()
 
-        ax.set_xlim([-1.1*np.pi,1.1*np.pi])
+        ax.set_xlim([-np.pi,np.pi])
         
         ax.plot(bincenters,histo,label='data',linewidth=2)
         ax.plot(bincenters,fitFunct,label='fit',linestyle='--')

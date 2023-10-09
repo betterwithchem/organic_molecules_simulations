@@ -184,7 +184,7 @@ change all the pertinent path attributes.
                 exit()
 
         newmolecule=Molecule(name,resname=resname,structure=os.path.abspath(structure))
-
+        
         self._molecules.append(newmolecule)        
         shutil.copy(structure, self._init_struct_path)
 
@@ -456,6 +456,7 @@ class System():
     #@property
     #def temperature(self):
     #    return self._temperature
+    ##### temperature will be set in the simulation object
 
     @property
     def box(self):
@@ -492,6 +493,7 @@ class System():
     #@temperature.setter
     #def temperature(self,T):
     #    self._temperature=T
+    ##### temperature will be set in the simulation object
 
     @natoms.setter
     def natoms(self,n):
@@ -534,7 +536,7 @@ Methods:
     - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''): add simulation to the system.
     - print_command(self, bash_file): print the bash script file to run the simulations.""")
     
-    def add_molecule(self, name: str, moltype=None, knownmolecules=None):
+    def add_molecule(self, name: str, moltype=None, knownmolecules=None, pdbfile=None):
         """Add new molecule type to the system.
 
         Args:
@@ -543,19 +545,228 @@ Methods:
            knownmolecules (list of Molecule(), optional): molecules already present in the project.
         Return: 
            newmolecule (object): new molecule
+
+        TODO:
+        This function needs to be radically changed in order to accomodate for import from pdb file.
+        Also, one molecule object for each real molecule in the system will be created, instead of having one  
+        molecule object for each species as done until now.
+        This should, in some case, make treatment for specific molecules easier (for analysis or to bias the system)
+        (This makeover has probably effects also on the preferred way to generate configurations from scratch)
+        
+        How to proceed:
+        1) addition of pdb file to the available inputs
+        2) check: if from pdb -> read pdb and add molecules and coordinates from the pdb
+                  elif not from pdb -> read name of the known molecule and add it without coordinates. 
+                                       coordinates will be added later when building the initial configuration in
+                                       the way specified by the user
+        3) addition of a molecule object needs to trigger the creation of the following attributes:
+                 - name
+                 - resname
+                 - list of atom names
+                 - list of atom types
+                 - number of atoms
+                 - mass
+                 - coordinates (may be empty)
+                 - bond matrix (likely a NxN matrix of 0 and 1, where 1 is bound atoms, 0 not bound. Diagonal is 0) 
+	n) to be considered: addition of a "molecule group", for molecules that share parameters (.itp files...)
+                 
+        
+
+
         """
 
-        import copy
         
-        for mol in knownmolecules:
-            if name==mol.name:
-                newmolecule=copy.deepcopy(mol)
-                newmolecule._mol_attributes=moltype
-                self._molecules.append(newmolecule)
-                return newmolecule
 
-        print("Error: Couldn't add molecule {} to system {}. Molecule unknown.".format(name,self.name))
-        exit()
+        if pdbfile:
+            # procedure here is:
+            # 1) create a new molecule
+            # 2) read the pdb file with a _loadfrompdb(pdbfile) function that returns:
+            #	a) list of atoms
+            #	b) list of coordinates
+            #	c) bond matrix
+            #	d) resname
+
+            # check that pdbfile exists
+
+            # get box info from pdb file
+            f=open(pdbfile,'r')
+            for line in f:
+                if line.startswith('CRYST1'):
+                    a=float(line[6:15])
+                    b=float(line[15:24])
+                    c=float(line[24:33])
+                    alpha=float(line[33:40])
+                    beta=float(line[40:47])
+                    gamma=float(line[47:54])
+                    self.box=[a/10,b/10,c/10,alpha,beta,gamma]   # sides in nm, angles in degrees
+
+            # get molecules and coordinates from pdb file                        
+            newmol=self._loadfrompdb(name,pdbfile)
+            for m in newmol:
+                self._molecules.append(m)
+
+        elif not pdbfile and knownmolecules:
+
+            import copy
+            for mol in knownmolecules:
+                if name==mol.name:
+                    newmolecule=copy.deepcopy(mol)
+                    newmolecule._mol_attributes=moltype
+                    self._molecules.append(newmolecule)
+                    return newmolecule
+
+        #print("Error: Couldn't add molecule {} to system {}. Molecule unknown.".format(name,self.name))
+        #exit()
+
+        
+
+    @staticmethod
+    def _loadfrompdb(name: str, pdbfile: str ):
+        """
+        Taken and adapted from the method with the same name in PyPol by Nicholas Francia
+
+        Load Molecule from a PDB file. If the pdb file contain the 'CONECT' keyword,
+        bonds are taken from it. Alternatively, they can be generated with the 'atomtype' program.
+	:param name: Name of the molecule
+        :param pdbfile: Path of the PDB file
+        :param include_atomtype: Include the identification of the atom types
+        :return: Molecule() object
+        """
+
+        new_molecule = Molecule(name)
+        molecules = list()
+        
+        # Open pdb file
+
+        file_pdb = open(pdbfile)
+        bonds_imported = False # this flag becomes True iff there is at least one CONECT line
+        iline=0
+        prev_mol=0
+        for line in file_pdb:
+            iline+=1
+            # Import Molecular and Atom Properties
+            if line.startswith("ATOM") or line.startswith("HETATM"):
+                atom_index = int(line[6:11]) - 1
+                atom_label = line[12:16]
+                molecule_name = line[17:20]
+                molecule_index = int(line[22:26]) - 1
+                atom_x, atom_y, atom_z = (float(line[30:38]) / 10., float(line[38:46]) / 10., float(line[46:54]) / 10.)
+                atom_element = line[76:78].strip()
+
+                if not molecules:
+                    molecules.append(Molecule(molecule_name, molecule_index, resname=molecule_name))
+                elif molecules[-1]._index < molecule_index:
+                    molecules.append(Molecule(molecule_name, molecule_index, resname=molecule_name))
+
+                for molecule in molecules:
+                    if molecule_index == molecule._index:
+                        #molecule._atoms.append(Atom(index=atom_index, label=atom_label, ff_type=None, atomtype=None,
+                        #                            coordinates=[atom_x, atom_y, atom_z], element=atom_element,
+                        #                            bonds=None))
+                        molecule._atoms.append(Atom(atom_label, atom_index=atom_index, atomtype=None,
+                                                    coordinates=[atom_x, atom_y, atom_z], element=atom_element))
+                        
+
+            elif line.startswith("CONECT"):
+                cols=line.split()
+                atom_index=int(cols[1])-1
+                bonds_imported = True
+                bonds=[]
+                for icol in range(2,len(cols)):
+                    bonds.append(int(cols[icol])-1)
+
+                
+                for imol in range(prev_mol,len(molecules)):
+                    break_again=False
+                    molecule=molecules[imol]
+                    molecule._natoms = len(molecule._atoms)
+                    for atom in molecule._atoms:
+                        if atom_index == atom._index:
+                            #print(imol,atom_index,bonds)
+                            atom._bonds = bonds
+                            prev_mol=imol
+                            break_again=True
+                            break
+                    if break_again:
+                        break
+                            
+        file_pdb.close()
+
+        # Import atomtypes (and eventually bonds) from .ac file
+        if not bonds_imported:
+            print("Something is wrong with the PDB file: No bonds found.\n"
+                  "Try to generate a structure.ac file with the ambertool 'atomtype' or 'antechamber' and rerun "
+                  "with the parameter 'include_atomtype=True'.")
+            return
+
+        
+        # Check if molecule contains more than one component.
+        molecules = System._arrange_atoms_in_molecules(molecules)
+
+        return molecules
+
+    @staticmethod
+    def _arrange_atoms_in_molecules(molecules: list):
+        """
+        Check if the atoms in a Molecule object belongs to a single molecule. This is done to prevent errors from
+        openbabel or the CSD Python API when assigning residues index. The check is performed by converting molecules to
+        graphs and looking at their edges with the Breadth First Search algorithm.
+        :param molecules: List of Molecule objects
+        :return:
+        """
+        from scipy.sparse import csr_matrix
+        from scipy.sparse.csgraph import breadth_first_order
+        new_molecules = list()
+        molidx = 0
+        for molecule in molecules:
+            graph = csr_matrix(molecule.contact_matrix)
+            removed = []
+            for atom in range(len(molecule._atoms)):
+                if atom in removed:
+                    continue
+
+                bfs = breadth_first_order(graph, atom, False, False)
+                removed = removed + list(bfs)
+                new_molecule = Molecule(molecule._resname)
+                new_molecule._index = molidx
+                molidx += 1
+                new_molecule._atoms = [molecule._atoms[i] for i in range(len(molecule._atoms)) if i in bfs]
+                new_molecule._natoms = len(new_molecule._atoms)
+                for natom in new_molecule._atoms:
+                    natom._index = natom._index - (new_molecule._natoms * new_molecule._index)
+                    natom._bonds = [bond - (new_molecule._natoms * new_molecule._index) for bond in natom._bonds]
+
+                #new_molecule._calculate_centroid()
+                #new_molecule._forcefield = molecule._forcefield
+                #new_molecule._potential_energy = molecule._potential_energy
+                #new_molecule._generate_contact_matrix()
+
+                new_molecules.append(new_molecule)
+        return new_molecules        
+
+    def delete_molecules(self,delete_indexes):
+
+        """Keep some molecule objects and delete the rest from the system object.
+  
+        :parm keep_indexes: list of molecule indexes correspondent to Molecule().index values
+        """
+
+        kept_molecules=[]
+        
+        for im,m in enumerate(self.molecules):
+            if m.index not in delete_indexes:
+                kept_molecules.append(m)
+
+        self._molecules=kept_molecules
+        
+        for im,m in enumerate(self._molecules):
+            #print(m.index)
+            m.index=im
+                
+
+        
+
+    #################
         
 
     def addBox(self,box_side: float, shape='cubic'):
@@ -599,6 +810,7 @@ Methods:
             elif self.boxshape=='octahedron':
                 volume_box=4/9*np.sqrt(3)*self.box[0]**3
 
+        print(solvent.mw)
         nmols=util.estimateNumMolecules(volume_box,solvent.mw,density)-1
         
         os.system("{0} -nobackup editconf -f {1} -o {2} -box {3} -bt {4}  -c".format(self.gromacs,solvent.structure_path,
@@ -843,7 +1055,7 @@ class Molecule():
     """
 
 
-    def __init__(self,name: str, resname='UNK', structure=None):
+    def __init__(self,name: str, index=None, resname='UNK', structure=None):
         """Molecule Class Constructor
   
         Args: 
@@ -857,11 +1069,13 @@ class Molecule():
         self._structure_path=structure
         self._topology_path=None
         self._include_path=None
-        self._mw=0
+        self._mw=None
         self._mol_attributes=[]
         self._nmols=0
         self._natoms=0
         self._atoms=list()
+        self._index=index
+        self._contact_matrix=None
 
         if structure is not None:
 
@@ -871,10 +1085,11 @@ class Molecule():
 
             u=mda.Universe(structure)
             self._natoms=u.atoms.n_atoms
+            self._mw=0
             for iatom in range(self._natoms):
 
-                new_atom=Atom(u.atoms.names[iatom],atomID=u.atoms.ids[iatom],resname=resname,
-                         mass=u.atoms.masses[iatom],element=u.atoms.types[iatom])
+                new_atom=Atom(u.atoms.names[iatom],atom_index=u.atoms.ids[iatom],resname=resname,
+                              mass=u.atoms.masses[iatom],element=u.atoms.types[iatom],coordinates=u.atoms.positions[iatom])
                                 
                 self._mw+=u.atoms.masses[iatom]
                 self._atoms.append(new_atom)
@@ -902,6 +1117,8 @@ class Molecule():
 
     @property
     def mw(self):
+        if self._mw is None:
+            self._mw=self._calc_mass(self.atoms)
         return self._mw
 
     @property
@@ -919,6 +1136,18 @@ class Molecule():
     @property
     def atoms(self):
         return self._atoms
+
+    @property
+    def contact_matrix(self):
+        if self._contact_matrix is None:
+            self._generate_contact_matrix()
+            return self._contact_matrix
+        else:
+            return self._contact_matrix    
+
+    @property
+    def index(self):
+        return self._index
     
     @resname.setter
     def resname(self,resname):
@@ -952,6 +1181,102 @@ class Molecule():
     def nmols(self,n):
         self._nmols=n
 
+    @index.setter
+    def index(self,ndx):
+        self._index=ndx
+
+    def _generate_contact_matrix(self):
+        """
+        Generate a NxN matrix (with N=number of atoms) with 1 elements if atoms are bonded and 0 if not.
+        """
+        cmat = np.full((len(self._atoms), len(self._atoms)), 0)
+        for ai in range(len(self._atoms)):
+            atom = self._atoms[ai]
+            for bond in atom._bonds:
+                #print(ai,self._atoms[ai].index, atom.bonds, bond,  min([i._index for i in self._atoms]),[i._index for i in self._atoms])
+                aj = bond - min([i._index for i in self._atoms])
+                #print(ai,aj)
+                cmat[ai, aj] = 1
+        self._contact_matrix = cmat
+
+    def get_molecule_com(self,box,ignore_masses=False):
+        """ Compute the center of mass (COM) of a molecule object
+            :parm molecule: Molecule object.
+            :parm box: Box parameters.
+            :parm ignore_masses: if True the center of geometry (COG) is returned. Defaults to False.
+
+            Returns:
+            com: coordinates of COM/COG
+            """
+
+        com=[0,0,0]
+        den=0
+
+        pbc_coords=self.wrap_pbc(box)
+
+        for iatom,atom in enumerate(self.atoms):
+            for i in range(3):
+                if ignore_masses:
+                    com[i]+=pbc_coords[iatom][i]               
+                else:
+                    com[i]+=pbc_coords[iatom][i]*atom.mass
+
+
+        if ignore_masses:
+            den=len(self.atoms)
+        else:
+            den=self.mw
+
+        com=[x/den for x in com]
+
+        return com
+
+
+    def wrap_pbc(self,box):
+
+        """ Recompute coordinates of the molecule in order to make broken molecules whole 
+        :parm molecule: Molecule object
+        :parm box: list of 6 elements with box parameters ([a, b, c, alpha, beta, gamma])
+
+        Returns:
+        pbc_coords: coordinates of the molecule made whole
+        """
+
+        # the first atom of the molecule is taken as reference (even if it is not inside the box)
+
+        import numpy as np
+
+        n2=(np.cos(box[3])-np.cos(box[5])*np.cos(box[4]))/np.sin(box[5])
+        M=np.array([[1, 0, 0],
+                    [np.cos(box[5]), np.sin(box[5]), 0],
+                    [np.cos(box[4]), n2, np.sqrt(np.sin(box[4])**2-n2*n2)]])
+
+        M_inv=np.linalg.inv(M)
+
+        pbc_coords=[a.coordinates for a in self.atoms]
+
+        #print(pbc_coords)
+
+        temp_coords=[]
+        for iatom,atom in enumerate(self.atoms):
+            temp_coords.append(M_inv.dot(atom.coordinates))
+
+        for iatom,atom in enumerate(self.atoms):
+            sij=temp_coords[iatom]-temp_coords[0]
+            sij-=np.rint(sij)
+            rij=M.dot(sij)
+
+            pbc_coords[iatom]=rij+self.atoms[0].coordinates
+
+        return pbc_coords
+            
+    @staticmethod
+    def _calc_mass(atoms):
+        mw=0
+        for ia,a in enumerate(atoms):
+            mw+=a.mass
+        return mw
+        
     @staticmethod
     def help():
         print("""Attributes:
@@ -979,38 +1304,41 @@ class Atom():
        name (str) : name of the atom.
        mass (float) : atomic mass.
        atomtype (str) : atom type.
-       atomID (int) : atom ID.
+       atom_index (int) : atom index.
        resnum (int) : number of the residue the atom is part of.
        resname (str) : name of the residue the atom is part of.
        element (str) : chemical element of the atom.
     """
-    def __init__(self,name: str, mass=0, atomtype=None, atomID=0, resnum=0, resname=None, element=None):
+    def __init__(self,name: str, mass=None, atomtype=None, atom_index=0, resname=None, element=None, coordinates=list()):
         """Atom Class Constructor
 
         Args:
             name (str): Atom name. Defaults to None.
-            mass (float, optional): Mass of the atom. Defaults to 0.
+            mass (float, optional): Mass of the atom. Defaults to None.
             atomtype (str, optional): AtomType of the atom. Defaults to None.
-            atomID (int, optional): AtomID of the atom. Defaults to 0.
+            atom_index (int, optional): AtomID of the atom. Defaults to 0.
             resnum (int, optional): Residue Number of the atom. Defaults to 0.
             resname (str, optional): Residue Name of the atom. Defaults to None.
             element (str, optional): Element of the atom. Defaults to None.
+            coordinates (list, optional): Coordinates of the atom. Defaults to None.
         """
 
         self._name=name
         self._mass=mass
         self._atomtype=atomtype
-        self._atomID=atomID
-        self._resnum=resnum
-        self._resname=resname
+        self._index=atom_index
         self._element=element
-
+        self._coordinates=coordinates
+        self._bonds=list()
+    
     @property
     def name(self):
         return self._name
 
     @property
     def mass(self):
+        if self._mass is None:
+            self._mass=self._assign_mass(self._element)
         return self._mass
 
     @property
@@ -1018,20 +1346,20 @@ class Atom():
         return self._atomtype
 
     @property
-    def atomID(self):
-        return self._atomID
-
-    @property
-    def resnum(self):
-        return self._resnum
-
-    @property
-    def resname(self):
-        return self._resname
+    def index(self):
+        return self._index
 
     @property
     def element(self):
         return self._element
+
+    @property
+    def coordinates(self):
+        return self._coordinates
+
+    @property
+    def bonds(self):
+        return self._bonds
 
     @name.setter
     def name(self,n):
@@ -1045,19 +1373,36 @@ class Atom():
     def atomtype(self,atype):
         self._atomtype=atype
 
-    @atomID.setter
-    def atomID(self,aid):
-        self._atomID=aid
-
-    @resnum.setter
-    def resnum(self,rn):
-        self._resnum=rn
-
-    @resname.setter
-    def resname(self,rn):
-        self._resname=rn
+    @index.setter
+    def atom_index(self,aid):
+        self._index=aid
 
     @element.setter
     def element(self,el):
         self._element=el
 
+    @coordinates.setter
+    def coordinates(self,r):
+        self._coordinates=r
+
+    @bonds.setter
+    def bonds(self,b):
+        self._bonds=b
+
+    @staticmethod
+    def _assign_mass(element):
+
+        masses={'H':1.0079,
+                'C':12.0107,
+                'N':14.0067,
+                'O':15.9994,
+                'F':18.9984,
+                'S':32.065,
+                'Cl':35.453,
+                }
+
+        if element in masses:
+            return masses[element]
+        else:
+            print('WARNING: element not found, check and in case add it manually!')
+            return None

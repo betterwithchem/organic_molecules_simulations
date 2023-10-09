@@ -3,9 +3,8 @@ from sim_launch_py.ffparms import gaff, getTop
 import numpy as np
 import pandas as pd
 import os
-import sim_launch_py.utilities as util
-import sim_launch_py.plumed as plumed
 
+import sim_launch_py.plumed as plumed
 from sim_launch_py.external.molecules import findTorsionalAngles
 
 molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
@@ -61,14 +60,15 @@ for i,sys in enumerate(project.systems):
     sys.add_molecule(systems.loc[i].at['mol_2'],moltype='solute',knownmolecules=project.molecules)
     
 
-
-for i,sys in enumerate(project.systems):
     
     # build initial configurations:
 
     # in this example we have a solute in a solvent. We first create a box, then we fill it with
     # solvent molecules at a given concentration. Finally, we add solute molecules at a given
     # concentration and remove overlapping solvent molecules
+
+
+for i,sys in enumerate(project.systems):
 
     sys.addBox(systems.loc[i].at['side'],shape='dodecahedron')
     
@@ -84,7 +84,7 @@ for i,sys in enumerate(project.systems):
             sys.insertSolute(solute,solvent,solvent_box='{}/solvent_box.pdb'.format(sys.path),concentration=systems.loc[i].at['conc_2'],output_structure='{}/start.pdb'.format(sys.path))
     
     # write topology
-    sys.writeTop(project.topology_path+'/atomtypes.itp') #,solvent,solute)
+    sys.writeTop(project.topology_path+'/atomtypes.itp')
 
     # we can now create the files needed for the simulations:
     # for unbiased simulations we just need mdp files
@@ -96,7 +96,12 @@ for i,sys in enumerate(project.systems):
 
 
 project.job_script_path=os.path.abspath('sim_launch_py/job_scripts')
+
+
 mdpdir=os.path.abspath('sim_launch_py/mdp/')
+
+
+
 
 for sys in project.systems:
 
@@ -111,7 +116,7 @@ for sys in project.systems:
     md.add_cv('ene', 'energy')
     
     for iangle,angle in enumerate(dihangles):
-        md.add_cv('dih_{}'.format(iangle), 'torsion', atoms=[mol.atoms[i].atomID for i in angle])   
+        md.add_cv('dih_{}'.format(iangle), 'torsion', atoms=[mol.atoms[i].index for i in angle])   
 
         md.add_bias('metad_dih_{}'.format(iangle),'metad','dih_{}'.format(iangle),sigma=5*np.pi/180,
                     height=1.5, temp=300, pace=500, hills_file='HILLS_dih{}'.format(iangle),
