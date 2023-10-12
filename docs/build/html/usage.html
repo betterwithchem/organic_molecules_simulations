@@ -1,0 +1,1092 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Usage &#8212; sim_launch_py 20231012 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to sim_launch_py’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-sim_launch_py.classes">
+<span id="usage"></span><h1>Usage<a class="headerlink" href="#module-sim_launch_py.classes" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.classes.</span></span><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>The atom class that stores and manage all the information and methods.</p>
+<p>Attributes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>name (str) : name of the atom.</p></li>
+<li><p>index (int) : atom index.</p></li>
+<li><p>atomtype (str) : atom type.</p></li>
+<li><p>resname (str) : name of the residue the atom is part of.</p></li>
+<li><p>coordinates (list): coordinates of the atom in nm.</p></li>
+<li><p>resid (int) : index of the molecule the atom is part of.</p></li>
+<li><p>element (str) : chemical element of the atom.</p></li>
+<li><p>mw (float) : atomic mass in Da.</p></li>
+<li><p>bonds (list) : list of the index of the atoms in the same molecule that the atom is bound to.</p></li>
+</ul>
+</div></blockquote>
+<p>Static Methods:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>_getelement(atomtype) : Assign atomic element of the atom based on its name.</p></li>
+<li><p>_getmw(element) : Assign mass to the atom based on its atomic element.</p></li>
+</ul>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom._getelement">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_getelement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Atom._getelement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign atomic element of the atom based on its name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom._getmw">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_getmw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Atom._getmw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign mass to the atom based on its atomic element.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.bonds">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bonds</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.bonds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.coordinates">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coordinates</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.coordinates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.element">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">element</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.element" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.mw">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mw</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.mw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.resid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">resid</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.resid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.resname">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">resname</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.resname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.classes.</span></span><span class="sig-name descname"><span class="pre">Molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'UNK'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>The molecule class that stores and manage all the information and methods.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>name : name of the molecule type
+resname : residue name
+index : index of the molecule
+mw : molecular weight in [Da]
+atoms : list of atom types of the molecule type
+contact_matrix : NxN matrix (N=number of atoms in the molecule) of the bonds between the atoms.</p>
+</dd>
+<dt>Methods:</dt><dd><p>help(): print the help for this class.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule._calc_mass">
+<span class="sig-name descname"><span class="pre">_calc_mass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Molecule._calc_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the mass of the molecule and store it in self._mw.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule._compute_contact_matrix">
+<span class="sig-name descname"><span class="pre">_compute_contact_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Molecule._compute_contact_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the matrix of bonds of the molecule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule._get_com">
+<span class="sig-name descname"><span class="pre">_get_com</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Molecule._get_com" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule._renumber_atoms">
+<span class="sig-name descname"><span class="pre">_renumber_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Molecule._renumber_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renumber the atom indexes in the molecule starting from 0.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule._update_atom_resid">
+<span class="sig-name descname"><span class="pre">_update_atom_resid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Molecule._update_atom_resid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renumber the molecular index of the atoms (i.e. the index of the molecule they belong to).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule.atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms</span></span><a class="headerlink" href="#sim_launch_py.classes.Molecule.atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule.com">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">com</span></span><a class="headerlink" href="#sim_launch_py.classes.Molecule.com" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule.contact_matrix">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contact_matrix</span></span><a class="headerlink" href="#sim_launch_py.classes.Molecule.contact_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule.index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#sim_launch_py.classes.Molecule.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule.mw">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mw</span></span><a class="headerlink" href="#sim_launch_py.classes.Molecule.mw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sim_launch_py.classes.Molecule.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Molecule.resname">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">resname</span></span><a class="headerlink" href="#sim_launch_py.classes.Molecule.resname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.classes.</span></span><span class="sig-name descname"><span class="pre">Project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project" title="Permalink to this definition">¶</a></dt>
+<dd><p>The project class that stores and manage all the information and methods.</p>
+<p>Attributes:</p>
+<ul class="simple">
+<li><p>name : name of the project. This defines the directory where the project will be stored and most of path variables.</p></li>
+<li><p>project_path : absolute path of the project. The name of the directory is derived from the name of the project.</p></li>
+<li><p>systems_path : directory where the data of the simulated systems are stored. This is the parent directory of the systems.</p></li>
+<li><p>topology_path : directory where the topology files (.top and .itp) of the molecules used in the project are stored and retrieved to be used in each system.</p></li>
+<li><p>init_struct_path : path where initial structures of the molecules used in the project are stored and retrieved to be used in each system.</p></li>
+<li><p>mdp_path : path where default .mdp input files for gromacs are stored.</p></li>
+<li><p>pickle_path : path where the project is saved in .pkl format.</p></li>
+<li><p>job_script_path : path where the template files for submission scripts are stored.</p></li>
+<li><p>systems : list of System() objects in the project.</p></li>
+<li><p>molecules : list of Molecule() objects in the project.</p></li>
+<li><p>gromacs : path to gromacs binary.</p></li>
+<li><p>ambertools : path to ambertools binaries directory.</p></li>
+</ul>
+<p>Methods:</p>
+<ul class="simple">
+<li><p>help() : print the help for this class.</p></li>
+<li><p>add_system(self,name: str) : add and initialize System() to the Project().</p></li>
+<li><p>new_project(name=None, path=None, overwrite=False) : create new Project().</p></li>
+<li><p>save(self) : save Project() in Project().pickle_path.</p></li>
+<li><p>load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl.</p></li>
+<li><p>write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.</p></li>
+</ul>
+<blockquote>
+<div><p>#### TODO METHODS ####</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project._checkAmberTools">
+<span class="sig-name descname"><span class="pre">_checkAmberTools</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project._checkAmberTools" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look for AmberTools binaries directory and add it to the project.
+This method looks for the antechamber binary. If it is not found, it will prompt the user to input manually the absolute path of the ambertools binaries directory.
+The value of the attribute is the absolute path of antechamber (/path/to/bin/antechamber).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project._checkGromacs">
+<span class="sig-name descname"><span class="pre">_checkGromacs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project._checkGromacs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look for Gromacs binary and add it to the project.
+This method looks for standard names of gromacs binaries (i.e. ‘gmx’ and ‘gmx_mpi’). If either of these is not found,
+it will prompt the user to input manually the absolute path of the gromacs executable.
+The value of the attribute is the absolute path of the binary (/path/to/gmx or /path/to/gmx_mpi or /path/to/gmx_bin_custom_name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project._renumber_systems">
+<span class="sig-name descname"><span class="pre">_renumber_systems</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project._renumber_systems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renumber starting from 0 the index of the systems in a project.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.add_system">
+<span class="sig-name descname"><span class="pre">add_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.add_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add system to project</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – system name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.ambertools">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ambertools</span></span><a class="headerlink" href="#sim_launch_py.classes.Project.ambertools" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.defaults_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">defaults_path</span></span><a class="headerlink" href="#sim_launch_py.classes.Project.defaults_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.delete_system">
+<span class="sig-name descname"><span class="pre">delete_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delete_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.delete_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a system from project and update the index of remaining systems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delete_list</strong> – list of system indexes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.gromacs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gromacs</span></span><a class="headerlink" href="#sim_launch_py.classes.Project.gromacs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.help">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sim_launch_py.classes.Project.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.new_project">
+<span class="sig-name descname"><span class="pre">new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.new_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new project</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Project Name.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – Project path.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – Overwrite previous project? Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns nproject<span class="colon">:</span></dt>
+<dd class="field-even"><p>new project</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#sim_launch_py.classes.Project.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.pickle_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pickle_path</span></span><a class="headerlink" href="#sim_launch_py.classes.Project.pickle_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.systems">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">systems</span></span><a class="headerlink" href="#sim_launch_py.classes.Project.systems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.systems_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">systems_path</span></span><a class="headerlink" href="#sim_launch_py.classes.Project.systems_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.classes.</span></span><span class="sig-name descname"><span class="pre">System</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System" title="Permalink to this definition">¶</a></dt>
+<dd><p>The system class that stores and manage all the information and methods.</p>
+<p>Attributes:</p>
+<ul class="simple">
+<li><p>name : name of the system. This is used to create the directory of the system.</p></li>
+<li><p>path : absolute path of the system.</p></li>
+<li><p>molecules : list of Molecule() objects belonging to the system.</p></li>
+<li><p>box : size of the box (of the initial configuration).</p></li>
+<li><p>boxshape : shape of the simulation box.</p></li>
+<li><p>simulations : list of Simulation() objects of the system.</p></li>
+<li><p>run_command : command lines to be used to run the simulations.</p></li>
+<li><p>gromacs : gromacs binary path, inherited from the Project().</p></li>
+<li><p>composition : composition of the system. Order of values is the same of the order in self.molecules.</p></li>
+<li><p>atoms : list of Atom() objects in the system.</p></li>
+<li><p>natoms : total numer of atoms in the systems.</p></li>
+</ul>
+<p>Methods:</p>
+<ul class="simple">
+<li><p>help() : print the help for this class</p></li>
+<li><p>add_molecule(self, name: str, moltype=None, knownmolecules=None) : add species to the system.</p></li>
+<li><p>add_box(self, box_side: float, shape=’cubic’) : create simulation box.</p></li>
+<li><p>createSolventBox(self, solvent: object, output_structure=”solvent_box.pdb”, density=None, nmols=None): add solvent molecules to the simulation box.</p></li>
+<li><p>insertSolute(self, solute: object, solvent: object, solvent_box=”solvent_box.pdb”, concentration=0, output_structure=”start.pdb”): add solute molecules to the box and remove excess solvent molecules.</p></li>
+<li><p>writeTop(self, atomtypes_path: str, molecules: objects): write the topology file for the system in gromacs format.</p></li>
+<li><p>add_simulation(self, simtype: str, mdrun_options=’’, mdp=’’, print_bash=True, name=’’,maxwarn=0, start_coord=’’,gmxbin=’’): add simulation to the system.</p></li>
+<li><p>print_command(self, bash_file): print the bash script file to run the simulations.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._assign_atoms_to_molecules">
+<span class="sig-name descname"><span class="pre">_assign_atoms_to_molecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._assign_atoms_to_molecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add atom objects to molecule objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the molecule.</p></li>
+<li><p><strong>atoms</strong> (<em>list</em>) – list of atom objects.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._box_matrix">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_box_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._box_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a box vector [a, b, c, alpha, beta, gamma], compute the box matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>box</strong> (<em>list</em>) – box vector. box vectors (a,b,c) are assumed to be i nm, angles (alpha, beta, gamma) are assumed to be in degrees.</p>
+</dd>
+<dt class="field-even">Returns M<span class="colon">:</span></dt>
+<dd class="field-even"><p>box matrix</p>
+</dd>
+<dt class="field-odd">Rtype M<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._loadfrommol2">
+<span class="sig-name descname"><span class="pre">_loadfrommol2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol2file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._loadfrommol2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load molecules from a MOL2 structure file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the MOL2 structure file.</p></li>
+<li><p><strong>mol2file</strong> (<em>str</em>) – name of the MOL2 structure file.</p></li>
+<li><p><strong>keep_coordinates</strong> (<em>bool</em>) – keep coordinates read from the structure file. Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._update_coordinates">
+<span class="sig-name descname"><span class="pre">_update_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._update_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign the coordinates of atoms from a PDB structure file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>structure_file</strong> (<em>str</em>) – PDB file from which coordinates are read.</p></li>
+<li><p><strong>start</strong> (<em>int</em>) – index of the first molecule of the system for which atomic coordinates are updated. Defaults to 0.</p></li>
+<li><p><strong>end</strong> (<em>int</em>) – index of the last molecule (included) of the system for which atomic coordinates are updated. Defaults to np.inf.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._update_molecule_indexes">
+<span class="sig-name descname"><span class="pre">_update_molecule_indexes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._update_molecule_indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renumber the indexes of the molecules (0-based).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.add_box">
+<span class="sig-name descname"><span class="pre">add_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box_side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cubic'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.add_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create simulation box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>box_side</strong> (<em>float</em>) – side of the box in nm.</p></li>
+<li><p><strong>shape</strong> (<em>str</em>) – shape of the box. Defaults to ‘cubic’.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.add_molecule">
+<span class="sig-name descname"><span class="pre">add_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">structure_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.add_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new molecules to a system starting from a structure file (e.g. a PDB file).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the molecule.</p></li>
+<li><p><strong>structure_file</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the structure file to be read. Defaults to None.</p></li>
+<li><p><strong>keep_coordinates</strong> (<em>bool</em><em>, </em><em>optional</em>) – keep the coordinates read from the structure file. Defaults to True.</p></li>
+<li><p><strong>keep_box</strong> (<em>bool</em><em>, </em><em>optional</em>) – read the box parameters from the structure file and use them to define/update the box attribute of the system. Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.ambertools">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ambertools</span></span><a class="headerlink" href="#sim_launch_py.classes.System.ambertools" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.box">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">box</span></span><a class="headerlink" href="#sim_launch_py.classes.System.box" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.center_box">
+<span class="sig-name descname"><span class="pre">center_box</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.center_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center the atoms in the box with gmx editconf (equivalent to gmx editconf -c)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.delete_molecule">
+<span class="sig-name descname"><span class="pre">delete_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delete_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.delete_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete molecules from a system and update the index of the remaining molecules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delete_list</strong> (<em>list</em>) – list of the indexes of the molecules to be deleted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.find_molecule_by_resname">
+<span class="sig-name descname"><span class="pre">find_molecule_by_resname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.find_molecule_by_resname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the molecules in a system with the given residue name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>resname</strong> (<em>str</em>) – residue name of the molecules to be found.</p>
+</dd>
+<dt class="field-even">Returns mol_list<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of indexes of the molecules with the given residue name.</p>
+</dd>
+<dt class="field-odd">Rtype mol_list<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.gromacs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gromacs</span></span><a class="headerlink" href="#sim_launch_py.classes.System.gromacs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.help">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#sim_launch_py.classes.System.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.insert_molecules">
+<span class="sig-name descname"><span class="pre">insert_molecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molstruct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_conf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_conf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'inserted.pdb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.insert_molecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert molecules in random positions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the molecule.</p></li>
+<li><p><strong>molstruct</strong> (<em>str</em>) – structure file of the molecule to insert. PN: it supports only structures with a single molecule.</p></li>
+<li><p><strong>initial_conf</strong> (<em>str</em><em>, </em><em>optional</em>) – structure file into which the new molecules are inserted. Defaults to None. If no initial configuration is given, an empty box is created and populated. System.box need to have been already defined.</p></li>
+<li><p><strong>final_conf</strong> (<em>str</em><em>, </em><em>optional</em>) – final structure file (in PDB format) with the inserted molecules. Defaults to inserted.pdb.</p></li>
+<li><p><strong>nmol</strong> (<em>int</em><em>, </em><em>optional</em>) – number of molecules to insert. Defaults to 1.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.molecules">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">molecules</span></span><a class="headerlink" href="#sim_launch_py.classes.System.molecules" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sim_launch_py.classes.System.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#sim_launch_py.classes.System.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.replicate_cell">
+<span class="sig-name descname"><span class="pre">replicate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.replicate_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replicate the given box in the 3 directions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>repl</strong> (<em>list</em><em>, </em><em>optional</em>) – number of times the cell is replicated in each direction. Defaults to [1, 1, 1]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.save_pdb">
+<span class="sig-name descname"><span class="pre">save_pdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdb_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.save_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a PDB file with the current configuration of the system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pdb_filename</strong> (<em>str</em>) – output PDB file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.simulations">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">simulations</span></span><a class="headerlink" href="#sim_launch_py.classes.System.simulations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-sim_launch_py.gromacs"></span><dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs.EnergyMinimization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.gromacs.</span></span><span class="sig-name descname"><span class="pre">EnergyMinimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdrun_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'start.pdb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'topol.top'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_mdp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_bash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwarn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmxbin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gmx_mpi'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.gromacs.EnergyMinimization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs.MD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.gromacs.</span></span><span class="sig-name descname"><span class="pre">MD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdrun_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_mdp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thermostat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'vv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">barostat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Parrinello-Rahman'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsteps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_bash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwarn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmxbin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gmx_mpi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plumed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.gromacs.MD" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs.MD.add_bias">
+<span class="sig-name descname"><span class="pre">add_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">biastype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.gromacs.MD.add_bias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a bias to the simulation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the bias</p></li>
+<li><p><strong>biastype</strong> (<em>str</em>) – type of bias to apply, available types are:  ‘METAD’, ‘UPPER_WALLS’, ‘LOWER_WALLS’</p></li>
+<li><p><strong>cv</strong> (<em>object</em>) – name of the collective variable to bias</p></li>
+</ul>
+</dd>
+</dl>
+<p>:param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs : keyword arguments that depend on the specific bias
+:returns new_bias: the new bias object
+:rtype object:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs.MD.add_cv">
+<span class="sig-name descname"><span class="pre">add_cv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cvtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.gromacs.MD.add_cv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a collective variable to the simulation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the collective variable</p></li>
+<li><p><strong>cvtype</strong> (<em>str</em>) – type of collective variable, available types are: ‘TORSION’, ‘ENERGY’.</p></li>
+</ul>
+</dd>
+</dl>
+<p>:param <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs : keyword arguments for the chosen type of variable
+:returns new_cv: the new collective variable
+:rtype new_cv: CV object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs.MD.biases">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">biases</span></span><a class="headerlink" href="#sim_launch_py.gromacs.MD.biases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs.MD.cvs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cvs</span></span><a class="headerlink" href="#sim_launch_py.gromacs.MD.cvs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs._Simulation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.gromacs.</span></span><span class="sig-name descname"><span class="pre">_Simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdrun_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.gromacs._Simulation" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs._Simulation.mdrun_options">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mdrun_options</span></span><a class="headerlink" href="#sim_launch_py.gromacs._Simulation.mdrun_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs._Simulation.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sim_launch_py.gromacs._Simulation.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs._Simulation.path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#sim_launch_py.gromacs._Simulation.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs._Simulation.run">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><a class="headerlink" href="#sim_launch_py.gromacs._Simulation.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.gromacs._Simulation.topology">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">topology</span></span><a class="headerlink" href="#sim_launch_py.gromacs._Simulation.topology" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-sim_launch_py.ffparms"></span><dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.ffparms.amb2gmx">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.ffparms.</span></span><span class="sig-name descname"><span class="pre">amb2gmx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecule_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.ffparms.amb2gmx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run amb2gmx for a molecule</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>molecule_name</strong> (<em>str</em>) – molecule name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.ffparms.extract_atomtypes_from_gmx_top">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.ffparms.</span></span><span class="sig-name descname"><span class="pre">extract_atomtypes_from_gmx_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomtypefile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.ffparms.extract_atomtypes_from_gmx_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes a gromacs topology file and extracts the atom types in the [ atomtypes ] section</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>topfile</strong> (<em>str</em>) – name of the gromacs topology (.top) file</p></li>
+<li><p><strong>atomtypefile</strong> (<em>str</em>) – name of the destination atom type file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.ffparms.extract_molecule_from_gmx_top">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.ffparms.</span></span><span class="sig-name descname"><span class="pre">extract_molecule_from_gmx_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_itp_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.ffparms.extract_molecule_from_gmx_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes a gromacs topology file of a single molecule type and extracts the following sections: 
+[ moleculetype ], [ atoms ], [ bonds ], [ pairs ], [ angles ], [ dihedrals ])</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>topfile</strong> (<em>str</em>) – path of the gromacs topology (.top) file</p></li>
+<li><p><strong>path_itp_file</strong> (<em>str</em>) – path of the destination gromacs include topology (.itp) file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.ffparms.gaff">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.ffparms.</span></span><span class="sig-name descname"><span class="pre">gaff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UNK'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_charges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bcc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gaff2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.ffparms.gaff" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is used to compute gaff parameters for small molecules using tleap, and to transform them in a gromacs friendly form.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>molecule</strong> (<em>str</em>) – name of the molecule</p></li>
+<li><p><strong>path_output</strong> (<em>str</em>) – path to output</p></li>
+<li><p><strong>res_name</strong> (<em>str</em><em>, </em><em>optional</em>) – residue name. Defaults to ‘UNK’.</p></li>
+<li><p><strong>generate_charges</strong> (<em>str</em><em>, </em><em>optional</em>) – charge assignment method. Defaults to ‘bcc’.</p></li>
+<li><p><strong>atomtype</strong> (<em>str</em><em>, </em><em>optional</em>) – atomtype scheme definition (gaff, gaff2). Defaults to ‘gaff2’.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – overwrite existing files?. Defaults to False.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.ffparms.getTop">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.ffparms.</span></span><span class="sig-name descname"><span class="pre">getTop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fromPath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toPath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.ffparms.getTop" title="Permalink to this definition">¶</a></dt>
+<dd><p>obtain topology file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>molecule</strong> (<em>str</em>) – molecule name</p></li>
+<li><p><strong>fromPath</strong> (<em>str</em>) – path where the topology is. Defaults to ‘’.</p></li>
+<li><p><strong>toPath</strong> (<em>str</em>) – path where the topology goes. Defaults to ‘’.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-sim_launch_py.plumed"></span><dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.plumed.LowerWalls">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">LowerWalls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed.LowerWalls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.plumed.Metad">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">Metad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hills_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HILLS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">biasfactor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_spacing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed.Metad" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.plumed.PotentialEnergy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">PotentialEnergy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed.PotentialEnergy" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.plumed.PotentialEnergy.directive">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">directive</span></span><a class="headerlink" href="#sim_launch_py.plumed.PotentialEnergy.directive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.plumed.Torsion">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">Torsion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed.Torsion" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.plumed.Torsion.atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms</span></span><a class="headerlink" href="#sim_launch_py.plumed.Torsion.atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.plumed.Torsion.directive">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">directive</span></span><a class="headerlink" href="#sim_launch_py.plumed.Torsion.directive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.plumed.UpperWalls">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">UpperWalls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed.UpperWalls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.plumed._Bias">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">_Bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed._Bias" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.plumed._Bias.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sim_launch_py.plumed._Bias.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.plumed._CV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">_CV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed._CV" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.plumed._CV.cvtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cvtype</span></span><a class="headerlink" href="#sim_launch_py.plumed._CV.cvtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.plumed._CV.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sim_launch_py.plumed._CV.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.plumed._CV.print_cv">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_cv</span></span><a class="headerlink" href="#sim_launch_py.plumed._CV.print_cv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.plumed.writePlumedFile">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">writePlumedFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plumed_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colvar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printstride</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed.writePlumedFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write Plumed File</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plumed_file</strong> (<em>str</em>) – path of the output plumed file</p></li>
+<li><p><strong>simulation</strong> – simulation with groups, cvs, and biases to use.n    :type simulation: object</p></li>
+<li><p><strong>colvar</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the colvar file where values of CVs will be saved. Defaults to None.</p></li>
+<li><p><strong>printstride</strong> (<em>int</em><em>, </em><em>optional</em>) – stride for output of colvar file. Defaults to 500 steps.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-sim_launch_py.utilities"></span><dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.utilities.calc_fractional_coords">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">calc_fractional_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.utilities.calc_fractional_coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.utilities.countMolecules">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">countMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecule</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.utilities.countMolecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count number of molecules of a given type in a structure file</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>structure_file (str) : name of the structure file
+molecule (Molecule() object) : molecule</p>
+</dd>
+<dt>Return:</dt><dd><p>nmols (int) : number of molecules</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.utilities.create">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.utilities.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new directory or a new file.
+TODO Rewrite in a more compact way. Use os.remove instead of os.system(rm …)
+:param path: Path of the directory/file to generate
+:param arg_type: Is it a file or directory?
+:param backup: If the directory/file already exists, create a backup directory/file
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.utilities.estimateNumMolecules">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">estimateNumMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.utilities.estimateNumMolecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the number of molecules in a box at a given density</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>box_volume (float) : volume of the simulation box in [nm**3]
+mass (float) : mass of the molecule type in [g/mol]
+density (float) : density of molecules in [g/L]</p>
+</dd>
+<dt>Return:</dt><dd><p>n (int) : number of molecules</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.utilities.get_distance">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sel_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.utilities.get_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-0"></span><dl class="py function">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">calc_fractional_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">countMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecule</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count number of molecules of a given type in a structure file</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>structure_file (str) : name of the structure file
+molecule (Molecule() object) : molecule</p>
+</dd>
+<dt>Return:</dt><dd><p>nmols (int) : number of molecules</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new directory or a new file.
+TODO Rewrite in a more compact way. Use os.remove instead of os.system(rm …)
+:param path: Path of the directory/file to generate
+:param arg_type: Is it a file or directory?
+:param backup: If the directory/file already exists, create a backup directory/file
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">estimateNumMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the number of molecules in a box at a given density</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>box_volume (float) : volume of the simulation box in [nm**3]
+mass (float) : mass of the molecule type in [g/mol]
+density (float) : density of molecules in [g/L]</p>
+</dd>
+<dt>Return:</dt><dd><p>n (int) : number of molecules</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sel_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id8" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-sim_launch_py.external.molecules"></span><p>Functions to define molecular properties that can be used in
+the calculation of collective variables and analysis of simulations</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.external.molecules.findTorsionalAngles">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.molecules.</span></span><span class="sig-name descname"><span class="pre">findTorsionalAngles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">structure_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pdb'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.molecules.findTorsionalAngles" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><p>structure (str): structure file of the molecule.
+structure_format (str, optional): format of the structure file. Defaults to ‘pdb’.</p>
+</dd>
+<dt>Returns:</dt><dd><p>torsion_angle_indices (list): list of lists identifying the dihedral angles of the molecule. Values are 0-indexed.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Adapted from code by Edgar Olehnovics</p>
+</dd></dl>
+
+<span class="target" id="module-sim_launch_py.external.gaussianFit"></span><dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit.gaussianFit">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">gaussianFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dihedral_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotFit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit.gaussianFit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate fit parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dihedral_angles</strong> (<em>str</em>) – text file with the values of dihedral angles</p></li>
+<li><p><strong>datacol</strong> (<em>int</em><em>, </em><em>optional</em>) – column (0-indexed) where data is. Defaults to 1.</p></li>
+<li><p><strong>plotFit</strong> (<em>bool</em><em>, </em><em>optional</em>) – plot the original histogram and the fitted gaussians? Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns centers<span class="colon">:</span></dt>
+<dd class="field-even"><p>centers of the fitted distributions</p>
+</dd>
+<dt class="field-odd">Rtype centers<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Returns sigma<span class="colon">:</span></dt>
+<dd class="field-even"><p>sigma values of the fitted distributions</p>
+</dd>
+<dt class="field-odd">Rtype sigma<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit.histogram">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dihedral_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probcutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit.histogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the probability distribution given a timeseries of dihedral angles</p>
+<blockquote>
+<div><p>centers,histo (list,list) : centers of the bins and values of the probability distribution.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dihedral_angles</strong> (<em>str</em>) – text file with the timeseries. Angle values are assumed to be in the second column of the file.</p></li>
+<li><p><strong>datacol</strong> (<em>int</em><em>, </em><em>optional</em>) – column (0-indexed) where data is. Defaults to 1.</p></li>
+<li><p><strong>probcutoff</strong> (<em>float</em><em>, </em><em>optional</em>) – cutoff value for the population of a bin to take into account in the final histogram. Defaults to 0.001</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns centers<span class="colon">:</span></dt>
+<dd class="field-even"><p>centers of the bins of the probability distribution.</p>
+</dd>
+<dt class="field-odd">Rtype centers<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Returns histo<span class="colon">:</span></dt>
+<dd class="field-even"><p>values of the histogram of the probability distribution</p>
+</dd>
+<dt class="field-odd">Rtype histo<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit.sumGaussFunct">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">sumGaussFunct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit.sumGaussFunct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sum of Gaussian functions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>list</em>) – x axis values</p></li>
+<li><p><strong>parameters</strong> (<em>list</em>) – list of parameters of length 3*N where N is the number of Gaussians to estimate. Order of the parameters is A,mu,sigma.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns f<span class="colon">:</span></dt>
+<dd class="field-even"><p>y axis values</p>
+</dd>
+<dt class="field-odd">Rtype f<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">sim_launch_py</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to sim_launch_py’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Matteo Paloni.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
