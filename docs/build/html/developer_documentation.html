@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Usage &#8212; sim_launch_py 20231012 documentation</title>
+    <title>Developer Documentation &#8212; sim_launch_py 20231012 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -16,6 +16,7 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="User Documentation" href="user_documentation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,7 +34,7 @@
           <div class="body" role="main">
             
   <section id="module-sim_launch_py.classes">
-<span id="usage"></span><h1>Usage<a class="headerlink" href="#module-sim_launch_py.classes" title="Permalink to this heading">¶</a></h1>
+<span id="developer-documentation"></span><h1>Developer Documentation<a class="headerlink" href="#module-sim_launch_py.classes" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Atom">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.classes.</span></span><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Atom" title="Permalink to this definition">¶</a></dt>
@@ -1023,59 +1024,6 @@ density (float) : density of molecules in [g/L]</p>
 <span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">numberOfAtomsFromTop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.utilities.numberOfAtomsFromTop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<span class="target" id="module-0"></span><dl class="py function">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">calc_fractional_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id5">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">countMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecule</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Count number of molecules of a given type in a structure file</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>structure_file (str) : name of the structure file
-molecule (Molecule() object) : molecule</p>
-</dd>
-<dt>Return:</dt><dd><p>nmols (int) : number of molecules</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id6">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a new directory or a new file.
-TODO Rewrite in a more compact way. Use os.remove instead of os.system(rm …)
-:param path: Path of the directory/file to generate
-:param arg_type: Is it a file or directory?
-:param backup: If the directory/file already exists, create a backup directory/file
-:return:</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id7">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">estimateNumMolecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimate the number of molecules in a box at a given density</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>box_volume (float) : volume of the simulation box in [nm**3]
-mass (float) : mass of the molecule type in [g/mol]
-density (float) : density of molecules in [g/L]</p>
-</dd>
-<dt>Return:</dt><dd><p>n (int) : number of molecules</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id8">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sel_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id8" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id9">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">numberOfAtomsFromTop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id9" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <span class="target" id="module-sim_launch_py.external.molecules"></span><p>Functions to define molecular properties that can be used in
 the calculation of collective variables and analysis of simulations</p>
 <dl class="py function">
@@ -1190,15 +1138,16 @@ structure_format (str, optional): format of the structure file. Defaults to ‘p
 
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="user_documentation.html">User Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developer_documentation.html">Developer Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer Documentation</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="user_documentation.html" title="previous chapter">User Documentation</a></li>
   </ul></li>
 </ul>
 </div>
@@ -1232,7 +1181,7 @@ structure_format (str, optional): format of the structure file. Defaults to ‘p
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/usage.rst.txt"
+      <a href="_sources/developer_documentation.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
