@@ -132,6 +132,16 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.change_path">
+<span class="sig-name descname"><span class="pre">change_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newpath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_program_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.change_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change path of the project 
+:param newpath: new position of the project. The new position of the project will be newpath/Project.name 
+:type newpath: str
+:param reset_program_paths: Update programs (Gromacs, Ambertools, …) paths? Defaults to False
+:type reset_program_paths: bool</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Project.delete_system">
 <span class="sig-name descname"><span class="pre">delete_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delete_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.delete_system" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a system from project and update the index of remaining systems.</p>
@@ -245,6 +255,21 @@
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.center_box">
 <span class="sig-name descname"><span class="pre">center_box</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.center_box" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center the atoms in the box with gmx editconf (equivalent to gmx editconf -c)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.create_run_script">
+<span class="sig-name descname"><span class="pre">create_run_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scriptname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">platform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bash'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.create_run_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the script to run the simulations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scriptname</strong> (<em>str</em>) – name of the final script to launch the simulations.</p></li>
+<li><p><strong>simulations</strong> (<em>list</em>) – which simulations need to be run. Defaults to None (which means all simulations. I know…)</p></li>
+<li><p><strong>platform</strong> (<em>str</em>) – type of platform on which simulations will be run. Available are ‘bash’ for running locally, or ‘myriad’ to run on Myriad HPC &#64; UCL.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
