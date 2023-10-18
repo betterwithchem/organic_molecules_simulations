@@ -81,7 +81,7 @@ def molecularWeightFromTop(top_path):
                     mass+=float(cols[7])
 
     return mass
-
+"""
 def numberOfAtomsFromTop(top_path):
 
     read=False
@@ -100,7 +100,7 @@ def numberOfAtomsFromTop(top_path):
                     natoms+=1
 
     return natoms
-"""                    
+                   
 
 def estimateNumMolecules(box_volume,mass,density):
     """ Estimate the number of molecules in a box at a given density

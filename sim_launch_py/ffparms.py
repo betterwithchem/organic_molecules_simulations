@@ -5,24 +5,24 @@ import parmed as pmd
 import shutil
 import sim_launch_py.utilities as util
 
-def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype='gaff2', overwrite=False):
+def gaff(molecule: str, path_output: str, res_name: str='UNK', generate_charges: str='bcc', atomtype: str='gaff2', overwrite: bool=False):
     """This function is used to compute gaff parameters for small molecules using tleap, and to transform them in a gromacs friendly form. 
 
-    Args:
-        molecule (_type_): name of the molecule
-        path_output (_type_): path to output
-        res_name (str, optional): residue name. Defaults to 'UNK'.
-        generate_charges (str, optional): charge assignment method. Defaults to 'bcc'.
-        atomtype (str, optional): atomtype scheme definition (gaff, gaff2). Defaults to 'gaff2'.
-        overwrite (bool, optional): overwrite existing files?. Defaults to False.
-        
-    """   
-        
-    #path_ambertools='/home/matteo/Source/amber22/bin/'
-    #path_parmchk = path_ambertools + "/parmchk2"
-    #path_antechamber = path_ambertools + "/antechamber"
-    #path_leap = path_ambertools + "/tleap"
+    :param molecule: name of the molecule
+    :type molecule: str
+    :param path_output: path to output 
+    :type path_output: str
+    :param res_name: residue name. Defaults to 'UNK'.
+    :type res_name: str, optional
+    :param generate_charges: charge assignment method. Defaults to 'bcc'.
+    :type generate_charges: str, optional
+    :param atomtype: atomtype scheme definition (gaff, gaff2). Defaults to 'gaff2'.
+    :type atomtype: str, optional
+    :param overwrite: overwrite existing files?. Defaults to False. 
+    :type overwrite: bool, optional
 
+    """
+        
     path_parmchk =  "parmchk2"
     path_antechamber = "antechamber"
     path_leap = "tleap"
@@ -85,8 +85,6 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
         os.makedirs(tempdir)
         
     os.chdir( tempdir )
-
-    
     
     # create mol2 file from input coordinates
     os.system(
@@ -97,9 +95,6 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
             generate_charges,
             ext,
             atomtype))
-
-    
-
     
     # create compound library
     with open("lib.leap",'w') as f:
@@ -172,14 +167,18 @@ def gaff(molecule, path_output, res_name='UNK', generate_charges='bcc', atomtype
     
     return 0
 
-def getTop(molecule,fromPath='',toPath=''):
+def getTop(molecule: str,fromPath: str='',toPath: str=''):
     """obtain topology file
 
-    Args:
-        molecule (str): molecule name
-        fromPath (str, optional): path where the topology is. Defaults to ''.
-        toPath (str, optional): path where the topology goes. Defaults to ''.
+    :param molecule: molecule name
+    :type molecule: str
+    :param fromPath: path where the topology is. Defaults to ''.
+    :type fromPath: str
+    :param toPath: path where the topology goes. Defaults to ''.
+    :type toPath: str
+
     """
+    
     fromPath=os.path.abspath(fromPath)
     toPath=os.path.abspath(toPath)
     
@@ -204,77 +203,77 @@ def getTop(molecule,fromPath='',toPath=''):
     
     
 
-def amb2gmx(molecule_name):
+def amb2gmx(molecule_name: str):
     """Run amb2gmx for a molecule
 
-    Args:
-        molecule_name (str): molecule name
+    :param molecule_name: molecule name
+    :type molecule_name: str
+
     """
+    
     amber = pmd.load_file('{}.prmtop'.format(molecule_name), '{}.inpcrd'.format(molecule_name))
     amber.save('{}.top'.format(molecule_name),overwrite=True)
     amber.save('{}.gro'.format(molecule_name),overwrite=True)
     
-def extract_molecule_from_gmx_top(topfile,path_itp_file):
-    """This function takes a gromacs topology file of a single molecule type and extracts the following sections: 
-    [ moleculetype ], [ atoms ], [ bonds ], [ pairs ], [ angles ], [ dihedrals ])
+def extract_molecule_from_gmx_top(topfile: str):
+    """This function takes a gromacs topology file of a single molecule type and extracts the following sections:     [ moleculetype ], [ atoms ], [ bonds ], [ pairs ], [ angles ], [ dihedrals ])
+
+    :param topfile: path of the gromacs topology (.top) file
+    :type topfile: str
+
     """
-
     print_line=False
-    
+
+    itp=''
+
     with open(topfile,'r') as top:
-        with open(path_itp_file,'w') as itp:
-            for line in top:
-                if line.strip() == "[ moleculetype ]":
-                    print_line=True
-                if line.strip() == "[ system ]":
-                    print_line=False
-                if print_line:
-                    itp.write(line)
+        for line in top:
+            if line.strip() == "[ moleculetype ]":
+                print_line=True
+            if line.strip() == "[ system ]":
+                print_line=False
+            if print_line:
+                itp+=line
 
-    return
+    return itp
 
 
-def extract_atomtypes_from_gmx_top(topfile,atomtypefile):
+def extract_atomtypes_from_gmx_top(topfile: str):
     """This function takes a gromacs topology file and extracts the atom types in the [ atomtypes ] section
 
-    Args:
-        topfile (str): nameof the top file
-        atomtypefile (str): name of the atom type file
-    """
+    :param topfile: name of the gromacs topology (.top) file
+    :type topfile: str
 
+    """
     existing_atypes=[]
 
-    if os.path.isfile(atomtypefile) is False:
-        os.system("touch {}".format(atomtypefile))
+    #if os.path.isfile(atomtypefile) is False:
+    #    os.system("touch {}".format(atomtypefile))
+
+    atomtypes={}
         
-    with open(atomtypefile,'r') as f:
-        for line in f:
-            cols=line.split()
-            existing_atypes.append(cols[0])
-    
     readline=False
     readnext=False
-    with open(atomtypefile,'a') as af:
-        with open(topfile,'r') as tf:
-            for line in tf:
-                if line[0]!=";":
-                    if line.strip() == "[ atomtypes ]":
-                        readnext=True
-                    if (not readnext) and (line[0] == "["):
-                        readline=False
-                    if readline:
-                        cols=line.split()
-                        if len(cols)>0:
-                            atype=cols[0]
-                            if atype in existing_atypes:
-                                print("Skipping atom type {}: it already exists in {}".format(atype,atomtypefile))
-                            else:
-                                af.write(line)
+    with open(topfile,'r') as tf:
+        for line in tf:
+            if line[0]!=";":
+                if line.strip() == "[ atomtypes ]":
+                    readnext=True
+                if (not readnext) and (line[0] == "["):
+                    readline=False
+                if readline:
+                    cols=line.split()
+                    if len(cols)>0:
+                        atomtypes.update({cols[0]:{}})
+                        values=''
+                        for icol in range(1,len(cols)):
+                            values+=cols[icol]+"    "
+                        atomtypes[cols[0]]['parms']=values
+                        #atomtypes.append(atype)
 
+                if readnext:
+                    readline=True
+                    readnext=False
 
-                    if readnext:
-                        readline=True
-                        readnext=False
-
-    
+    return atomtypes
 

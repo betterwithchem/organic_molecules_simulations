@@ -2,89 +2,65 @@ import os
 import sim_launch_py.utilities as util
 import numpy as np
 
+
 class Project():
-    """
-    The project class that stores and manage all the information and methods.
+    """The project class that stores and manage all the information and methods.\n
 
-    Attributes:
-    - name : name of the project. This defines the directory where the project will be stored and most of path variables. 
-    - project_path : absolute path of the project. The name of the directory is derived from the name of the project.
-    - systems_path : directory where the data of the simulated systems are stored. This is the parent directory of the systems. 
-    - topology_path : directory where the topology files (.top and .itp) of the molecules used in the project are stored and retrieved to be used in each system.
-    - init_struct_path : path where initial structures of the molecules used in the project are stored and retrieved to be used in each system.
-    - mdp_path : path where default .mdp input files for gromacs are stored.
-    - pickle_path : path where the project is saved in .pkl format.
-    - job_script_path : path where the template files for submission scripts are stored.
-    - systems : list of System() objects in the project.
-    - molecules : list of Molecule() objects in the project.
-    - gromacs : path to gromacs binary
-    - ambertools : path to ambertools binaries directory
+    Attributes:\n
+    - name : name of the project. This defines the directory where the project will be stored and most of path variables. \n
+    - project_path : absolute path of the project. The name of the directory is derived from the name of the project. \n
+    - systems_path : directory where the data of the simulated systems are stored. This is the parent directory of the systems. \n
+    - topology_path : directory where the topology files (.top and .itp) of the molecules used in the project are stored and retrieved to be used in each system.\n
+    - init_struct_path : path where initial structures of the molecules used in the project are stored and retrieved to be used in each system.\n
+    - mdp_path : path where default .mdp input files for gromacs are stored.\n
+    - pickle_path : path where the project is saved in .pkl format.\n
+    - job_script_path : path where the template files for submission scripts are stored.\n
+    - systems : list of System() objects in the project.\n
+    - molecules : list of Molecule() objects in the project.\n
+    - gromacs : path to gromacs binary. \n
+    - ambertools : path to ambertools binaries directory. \n
  
-    Methods:
-    - help() : print the help for this class.
-    - add_molecule(self, name: str, resname='UNK', structure=None) : add and initialize a Molecule() object to the Project() object.
-    - add_system(self,name: str) : add and initialize System() to the Project()
-    - new_project(name=None, path=None, overwrite=False) : create new Project()
-    - save(self) : save Project() in Project().pickle_path
-    - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. 
-    - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.
+    Methods:\n
+    - help() : print the help for this class.\n
+    - add_system(self,name: str) : add and initialize System() to the Project(). \n
+    - new_project(name=None, path=None, overwrite=False) : create new Project(). \n
+    - save(self) : save Project() in Project().pickle_path. \n
+    - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. \n
+    - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts. \n
     
-
-     #### TODO METHODS ####
-    - change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and
-change all the pertinent path attributes.
+     #### TODO METHODS #### \n
+    - change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.\n
 
     """
-
-    def __init__(self,name=None, path=None):
+    
+    def __init__(self, name: str, path: str):
+        
         """Project Class Constructor
 
-        Args:
-            name (str, optional): Project name. Defaults to None.
-            path (str, optional): Project path. Defaults to None.
+        :param name: name of the project.
+        :type name: str
+        :param path: path of the project
+        :type path: str
+        
         """
-        path=os.path.abspath(path)
-
+        
         if path.rstrip().endswith("/"):
-            path = path.rstrip()[:-1]
+            path=path.rstrip()[:-1]
         
         self._name=name
-        self._project_path=os.path.abspath(path)
-        self._systems_path="{}/Systems".format(path)
-        self._topology_path="{}/Topologies".format(path)
-        self._init_struct_path="{}/Initial_structures".format(path)
-        self._mdp_path="{}/mdp".format(path)        
-        self._pickle_path="{}/.multisim.pkl".format(path)
-        self._job_script_path=None
-        #self._logfile="{}/project.log".format(path)
         self._systems=list()
-        self._molecules=list()        
+        self._path=os.path.abspath(path)
+        self._systems_path='./Systems'
+        self._defaults_path='./Defaults'
+        self._pickle_path="{}/.multisim.pkl".format(path)
         self._gromacs=None
         self._ambertools=None
 
         # look for gromacs and ambertools in the $PATH
         self._checkGromacs()
         self._checkAmberTools()
-       
-    @property
-    def project_path(self):
-        return self._project_path
 
-    @property
-    def mdp_path(self):
-        return self._mdp_path
-
-    @property
-    def init_struct_path(self):
-        return self._init_struct_path
-
-    @property
-    def topology_path(self):
-        return self._topology_path
-
-    @property
-    def job_script_path(self):
-        return self._job_script_path
+        
 
     @property
     def name(self):
@@ -93,18 +69,22 @@ change all the pertinent path attributes.
     @property
     def systems(self):
         return self._systems
-    
-    @property
-    def molecules(self):
-        return self._molecules
 
     @property
-    def logfile(self):
-        return self._logfile
+    def path(self):
+        return self._path
 
     @property
     def systems_path(self):
         return self._systems_path
+
+    @property
+    def defaults_path(self):
+        return self._defaults_path
+
+    @property
+    def pickle_path(self):
+        return self._pickle_path
 
     @property
     def gromacs(self):
@@ -113,27 +93,37 @@ change all the pertinent path attributes.
     @property
     def ambertools(self):
         return self._ambertools
-   
-    @job_script_path.setter
-    def job_script_path(self,sp):
-        self._job_script_path=sp
 
-    @logfile.setter
-    def logfile(self,log):
-        self._logfile=log
-
+    @path.setter
+    def path(self,p):
+        self._path=p
+        return self._path
+    
     @systems_path.setter
-    def systems_path(self,p):
-        self._systems_path=p
+    def systems_path(self,sp):
+        self._systems_path=sp
+        return self._systems_path
+
+    @defaults_path.setter
+    def defaults_path(self,dp):
+        self._defaults_path=dp
+        return self._defaults_path
+
+    @pickle_path.setter
+    def pickle_path(self,pp):
+        self._pickle_path=pp
+        return self._pickle_path
 
     @gromacs.setter
-    def gromacs(self,gmx):
-        self._gromacs=gmx
+    def gromacs(self,gp):
+        self._gromacs=gp
+        return self._gromacs
 
     @ambertools.setter
-    def ambertools(self,amber):
-        self._ambertools=amber
-        
+    def ambertools(self,ap):
+        self._ambertools=ap
+        return self._ambertools
+
     @staticmethod
     def help():
         print("""Attributes:
@@ -152,216 +142,158 @@ change all the pertinent path attributes.
      
     Methods:
     - help() : print the help for this class.
-    - add_molecule(self,name=None,resname='UNK', structure=None) : add and initialize Molecule() to the Project()
-    - add_system(self,name=None) : add and initialize System() to the Project()
+    - add_system(self,name: str) : add and initialize System() to the Project()
     - new_project(name=None, path=None, overwrite=False) : create new Project()
-    - save(self) : save Project() in Project().pickle_path
-    - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. 
-    - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.
+    
     
 
      #### TODO METHODS ####
-    - change_project_path(self, newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.""")
-
-    def add_molecule(self, name: str, resname='UNK', structure=None):
-        """Add molecule to project
-
-        Args:
-            name (str): molecule name. Defaults to None.
-            resname (str, optional): residue name. Defaults to 'UNK'.
-            structure (str, optional): molecular structure file. Defaults to None.
-        Returns: 
-            newmolecule (object): new molecule.
-        """
-
-        # restrict resname to a string of capital letters of length 3
-        resname=resname.upper()[0:3]
-        
-        import shutil
-        for mol in self._molecules:
-            if name == mol._name:                
-                print("Error: a molecule with name {} ({}) already exists in the project!".format(name,resname))
-                exit()
-
-        newmolecule=Molecule(name,resname=resname,structure=os.path.abspath(structure))
-        
-        self._molecules.append(newmolecule)        
-        shutil.copy(structure, self._init_struct_path)
-
-        return newmolecule
-
-    def add_system(self, name: str):
-        """Add system to project
-
-        Args:
-            name (str): system name.
-        Returns:
-            newsystem (object): new system.
-        """
-
-        from sim_launch_py.utilities import create
-        
-        for sys in self._systems:
-            if name==sys.name:
-                print("Error: System {} already exists!".format(name))
-                exit()
-
-        syspath=self._systems_path+'/'+name
-        if os.path.isdir(syspath) is False:
-            create(syspath, arg_type='dir')
-        
-        newsystem=System(name=name,path=syspath,gromacs=self._gromacs)
-        self._systems.append(newsystem)
-
-        return newsystem
-       
+    - change_project_path(self, newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.
+    - save(self) : save Project() in Project().pickle_path
+    - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. 
+    - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.""")
 
     def new_project(name: str, path: str, overwrite=False):
+        
         """Add new project
 
-        Args:
-            name (str): Project Name.
-            path (str): Project path.
-            overwrite (bool, optional): Overwrite previous project? Defaults to False.
+        :param name: Project Name.
+        :type name: str
+        :param path: Project path.
+        :type path: str
+        :param overwrite: Overwrite previous project? Defaults to False.
+        :type overwrite: bool
+        :returns nproject: new project
 
-        Returns:
-            nproject (object): new project.
         """
-        
-        from sim_launch_py.utilities import create
         
         path=os.path.abspath(path)
         nproject = Project(path=path, name=name)
 
-        if not os.path.exists(nproject._project_path):
+        if not os.path.exists(nproject._path):
             print("New Project: {}".format(nproject._name))
             print("=" * 100)
-            create(nproject._project_path, arg_type='dir', backup=False)
+            util.create(nproject._path, arg_type='dir', backup=False)
         else:
             if overwrite:
                 print("New Project: {}".format(nproject._name))
                 print("=" * 100)
-                create(nproject._project_path, arg_type='dir', backup=False)
+                util.create(nproject._path, arg_type='dir', backup=False)
             else:
-                print("Error: Folder already exists.\n "
+                print("ERROR: Folder already exists.\n "
                       "You can change directory name or overwrite with 'overwrite=True' "
                       "(everything inside will be deleted)")
-                exit()
-        create(nproject._systems_path, arg_type='dir')
-        create(nproject._init_struct_path, arg_type='dir')
-        create(nproject._topology_path, arg_type='dir')
-        create(nproject._mdp_path, arg_type='dir')
+                
+        util.create(nproject._path+'/'+nproject._systems_path, arg_type='dir')
+        #util.create(nproject._init_struct_path, arg_type='dir')
+        #util.create(nproject._topology_path, arg_type='dir')
+        #util.create(nproject._mdp_path, arg_type='dir')
+
+        print(os.path.abspath(os.path.curdir))
+        os.chdir(path)
+        print(os.path.abspath(os.path.curdir))
         
         return nproject
 
+    def change_path(self, newpath: str, reset_program_paths: bool=False):
+        """Change path of the project 
+        :param newpath: new position of the project. The new position of the project will be newpath/Project.name 
+        :type newpath: str
+        :param reset_program_paths: Update programs (Gromacs, Ambertools, ...) paths? Defaults to False
+        :type reset_program_paths: bool
 
-    def save(self):
-        """
-        Save project to project folder.
-        """
-        print("Saving Project...", end="")
-        import pickle
-        import os
-        if os.path.exists(self._pickle_path):
-            os.rename(self._pickle_path, self._project_path+ "/.multisim.bck.pkl")
-        with open(self._pickle_path, "wb") as file_pickle:
-            pickle.dump(self, file_pickle)
-        print("done")
-
-
-
-    def load_project(project_folder: str): 
-        """Load an existing project. The Project object is saved in the project directory every time the command Project.save()
-        is used.
-        
-        Args:
-           project_folder (str): location of the project to be loaded.
-
-        Returns:
-           project (object): loaded project.
-        """
-
-        import pickle
-        project_folder = os.path.realpath(project_folder)
-        file_pickle = project_folder + "/.multisim.pkl"
-        if os.path.exists(file_pickle):
-            project = pickle.load(open(file_pickle, "rb"))
-            print("Loading Project Name: {}\n".format(project._name))
-            if os.path.realpath(project._project_path) != project_folder:
-                project.projecy_path = project_folder
-            return project
-        else:
-            print("No project found in '{}'. Use the 'Project.new_project' module to create a new project."
-                  "".format(project_folder))
-
-    #def change_project_path(self, newpath: str):
-    #    """Change the path of the project and all the relevant paths in the objects in the project (systems, simulations...)
-    #
-    #    This involves changing all the relevant variables (e.g., project_path, systems_path, topology_path...), 
-    #    and copying the existing files to the new location. 
-    #    """
-    #
-    #    oldpath=self.project_path        
-    #    self._project_path=os.path.abspath(path)
-
-        
-
-    
-    def write_sub_command(self,scriptname: str,system='myriad', template=None):
-        """For each system Write a script to run the simulations and write a global bash script to initiate all systems.
-
-        Args:
-           scriptname (str): name of the global bash script.
-           system (str, optional): type of script for the systems. Supported are 'bash' and 'myriad' (GridEngine format on Myriad cluster at UCL). Defaults to 'myriad'.
-           template (str, optional): custom template to be used for the local script. Defaults to None. 
         """
         import shutil
-        recognised_systems=['bash','myriad']
 
-        scriptname=self.project_path+'/'+scriptname
+        if newpath.rstrip().endswith("/"):
+            newpath=newpath.rstrip()[:-1]
+            
+        newpath='{}/{}'.format(os.path.abspath(newpath),self._name)
+
+        print('-'*50)
+        print('Changing the path of the project\n from {}\n to   {}.'.format(self._path,newpath))
+        print('This changes ONLY the path attribute of the project. It does NOT copy files to the new path!')
+
+        self._path=newpath
+        self._pickle_path="{}/.multisim.pkl".format(newpath)
+
+        if reset_program_paths:
+            print("Updating gromacs and antechamber binary paths.")
+            self._checkGromacs()
+            self._checkAmberTools()
+
+
+
+
+            
+    
+
+    def add_system(self, name:str):
         
-        if system=='bash':
-            for sys in self.systems:
-                print("Sorry... for the moment this doesn't do anything...")                
+        """Add system to project
 
-        elif system=='myriad':
-
-            if template==None:
-                template=self.job_script_path+'/myriad.job'
-            else:
-                template=os.path.abspath(template)
-
-            filename=os.path.basename(template)
-
-            for sys in self.systems:
-                shutil.copy(template,sys.path)
-                with open(sys.path+'/'+filename,'a') as f:
-                    f.write("\n\n")
-                    for s in sys.simulations:
-                        if s.run:
-                            f.write("# {}\n".format(s.name))
-                            f.write(s.bash_command+'\n\n')
-                sys.run_command='qsub -N {0} {1}\n'.format(self.name+'_'+sys.name, filename)
-
-            with open(scriptname,'w') as f:
-                f.write("#!/bin/bash\n\n")
-                for sys in self.systems:
-                    f.write("cd {}\n".format(sys.path))
-                    f.write(sys.run_command)
-                    f.write("cd {}\n\n".format(self.project_path))
-
-        else:
-            print("ERROR: Type of submission script '{}' not recognized. acceptable values are: ".format(system))
-            for rs in recognised_systems:
-                print("- {}".format(rs))
-            exit()
-
-    def _checkGromacs(self):
-        """Look for Gromacs binary and add it to the project.
-           This method looks for standard names of gromacs binaries (i.e. 'gmx' and 'gmx_mpi'). If either of these is not found,
-           it will prompt the user to input manually the absolute path of the gromacs executable.
-           The value of the attribute is the absolute path of the binary (/path/to/gmx or /path/to/gmx_mpi or /path/to/gmx_bin_custom_name).
+        :param name: system name.
+        :type name: str
+     
         """
+
+        for s in self.systems:
+            if name==s.name:
+                print("ERROR: a system with name {} already exists".format(name))
+                return
+
+        util.create(self._systems_path+'/{}'.format(name), arg_type='dir')
+        
+        newsystem=System(name, path=self._systems_path+'/{}'.format(name))
+
+        if self.gromacs:
+            newsystem.gromacs=self.gromacs
+        if self.ambertools:
+            newsystem.ambertools=self.ambertools
+
+        newsystem.index=len(self.systems)
+            
+        self.systems.append(newsystem)
+
+        print("Created system {}".format(newsystem.name))
+
+    def delete_system(self, delete_list):
+        
+        """Delete a system from project and update the index of remaining systems.
+
+        :param delete_list: list of system indexes
+        :type param: list
+
+        """
+        
+        kept_systems=[]
+
+        for sys in self.systems:
+            if sys.index not in delete_list:
+                kept_systems.append(sys)
+
+        self.systems=kept_systems
+
+        self._renumber_systems()
+
+    def _renumber_systems(self):
+        
+        """Renumber starting from 0 the index of the systems in a project.
+
+        """
+        
+        for i,s in enumerate(self.systems):
+            s.index=i
+            
+    def _checkGromacs(self):
+        
+        """Look for Gromacs binary and add it to the project.
+            This method looks for standard names of gromacs binaries (i.e. 'gmx' and 'gmx_mpi'). If either of these is not found,
+            it will prompt the user to input manually the absolute path of the gromacs executable.
+            The value of the attribute is the absolute path of the binary (/path/to/gmx or /path/to/gmx_mpi or /path/to/gmx_bin_custom_name).
+
+        """
+        
         import shutil
 
         if self.gromacs is None:
@@ -375,9 +307,11 @@ change all the pertinent path attributes.
             exit("Error: gromacs command is not in the PATH and is not added to the project")
 
     def _checkAmberTools(self):
+        
         """Look for AmberTools binaries directory and add it to the project.
            This method looks for the antechamber binary. If it is not found, it will prompt the user to input manually the absolute path of the ambertools binaries directory.
-           The value of the attribute is the absolute path of the directory (/path/to/bin).
+           The value of the attribute is the absolute path of antechamber (/path/to/bin/antechamber).
+
         """
         
         import shutil
@@ -389,10 +323,147 @@ change all the pertinent path attributes.
         elif self.ambertools=='':
             exit("Error: ambertools binaries is not in the PATH and is not added to the project")
 
-        
+
 class System():
     """
-    The system class that stores and manage all the information and methods.
+    The system class that stores and manage all the information and methods.\n
+
+    Attributes:\n
+    - name : name of the system. This is used to create the directory of the system.\n
+    - path : absolute path of the system.\n
+    - molecules : list of Molecule() objects belonging to the system.\n
+    - box : size of the box (of the initial configuration).\n
+    - boxshape : shape of the simulation box.\n
+    - simulations : list of Simulation() objects of the system.\n
+    - run_command : command lines to be used to run the simulations.\n
+    - gromacs : gromacs binary path, inherited from the Project(). \n
+    - composition : composition of the system. Order of values is the same of the order in self.molecules.\n
+    - atoms : list of Atom() objects in the system.\n
+    - natoms : total numer of atoms in the systems.\n
+    
+    Methods:\n
+    - help() : print the help for this class\n
+    - add_molecule(self, name: str, moltype=None, knownmolecules=None) : add species to the system.\n
+    - add_box(self, box_side: float, shape='cubic') : create simulation box.\n
+    - createSolventBox(self, solvent: object, output_structure="solvent_box.pdb", density=None, nmols=None): add solvent molecules to the simulation box.  \n
+    - insertSolute(self, solute: object, solvent: object, solvent_box="solvent_box.pdb", concentration=0, output_structure="start.pdb"): add solute molecules to the box and remove excess solvent molecules.\n
+    - writeTop(self, atomtypes_path: str, molecules: objects): write the topology file for the system in gromacs format.\n
+    - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''): add simulation to the system.\n
+    - print_command(self, bash_file): print the bash script file to run the simulations.\n
+   
+    """
+    
+    def __init__(self, name: str, path=None):
+        """System Class Constructor
+
+        :param name: System name
+        :type name: str
+        :param path: System path. Defaults to None.
+        :type path: str, optional
+
+        """
+        
+        self._name=name
+        self._index=None
+        self._molecules=list()
+        self._simulations=list()
+        self._box=None
+        self._path=path
+        self._topology=None
+        self._gromacs=None
+        self._ambertools=None
+        self._atomtypes={}
+        self._species={}
+               
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def index(self):
+        return self._index
+    
+    @property
+    def molecules(self):
+        return self._molecules
+
+    @property
+    def simulations(self):
+        return self._simulations
+
+    @property
+    def box(self):
+        return self._box
+
+    @property
+    def path(self):
+        return self._path
+
+    @property
+    def topology(self):
+        return self._topology
+
+    @property
+    def gromacs(self):
+        return self._gromacs
+
+    @property
+    def ambertools(self):
+        return self._ambertools
+
+    @property
+    def atomtypes(self):
+        return self._atomtypes
+
+    @property
+    def species(self):
+        return self._species
+    
+    @name.setter
+    def name(self,n):
+        self._name=n
+        return self._name
+    
+    @index.setter
+    def index(self,ndx):
+        self._index=ndx
+        return self._index
+
+    @molecules.setter
+    def molecules(self,ms):
+        self._molecules=ms
+        return self._molecules
+
+    @box.setter
+    def box(self,box_vector):
+        self._box=box_vector
+        return self._box
+
+    @path.setter
+    def path(self,p):
+        self._path=p
+        return self._path
+
+    @topology.setter
+    def topology(self,tp):
+        self._topology=tp
+        return self._topology
+
+    @gromacs.setter
+    def gromacs(self,gp):
+        self._gromacs=gp
+        return self._gromacs
+
+    @ambertools.setter
+    def ambertools(self,ap):
+        self._ambertools=ap
+        return self._ambertools
+
+
+    @staticmethod
+    def help():
+        print("""The system class that stores and manage all the information and methods.
 
     Attributes:
     - name : name of the system. This is used to create the directory of the system.
@@ -415,469 +486,274 @@ class System():
     - insertSolute(self, solute: object, solvent: object, solvent_box="solvent_box.pdb", concentration=0, output_structure="start.pdb"): add solute molecules to the box and remove excess solvent molecules.
     - writeTop(self, atomtypes_path: str, *molecules: objects): write the topology file for the system in gromacs format.
     - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''): add simulation to the system.
-    - print_command(self, bash_file): print the bash script file to run the simulations.
-   
-    """
-
-    def __init__(self,name,path=None,gromacs=None):
-        """System Class Constructor
-
-        Args:
-            name (str): Systen name
-            path (str, optional): System path. Defaults to None.
-            gromacs (str, optional): Gromacs binary name. Defaults to None.
-        """
-
-        self._name=name
-        self._path=path
-        self._molecules=list()
-        #self._temperature=0
-        self._box=list()
-        self._boxshape=None
-        self._simulations=list()
-        self._run_command=None
-        self._gromacs=gromacs
-        self.composition=list()
-        self._atoms=list()
-        self._natoms=0        
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def path(self):
-        return self._path
-
-    @property
-    def molecules(self):
-        return self._molecules
-
-    #@property
-    #def temperature(self):
-    #    return self._temperature
-    ##### temperature will be set in the simulation object
-
-    @property
-    def box(self):
-        return self._box
-
-    @property
-    def boxshape(self):
-        return self._boxshape
-
-    @property
-    def simulations(self):
-        return self._simulations
-
-    @property
-    def run_command(self):
-        return self._run_command
-
-    @property
-    def gromacs(self):
-        return self._gromacs
-
-    @property
-    def atoms(self):
-        return self._atoms
-
-    @property
-    def natoms(self):
-        return self._natoms
-
-    @gromacs.setter
-    def gromacs(self,gmx):
-        self._gromacs=gmx
-    
-    #@temperature.setter
-    #def temperature(self,T):
-    #    self._temperature=T
-    ##### temperature will be set in the simulation object
-
-    @natoms.setter
-    def natoms(self,n):
-        self._natoms=n
-
-    @box.setter
-    def box(self,box):
-        self._box=box
-
-    @boxshape.setter
-    def boxshape(self,shape):
-        self._boxshape=shape
-
-    @run_command.setter
-    def run_command(self,command):
-        self._run_command=command
-
-    @staticmethod
-    def help():
-        print("""Attributes:
-    - name : name of the system. This is used to create the directory of the system.
-    - path : absolute path of the system.
-    - molecules : list of Molecule() objects belonging to the system.
-    - box : size of the box (of the initial configuration).
-    - boxshape : shape of the simulation box.
-    - simulations : list of Simulation() objects of the system.
-    - run_command : command lines to be used to run the simulations.
-    - gromacs : gromacs binary path, inherited from the Project(). 
-    - composition : composition of the system. Order of values is the same of the order in self.molecules.
-    - atoms : list of Atom() objects in the system.
-    - natoms : total numer of atoms in the systems.
-
-Methods:
-    - help() : print the help for this class
-    - add_molecule(self, name: str, moltype=None, knownmolecules=None) : add species to the system.
-    - add_box(self, box_side: float, shape='cubic') : create simulation box.
-    - createSolventBox(self, solvent: object, output_structure="solvent_box.pdb", density=None, nmols=None): add solvent molecules to the simulation box.  
-    - insertSolute(self, solute: object, solvent: object, solvent_box="solvent_box.pdb", concentration=0, output_structure="start.pdb"): add solute molecules to the box and remove excess solvent molecules.
-    - writeTop(self, atomtypes_path: str, *molecules: objects): write the topology file for the system in gromacs format.
-    - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''): add simulation to the system.
     - print_command(self, bash_file): print the bash script file to run the simulations.""")
     
-    def add_molecule(self, name: str, moltype=None, knownmolecules=None, pdbfile=None):
-        """Add new molecule type to the system.
+    def add_molecule(self, name: str, structure_file: str=None, keep_coordinates: bool=True, keep_box: bool=True):
+        """Add new molecules to a system starting from a structure file (e.g. a PDB file).
 
-        Args:
-           name (str): name of the molecule.
-           moltype (str, optional): generic attribute of the molecule. Defaults to None.
-           knownmolecules (list of Molecule(), optional): molecules already present in the project.
-        Return: 
-           newmolecule (object): new molecule
-
-        TODO:
-        This function needs to be radically changed in order to accomodate for import from pdb file.
-        Also, one molecule object for each real molecule in the system will be created, instead of having one  
-        molecule object for each species as done until now.
-        This should, in some case, make treatment for specific molecules easier (for analysis or to bias the system)
-        (This makeover has probably effects also on the preferred way to generate configurations from scratch)
-        
-        How to proceed:
-        1) addition of pdb file to the available inputs
-        2) check: if from pdb -> read pdb and add molecules and coordinates from the pdb
-                  elif not from pdb -> read name of the known molecule and add it without coordinates. 
-                                       coordinates will be added later when building the initial configuration in
-                                       the way specified by the user
-        3) addition of a molecule object needs to trigger the creation of the following attributes:
-                 - name
-                 - resname
-                 - list of atom names
-                 - list of atom types
-                 - number of atoms
-                 - mass
-                 - coordinates (may be empty)
-                 - bond matrix (likely a NxN matrix of 0 and 1, where 1 is bound atoms, 0 not bound. Diagonal is 0) 
-	n) to be considered: addition of a "molecule group", for molecules that share parameters (.itp files...)
-                 
-        
-
+        :param name: name of the molecule. 
+        :type name: str
+        :param structure_file: name of the structure file to be read. Defaults to None.
+        :type structure_file: str, optional
+        :param keep_coordinates: keep the coordinates read from the structure file. Defaults to True.
+        :type keep_coordinates: bool, optional
+        :param keep_box: read the box parameters from the structure file and use them to define/update the box attribute of the system. Defaults to True.
+        :type keep_box: bool, optional
 
         """
-
         
-
-        if pdbfile:
-            # procedure here is:
-            # 1) create a new molecule
-            # 2) read the pdb file with a _loadfrompdb(pdbfile) function that returns:
-            #	a) list of atoms
-            #	b) list of coordinates
-            #	c) bond matrix
-            #	d) resname
-
-            # check that pdbfile exists
-
-            # get box info from pdb file
-            f=open(pdbfile,'r')
-            for line in f:
-                if line.startswith('CRYST1'):
-                    a=float(line[6:15])
-                    b=float(line[15:24])
-                    c=float(line[24:33])
-                    alpha=float(line[33:40])
-                    beta=float(line[40:47])
-                    gamma=float(line[47:54])
-                    self.box=[a/10,b/10,c/10,alpha,beta,gamma]   # sides in nm, angles in degrees
-
-            # get molecules and coordinates from pdb file                        
-            newmol=self._loadfrompdb(name,pdbfile)
-            for m in newmol:
-                self._molecules.append(m)
-
-        elif not pdbfile and knownmolecules:
-
-            import copy
-            for mol in knownmolecules:
-                if name==mol.name:
-                    newmolecule=copy.deepcopy(mol)
-                    newmolecule._mol_attributes=moltype
-                    self._molecules.append(newmolecule)
-                    return newmolecule
-
-        #print("Error: Couldn't add molecule {} to system {}. Molecule unknown.".format(name,self.name))
-        #exit()
-
+        import subprocess
         
-
-    @staticmethod
-    def _loadfrompdb(name: str, pdbfile: str ):
-        """
-        Taken and adapted from the method with the same name in PyPol by Nicholas Francia
-
-        Load Molecule from a PDB file. If the pdb file contain the 'CONECT' keyword,
-        bonds are taken from it. Alternatively, they can be generated with the 'atomtype' program.
-	:param name: Name of the molecule
-        :param pdbfile: Path of the PDB file
-        :param include_atomtype: Include the identification of the atom types
-        :return: Molecule() object
-        """
-
-        new_molecule = Molecule(name)
-        molecules = list()
-        
-        # Open pdb file
-
-        file_pdb = open(pdbfile)
-        bonds_imported = False # this flag becomes True iff there is at least one CONECT line
-        iline=0
-        prev_mol=0
-        for line in file_pdb:
-            iline+=1
-            # Import Molecular and Atom Properties
-            if line.startswith("ATOM") or line.startswith("HETATM"):
-                atom_index = int(line[6:11]) - 1
-                atom_label = line[12:16]
-                molecule_name = line[17:20]
-                molecule_index = int(line[22:26]) - 1
-                atom_x, atom_y, atom_z = (float(line[30:38]) / 10., float(line[38:46]) / 10., float(line[46:54]) / 10.)
-                atom_element = line[76:78].strip()
-
-                if not molecules:
-                    molecules.append(Molecule(molecule_name, molecule_index, resname=molecule_name))
-                elif molecules[-1]._index < molecule_index:
-                    molecules.append(Molecule(molecule_name, molecule_index, resname=molecule_name))
-
-                for molecule in molecules:
-                    if molecule_index == molecule._index:
-                        #molecule._atoms.append(Atom(index=atom_index, label=atom_label, ff_type=None, atomtype=None,
-                        #                            coordinates=[atom_x, atom_y, atom_z], element=atom_element,
-                        #                            bonds=None))
-                        molecule._atoms.append(Atom(atom_label, atom_index=atom_index, atomtype=None,
-                                                    coordinates=[atom_x, atom_y, atom_z], element=atom_element))
-                        
-
-            elif line.startswith("CONECT"):
-                cols=line.split()
-                atom_index=int(cols[1])-1
-                bonds_imported = True
-                bonds=[]
-                for icol in range(2,len(cols)):
-                    bonds.append(int(cols[icol])-1)
+        if not structure_file:
+            print('Error: a structure file is required')
+            return
 
                 
-                for imol in range(prev_mol,len(molecules)):
-                    break_again=False
-                    molecule=molecules[imol]
-                    molecule._natoms = len(molecule._atoms)
-                    for atom in molecule._atoms:
-                        if atom_index == atom._index:
-                            #print(imol,atom_index,bonds)
-                            atom._bonds = bonds
-                            prev_mol=imol
-                            break_again=True
-                            break
-                    if break_again:
-                        break
-                            
-        file_pdb.close()
+        # convert structure_file to mol2
 
-        # Import atomtypes (and eventually bonds) from .ac file
-        if not bonds_imported:
-            print("Something is wrong with the PDB file: No bonds found.\n"
-                  "Try to generate a structure.ac file with the ambertool 'atomtype' or 'antechamber' and rerun "
-                  "with the parameter 'include_atomtype=True'.")
+        extension=structure_file.split('.')[-1]
+        basename_structure_file=os.path.basename(os.path.splitext(structure_file)[0])
+                
+        mol2file=self.path+'/{}'.format(basename_structure_file+'.mol2')
+
+        #print(structure_file,mol2file)
+        #print(self.ambertools)
+        
+        result=subprocess.run('{3} -i {0} -fi {1} -o {2} -fo mol2 -j 5 -dr no -at gaff2'.format(structure_file,
+                                                                                                extension,
+                                                                                                mol2file,
+                                                                                                self.ambertools),
+                              stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+
+        self._loadfrommol2(name,mol2file,keep_coordinates=keep_coordinates)
+
+        found_box=False
+        if keep_box:
+            if extension=='pdb':
+                with open(structure_file,'r') as f:
+                    for line in f:
+                        if line.startswith('CRYST1'):
+                            found_box=True
+                            self.box=[0. for i in range(6)]
+                            self.box[0]=float(line[6:15])/10
+                            self.box[1]=float(line[15:24])/10
+                            self.box[2]=float(line[24:33])/10
+                            self.box[3]=float(line[33:40])
+                            self.box[4]=float(line[40:47])
+                            self.box[5]=float(line[47:54])
+                            break
+            else:
+                print('ERROR: only PDB files are supported to include box data from structure files.' \
+                      'You can add manually box data with system.add_box().')
+        
+
+        for m in self.molecules:
+            if m.resname not in self.species:
+                self.species[m.resname]={}
+
+    def insert_molecules(self, name: str, molstruct: str, initial_conf: str=None, final_conf: str='inserted.pdb', nmol: int=1):
+        """Insert molecules in random positions.
+
+        :param name: name of the molecule.
+        :type name: str
+        :param molstruct: structure file of the molecule to insert. PN: it supports only structures with a single molecule. 
+        :type molstruct: str
+        :param initial_conf: structure file into which the new molecules are inserted. Defaults to None. If no initial configuration is given, an empty box is created and populated. System.box need to have been already defined.
+        :type initial_conf: str, optional
+        :param final_conf: final structure file (in PDB format) with the inserted molecules. Defaults to inserted.pdb.
+        :type final_conf: str, optional
+        :param nmol: number of molecules to insert. Defaults to 1.
+        :type nmol: int, optional
+        
+        """
+
+        if len(self.molecules)>0 and initial_conf==None:
+            print("ERROR: you are trying to insert new molecules without taking into account molecules" \
+                  "that are already in the system.")
+
             return
 
         
-        # Check if molecule contains more than one component.
-        molecules = System._arrange_atoms_in_molecules(molecules)
+        final_conf_ext=final_conf.split('.')[-1]
+        if final_conf_ext!='pdb':
+            print('ERROR while inserting new molecules: Only PDB format is accepted for final_conf')
+            exit()
 
-        return molecules
-
-    @staticmethod
-    def _arrange_atoms_in_molecules(molecules: list):
-        """
-        Check if the atoms in a Molecule object belongs to a single molecule. This is done to prevent errors from
-        openbabel or the CSD Python API when assigning residues index. The check is performed by converting molecules to
-        graphs and looking at their edges with the Breadth First Search algorithm.
-        :param molecules: List of Molecule objects
-        :return:
-        """
-        from scipy.sparse import csr_matrix
-        from scipy.sparse.csgraph import breadth_first_order
-        new_molecules = list()
-        molidx = 0
-        for molecule in molecules:
-            graph = csr_matrix(molecule.contact_matrix)
-            removed = []
-            for atom in range(len(molecule._atoms)):
-                if atom in removed:
-                    continue
-
-                bfs = breadth_first_order(graph, atom, False, False)
-                removed = removed + list(bfs)
-                new_molecule = Molecule(molecule._resname)
-                new_molecule._index = molidx
-                molidx += 1
-                new_molecule._atoms = [molecule._atoms[i] for i in range(len(molecule._atoms)) if i in bfs]
-                new_molecule._natoms = len(new_molecule._atoms)
-                for natom in new_molecule._atoms:
-                    natom._index = natom._index - (new_molecule._natoms * new_molecule._index)
-                    natom._bonds = [bond - (new_molecule._natoms * new_molecule._index) for bond in natom._bonds]
-
-                #new_molecule._calculate_centroid()
-                #new_molecule._forcefield = molecule._forcefield
-                #new_molecule._potential_energy = molecule._potential_energy
-                #new_molecule._generate_contact_matrix()
-
-                new_molecules.append(new_molecule)
-        return new_molecules        
-
-    def delete_molecules(self,delete_indexes):
-
-        """Keep some molecule objects and delete the rest from the system object.
-  
-        :parm keep_indexes: list of molecule indexes correspondent to Molecule().index values
-        """
-
-        kept_molecules=[]
-        
-        for im,m in enumerate(self.molecules):
-            if m.index not in delete_indexes:
-                kept_molecules.append(m)
-
-        self._molecules=kept_molecules
-        
-        for im,m in enumerate(self._molecules):
-            #print(m.index)
-            m.index=im
-                
-
-        
-
-    #################
-        
-
-    def addBox(self,box_side: float, shape='cubic'):
-        """ Create simulation box.
- 
-        Args: 
-           box_side (float): side of the box.
-           shape (str, optional): shape of the box. Defaults to 'cubic'.
-        """
-
-        self.boxshape=shape
-        
-        if shape=='cubic':
-            self.box=[box_side]*3+[90.0]*3
-        elif shape=='dodecahedron':
-            self.box=[box_side, box_side, 0.5*np.sqrt(2)*box_side] + [60.0]*3 # see Gromacs manual
-        elif shape=='octahedron':
-            self.box=[box_side, 2/3*np.sqrt(2)*box_side, 1/3*np.sqrt(6)*box_side]+[71.53, 109.47, 71.53] # see Gromacs manual
-           
-
-    def createSolventBox(self, solvent: object, output_structure="solvent_box.pdb", density=None, nmols=None):
-        """ Add solvent molecules to the simulation box.
- 
-        Args: 
-           solvent (Molecule() object) : molecule species to be used as solvent.
-           output_structure (str, optional) : name of the structure file with the solvent box. Defaults to 'solvent_box.pdb'.
-           density (float, optional) : desired density of solvent molecules in [g/L]. Defaults to None.
-           nmols (int, optional) : desired number of solvent molecules. Defaults to None. If both density and number of molecules are provided, the size of the box is changed.
-        """
-        if (density is not None) and (nmols is not None):
-            
-            volume_box=solvent.mw*10/(density*6.022)*nmol
-            self.box[0]=volume_box**(1/3)
-            print("Both density and nmol have been defined: changing side of the box to {}.".format(self.box[0]))
-
+        directory,filename=os.path.split(final_conf)
+        if os.path.isabs(final_conf):
+            if directory==self.path:
+                pass
+            else:
+                print('Warning: path given for the final configuration is not in {0}. Path has been changed to {0}.'.format(self.path))
+                final_conf=self.path+'/{}'.format(filename)
         else:
-            if self.boxshape=='cubic':
-                volume_box=self.box[0]**3
-            elif self.boxshape=='dodecahedron':
-                volume_box=0.5*np.sqrt(2)*self.box[0]**3
-            elif self.boxshape=='octahedron':
-                volume_box=4/9*np.sqrt(3)*self.box[0]**3
+            final_conf=self.path+'/{}'.format(filename)
 
-        print(solvent.mw)
-        nmols=util.estimateNumMolecules(volume_box,solvent.mw,density)-1
         
-        os.system("{0} -nobackup editconf -f {1} -o {2} -box {3} -bt {4}  -c".format(self.gromacs,solvent.structure_path,
-                                                                                     output_structure,
-                                                                                     self.box[0],
-                                                                                     self.boxshape))
-               
-        os.system("{0} -nobackup insert-molecules -f {1} -o {1} -ci {1} -nmol {2} -try 20000".format(self.gromacs,output_structure,
-                                                                        nmols))
+        if not initial_conf:
 
-        inserted_mols=util.countMolecules(output_structure,solvent)
+            initial_conf=self.path+'/{}'.format('TEMP_EMPTY_BOX.pdb')
+            if self.box==None:
+                print('ERROR: when adding molecules without an initial configuration, a box must have been already defined')
+                return
 
-        if inserted_mols!=(nmols+1):
-            print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 20000, inserted_mols))
+            with open('{}'.format(initial_conf),'w') as f:
+                f.write('TITLE	MOLECULES IN A BOX\n')
+                f.write('{:6s}{:9.3f}{:9.3f}{:9.3f}{:7.2f}{:7.2f}{:7.2f}'.format("CRYST1",
+                                                                                 self.box[0]*10,  # sides in A
+                                                                                 self.box[1]*10,
+                                                                                 self.box[2]*10,
+                                                                                 self.box[3],	  # anglse in degrees
+                                                                                 self.box[4],
+                                                                                 self.box[5]))
+        else:
+
+            if os.path.isabs(initial_conf):
+                if os.path.isfile(initial_conf):
+                    pass
+                else:
+                    print('ERROR: file {} does not exist'.format(initial_conf))
+                    return
+            elif not os.path.isabs(initial_conf):
+                if os.path.isfile(self.path+'/{}'.format(initial_conf)):
+                    initial_conf=self.path+'/{}'.format(initial_conf)
+                elif  os.path.isfile(initial_conf):
+                    pass
+                else:
+                    print('ERROR: file {} does not exist'.format(initial_conf))
+                    return
+                    
+
+            
+
+        import subprocess        
+        result=subprocess.run("{0} insert-molecules -f {1} -ci {2} -nmol {3} -o {4}".format("gmx",
+                                                                                            initial_conf,
+                                                                                            molstruct,
+                                                                                            nmol,
+                                                                                            final_conf),
+                              stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+
+        # now check that all molecules have been inserted
+        added_line=result.stdout.decode()[result.stdout.decode().find("Added "):result.stdout.decode().find("Added ")+result.stdout.decode()[result.stdout.decode().find("Added "):].find(')')+1]
+
+        added=int(added_line.split()[1])
+        if added != nmol:
+            print("ERROR! {}".format(added_line))
             exit()
 
-        solvent.nmols=nmols
 
-        self._updateComposition()
+        # now add/create Molecule and Atom objects
 
+        index_first_new_mol=len(self.molecules)
+        index_last_new_mol=index_first_new_mol+nmol-1
 
+        #print(len(self.molecules))
+        self.add_molecule(name,structure_file=molstruct,keep_coordinates=False,keep_box=False)
+        #print(len(self.molecules))
+
+        if nmol>1:
+            lastmol=len(self.molecules)-1
+            import copy
         
-    def insertSolute(self, solute: object ,solvent: object, solvent_box="solvent_box.pdb", concentration=0.,
-                     output_structure="start.pdb"):
-        """ Insert solute molecules in the simulation box.
+        for i in range(1,nmol):
+            new_molecule=copy.deepcopy(self.molecules[lastmol])
+            self.molecules.append(new_molecule)
 
-        Args: 
-           solute (Molecule() object) : molecule type to be used as solute.
-           solvent (Molecule() object) : molecule type to be used as solvent. 
-           solvent_box (str, optional) : structure file where to add solute molecules. Defaults to 'solvent_box.pdb'.
-           concentration (float, optional) : desired concentration of solute molecules in [g/L]. A density of 0 is a flag for simulations of dilute systems with only 1 solute molecule.
-           output_structure (str, optional) : structure file where to save the final configuration. Defaults to 'start.pdb'.
-        """
-        
-        if concentration == 0:
-            # then single molecule
-            nmols=1
-        elif concentration > 0:
-            from math import ceil
-            nmols=util.estimateNumMolecules( self.box[0]**3,solute.mw,concentration )
+        self._update_molecule_indexes()
+        self._update_composition()
 
-        os.system("{0} insert-molecules -f {1} -o {2} -ci {3} -nmol {4} -try 10000 -replace {5} ".format( self.gromacs,
-                                                                                                          solvent_box,
-                                                                                                          output_structure,
-                                                                                                          solute.structure_path,
-                                                                                                          nmols,
-                                                                                                          solvent.resname))
+        # and update coordinates
 
-        inserted_mols=util.countMolecules(output_structure,solute)
+        #print('Update coordinates for molecules from {} to {} reading from file {}.'.format(index_first_new_mol,index_last_new_mol, final_conf))        
+        self._update_coordinates(final_conf, start=index_first_new_mol, end=index_last_new_mol)
 
-        if inserted_mols!=nmols:
-            print("Error! Inserted number of mol{} molecules required, but after {} trials only {} where inserted!".format(nmols, 10000, inserted_mols))
-            exit()
+        print("{} molecules of residue {} have been added. The file {} has been created.".format(nmol,new_molecule.resname, os.path.relpath(final_conf)))
 
-        solvent.nmols=util.countMolecules(output_structure,solvent)
-        solute.nmols=nmols
-        self._updateComposition()
 
-    def writeTop(self,atomtypes_path: str): #, *molecules: object):
-        """ Write the topology file in Gromacs format)
+    def replicate_cell(self,repl: list=[1, 1, 1]):
+        """Replicate the given box in the 3 directions.
 
-        Args: 
-            atomtypes_path (str) : path of the file with the atomtypes definition in Gromacs format.
+        :param repl:  number of times the cell is replicated in each direction. Defaults to [1, 1, 1]
+        :type repl: list, optional
+
         """
 
-        with open(self.path+'/topol.top','w') as top:
+        import copy
+        
+        M=self._box_matrix(self.box)
+        M_inv=np.linalg.inv(M)
 
+        newmolecules=[]
+
+        for xmult in range(0,repl[0]):
+            for ymult in range(0,repl[1]):
+                for zmult in range(0,repl[2]):
+                    if any(np.array(repl)>0):
+                        factor=[xmult, ymult, zmult]
+                        for im,m in enumerate(self.molecules):
+                            new_mol=copy.deepcopy(m)
+                            for ia,a in enumerate(new_mol.atoms):
+
+                                fract_coords=M_inv.dot(a.coordinates)
+                                new_fract_coords=[factor[i]*fract_coords[i] for i in range(3)]
+
+                                #new_cart_coords=M.dot(new_fract_coords)
+                                new_cart_coords=[0., 0., 0.]
+                                for idim,rf in enumerate(factor):
+                                    #print(im,ia,factor)
+                                    new_cart_coords[idim]=a.coordinates[idim]+\
+                                        xmult*self.box[0]*M[0][idim]+\
+                                        ymult*self.box[1]*M[1][idim]+\
+                                        zmult*self.box[2]*M[2][idim]
+
+                                a.coordinates=new_cart_coords
+                                #print(im,ia,a.coordinates)
+                                #print(new_mol.atoms[ia].coordinates)
+
+                            newmolecules.append(new_mol)
+
+        for i in range(3):
+            self.box[i]*=repl[i]
+        
+        
+        self.molecules+=newmolecules
+        self._update_molecule_indexes()
+        self._update_composition()
+        
+
+    def create_topology(self, structure: str, topology: str='topology.top'):
+        """Create topology for the current system
+
+        :param structure: pdb file with the current configuration (needed for the number of molecules)
+        :type structure: str
+        :param topology: name of the resulting topology file. Defaults to 'topology.top'.
+        :type topology: str
+
+        """
+
+        #1)
+
+        from sim_launch_py import ffparms
+        
+        for species in self.species:
+           
+            atomtypes=ffparms.extract_atomtypes_from_gmx_top(self.species[species]['top'])
+            for atype in atomtypes:
+                if atype not in self.atomtypes:
+                    self.atomtypes.update({atype:atomtypes[atype]})
+                else:
+                    print('atom type {} already existing, continuing...'.format(atype))
+
+            self.species[species]['itp']=ffparms.extract_molecule_from_gmx_top(self.species[species]['top'])
+            
+        #2)
+        # CAVEAT: the order of the molecules in the structure file is NOT checked.
+        self._update_composition()
+
+        #3)
+        topology='{}/{}'.format(self.path,topology)
+        with open(topology,'w') as top:
             top.write(";\n\
 ; Topology for system {}\n\
 ;\n\n".format(self.name))
@@ -889,211 +765,583 @@ Methods:
 [ atomtypes ]\n\
 ; name    at.num    mass    charge ptype  sigma      epsilon\n")
 
-            with open(atomtypes_path,'r') as af:
-                for line in af:
-                    top.write(line)
+            for atype in self.atomtypes:
+                top.write('{}\t{}\n'.format(atype,self.atomtypes[atype]['parms']))
 
-            top.write("\n\n")
+            top.write('\n')
 
-            for mol in self.molecules:
-                with open(mol.include_path,'r') as itp:
-                    top.write(";\n; {}\n;\n".format(mol.name))
-                    for line in itp:
-                        top.write(line)
-                top.write("\n\n")
+            for species in self.species:
+                top.write(self.species[species]['itp'])
+                top.write('\n\n')
 
-            top.write("[ system ]\n; Name\nA bunch of molecules floating around without rhyme or reason\n\n")
+            top.write('[ system ]\n{}\n\n'.format(self.name))
 
-            top.write("[ molecules ]\n")
+            top.write('[ molecules ]\n')
+
+            for species in self.species:
+                top.write('{}\t{}\n'.format(species,self.species[species]['nmols']))
+
+        self.topology='{}'.format(topology)
+                
+
             
-            for mol in self.molecules:
-                top.write("{0}\t{1}\n".format(mol.resname,mol.nmols))
-
             
 
-    def add_simulation(self, name: str, simtype: str, mdrun_options='', mdp='', print_bash=True,
-                       maxwarn=0, start_coord='', plumed=None):
-        """ Add a simulation to the system.
-         
-        Args: 
-           name (str) : name of the simulation.
-           simtype (str) : type of simulation to be run.
-           mdrun_options (str, optional) : optional flags to be added to the mdrun command. Defaults to ''.
-           mdp (str, optional) : name of the custom mdp file to use. Defaults to ''.
-           print_bash (bool, optional) : generate a bash command to launch the simulation. Defaults to True.
-           maxwarn (int, optional) : maximum number of warnings for grompp. Defaults to 0.
-           start_coord (str, optional) : starting configuration of the simulation. Defaults to ''.
-           plumed (str, optional) : plumed file to be used in the simulation. Defaults to None.
+    def _update_composition(self):
 
-        Returns:
-          sim : Simulation() object.
+        """Update the 'nmols' attribute of self.species dictionary by checking the residue names of the molecules in the system
+
         """
-       
-        import sim_launch_py.gromacs as gmx
-
-        accepted_types=['em','md']
-        
-        if start_coord=='':
-            if len(self.simulations)>0:
-                prev_sim=self.simulations[-1].name
+        found_species={}
+        for m in self.molecules:
+            if m.resname not in found_species:
+                found_species[m.resname]=1
             else:
-                print("ERROR: 	For the first simulation of the system you need to specify the name of the starting configuration!")
-                exit()
-            start_coord=self.path+'/'+prev_sim+'.gro'
-        else:
-            start_coord=os.path.abspath(start_coord)
-                
-        if simtype=='md':
-            if len(self.simulations)>0:
-                prev_sim=self.simulations[-1].name
-            elif len(self.simulations)==0:
-                prev_sim='start'
-            sim=gmx.MD(name,
-                       mdrun_options=mdrun_options, coord=start_coord, topology=self.path+'/topol.top',
-                       path_mdp=mdp, maxwarn=maxwarn,
-                       path_input=self.path,path_output=self.path,print_bash=True,gmxbin=self.gromacs,plumed=plumed)
-            
-        elif simtype=='em':
-            sim=gmx.EnergyMinimization(name,
-                                       mdrun_options=mdrun_options, coord=start_coord, topology=self.path+'/topol.top',
-                                       path_mdp=mdp, maxwarn=maxwarn,
-                                       path_input=self.path,path_output=self.path,print_bash=True, gmxbin=self.gromacs)
-        #elif simtype=='wtmetad':
-        #    sim=gmx.WTMD(name='wtmd')
-        else:
-            print("Error: simulation type not recognized, accepted types are {}, your input was {}.".format(accepted_types,simtype))
-            exit()
+                found_species[m.resname]+=1
 
-        self.simulations.append(sim)
+        for sp in found_species:
+            self.species[sp].update({'nmols':found_species[sp]})
 
-        return sim
+        
+         
+        
+        
+    def add_simulation(self, name: str, simtype: str, **kwargs):
 
-    def setSimsToRun(self, sims_to_run: list):
-        """ Define which simulations in a system are to be run.
+        """Add a simulation to the current system object.
 
-        Args:
-           sims_to_run (Simulation objects): list of simulations to run.
+        :param name: Name of the simulation object
+        :type name: str
+        :param simtype: Type of simulation. Available types are 'em' and 'md'.
+        :type simtype: str
+
+        :Keyword Arguments: Keyword arguments for simulation classes.
+        :returns: 
         """
+        from sim_launch_py.gromacs import EnergyMinimization,MD
+        import shutil
+        
+        accepted_simtypes=['em','md']
+
+
+        if simtype not in accepted_simtypes:
+            print("ERROR: provided simtype, {}, is not valid. Acceptable values are {}.".format(simtype,accepted_simtypes))
+            return
+
+        util.create('{}/{}'.format(self.path,name), arg_type='dir', backup=False)
+
+        newsim_index=len(self.simulations)
+        if simtype=='em':
+            newsim=EnergyMinimization(name, newsim_index)
+
+        elif simtype=='md':
+
+            newsim=MD(name, newsim_index)
+            newsim.plumed=kwargs.pop('plumed',None)
+
+        
+        newsim.path='{}/{}'.format(self.path,name)
+        newsim.state='Pending'
+        newsim.gromacs=kwargs.pop('gromacs',self.gromacs)
+        newsim.mdrun_options=kwargs.pop('mdrun_options',None)
+        newsim.topology=kwargs.pop('topology',self.topology)
+        newsim.mdp=kwargs.pop('path_mdp',None)
+        newsim.maxwarn=kwargs.pop('maxwarn',0)
+        newsim.coordinates=kwargs.pop('coordinates',None)
+        newsim.tpr=kwargs.pop('tpr',None)
+
+        shutil.copy(newsim.mdp,newsim.path)
+        newsim.mdp=os.path.basename(newsim.mdp)
+
+        shutil.copy(newsim.topology,newsim.path)
+        newsim.topology=os.path.basename(newsim.topology)
+
+        #shutil.copy(newsim.coordinates,newsim.path)
+        newsim.coordinates=os.path.relpath(newsim.coordinates,start=newsim.path)
+
+        if newsim.type=='md' and newsim.plumed:
+            newsim.mdrun_options+=' -plumed {}'.format(newsim.plumed)
+
+        
+        if len(kwargs)>0:
+            print("Warning: While creating the simulation object, there are remaining keyword arguments that have not been used: {}".format(kwargs.keys()))
+
+        self.simulations.append(newsim)
+
+        print("Added simulation {} ({}) to system {} ({}).".format(name,newsim_index,self.name,self.index))
+
+
+    def create_run_script(self, scriptname: str, simulations: list=None, platform: str='bash'):
+
+        """Create the script to run the simulations.
+
+        :param scriptname: name of the final script to launch the simulations.
+        :type scriptname: str 
+        :param simulations: which simulations need to be run. Defaults to None (which means all simulations. I know...)
+        :type simulations: list
+        :param platform: type of platform on which simulations will be run. Available are 'bash' for running locally, or 'myriad' to run on Myriad HPC @ UCL.
+        :type platform: str
+        
+
+        """
+        if simulations is None:
+            simulations=[sim.index for sim in self.simulations] 
+
+        available_platforms=['bash','myriad']
+        if platform not in available_platforms:
+
+            print("ERROR: platform to run the simulations is not valid. Available values are {}.".format(available_platforms))
+            return
+            
+        with open('{}/{}'.format(self.path,scriptname),'w') as f:
+
+            if platform=='myriad':
+
+                header="""#!/bin/bash -l
+
+# Batch script to run an MPI parallel job under SGE with Intel MPI.
+
+# Request two hours of wallclock time (format hours:minutes:seconds).
+#$ -l h_rt=24:00:00
+
+# Request 1 gigabyte of RAM per process (must be an integer followed by M, G, or T)
+#$ -l mem=1G
+
+# Request 1 gigabyte of TMPDIR space per node 
+# (default is 10 GB - remove if cluster is diskless)
+#$ -l tmpfs=2G
+
+# Set the name of the job.
+#$ -N MDjob
+
+# Select the MPI parallel environment and 36 processes.
+#$ -pe mpi 12
+
+# Set the working directory to somewhere in your scratch space.
+#$ -cwd 
+
+# load gromacs
+module unload -f compilers mpi
+module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheval flex plumed/2.5.2/intel-2018 gromacs/2019.3/plumed/intel-2018
+
+"""
+                f.write(header)
+            
+            for sim_index in simulations:
+
+                sim=self.simulations[sim_index]
+
+                f.write('cd {}\n'.format(os.path.basename(sim.path)))
+
+                if sim.mdp:
+                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5}\n'.format(self.gromacs,
+                                                                                              sim.mdp,
+                                                                                              sim.name,
+                                                                                              sim.maxwarn,
+                                                                                              sim.topology,
+                                                                                              sim.coordinates))
+
+                f.write('{0} mdrun -deffnm {1} {2}'.format(self.gromacs,sim.name,sim.mdrun_options))
+                     
+                f.write('\ncd ..\n\n')
+
+            
+
+        print('Written run script file in {}/{}'.format(self.path,scriptname))
+ 
+
+    def find_simulations_by_name(self,name: str):
+
+        """Find simulations by their name
+
+        :param name: Name of the simulation.
+        :type name: str
+        :returns: List of simulation indexes.
+        :rtype: list
+
+        """
+        sim_list=[]
         for sim in self.simulations:
-            sim.run=False
+            if sim.name==name:
+                sim_list.append(sim.index)
 
-        for sim in sims_to_run:
-            sim.run=True
+        return sim_list
+
+    def find_simulations_by_type(self,simtype: str):
+
+        """Find simulations by their type
+
+        :param simtype: Type of simulation (e.g. 'em', 'md').
+        :type simtype: str
+        :returns: List of simulation indexes.
+        :rtype: list.
+
+        """
+        sim_list=[]
+        for sim in self.simulations:
+            if sim.type==simtype:
+                sim_list.append(sim.index)
+
+        return sim_list
+
+    @staticmethod
+    def _box_matrix(box: list):
+        """Given a box vector [a, b, c, alpha, beta, gamma], compute the box matrix.
+
+        :param box: box vector. box vectors (a,b,c) are assumed to be i nm, angles (alpha, beta, gamma) are assumed to be in degrees.
+        :type box: list
+        :returns M: box matrix
+        :rtype M: list
+
+        """
+
+        deg2rad=np.pi/180
+        radbox=[0,0,0,0,0,0]
+        for i in range(3,6):
+            radbox[i]=box[i]*deg2rad
             
-    
-    def print_command(self, bash_file: str):
-        """ Print bash script to run the simulations of the system.
 
-        Args:
-           bash_file (str): name of the bash file.
-        """
+        n2=(np.cos(radbox[3])-np.cos(radbox[5])*np.cos(radbox[4]))/np.sin(radbox[5])
+        M=np.array([[1, 0, 0],
+                    [np.cos(radbox[5]), np.sin(radbox[5]), 0],
+                    [np.cos(radbox[4]), n2,             np.sqrt(np.sin(radbox[4])**2-n2*n2)]])
 
-        bash_file=self.path+'/'+bash_file
-
-        with open(bash_file,'w') as f:
-            f.write("#!/bin/bash\n\n")
-            for s in self.simulations:
-                f.write("# {}\n".format(s.name))
-                f.write(s.bash_command+'\n\n')
-
-
-    def _updateComposition(self):
-        """ Update the composition attribute, the atoms and the number of atoms in the system.
-        """
-
-        import copy
+        return M
         
-        self.composition=[0 for mol in self.molecules]
-        self._atoms=[]
+    def delete_molecule(self,delete_list: list):
+        """Delete molecules from a system and update the index of the remaining molecules.
 
-        for imol,mol in enumerate(self.molecules):
-            self.composition[imol]=mol.nmols
-            for i in range(mol.nmols):
-                for iatom,atom in enumerate(mol.atoms):
-                    new_atom=copy.deepcopy(mol.atoms[iatom])
-                    self._atoms.append(new_atom)
-
-        self._natoms=len(self._atoms)
-        self._updateAtomID()
+        :param delete_list: list of the indexes of the molecules to be deleted.
+        :type delete_list: list
         
+        """
+        
+        kept_molecules=[]
 
-    def _updateAtomID(self):
-        """ Update the atom ID of the atoms composing the system.
+        print("Deleting {} molecules from system {}.".format(len(delete_list),self.name))
+        for im,m in enumerate(self.molecules):
+            if m._index not in delete_list:
+                kept_molecules.append(m)
+
+        self.molecules=kept_molecules
+
+        self._update_molecule_indexes()
+        print("Now system {} has {} molecules".format(self.name,len(self.molecules)))
+
+        self._update_composition()
+
+
+
+
+    def find_molecule_by_resname(self,resname: str):
+        """Find the molecules in a system with the given residue name.
+
+        :param resname: residue name of the molecules to be found.
+        :type resname: str
+        :returns mol_list: list of indexes of the molecules with the given residue name.
+        :rtype mol_list: list
+
         """
 
+        mol_list=[]
+        for m in self.molecules:
+            if m.resname==resname:
+                mol_list.append(m.index)
+
+        return mol_list
+
+
+    def save_pdb(self,pdb_filename: str):
+        """Save a PDB file with the current configuration of the system.
+
+        :param pdb_filename: output PDB file. 
+        :type pdb_filename: str
+
+        """
+        
+        f=open(self.path+'/{}'.format(pdb_filename),'w')
+
+        if self.box:
+            f.write('{:6s}{:9.3f}{:9.3f}{:9.3f}{:7.2f}{:7.2f}{:7.2f}\n'.format("CRYST1",
+                                                                             self.box[0]*10,  # sides in A
+                                                                             self.box[1]*10,
+                                                                             self.box[2]*10,
+                                                                             self.box[3],	  # anglse in degrees
+                                                                             self.box[4],
+                                                                             self.box[5]))
+
+        iatom=1
+        for m in self.molecules:
+            for a in m.atoms:
+
+                # pdb files have a limit in the representation of number of atoms to 99999 and 9999 residues.
+                # to avoid formatting problems here iatom are cut to the last 5 digits and m.index to the last 4 digits
+
+                if iatom>99999:
+                    flase_iatom=iatom%100000
+                else:
+                    false_iatom=iatom
+
+                if m.index+1>9999:
+                    false_mindex=(m.index)%10000
+                else:
+                    false_mindex=m.index+1
+
+
+                    
+                f.write("{:6s}{:5d} {:4s} {:3s}  {:4d}    {:8.3f}{:8.3f}{:8.3f}{:6.2f}{:6.2f}          {:2s}  \n".format("ATOM",
+                                                                                                                         false_iatom,
+                                                                                                                         a.name,
+                                                                                                                         m.resname,
+                                                                                                                         false_mindex,
+                                                                                                                         a.coordinates[0]*10,
+                                                                                                                         a.coordinates[1]*10,
+                                                                                                                         a.coordinates[2]*10,
+                                                                                                                         1.00,
+                                                                                                                         1.00,
+                                                                                                                         a.element))
+                iatom+=1
+
+        f.close()
+
+        
+
+    def add_box(self, box_side: float, shape: str='cubic'):
+        """ Create simulation box.
+ 
+        :param box_side: side of the box in nm.
+        :type box_side: float
+        :param shape: shape of the box. Defaults to 'cubic'.
+        :type shape: str
+
+        """
+
+        import numpy as np
+        self.boxshape=shape
+        
+        if shape=='cubic':
+            self.box=[box_side]*3+[90.0]*3
+        elif shape=='dodecahedron':
+            self.box=[box_side, box_side, 0.5*np.sqrt(2)*box_side] + [60.0]*3 # see Gromacs manual
+        elif shape=='octahedron':
+            self.box=[box_side, 2/3*np.sqrt(2)*box_side, 1/3*np.sqrt(6)*box_side]+[71.53, 109.47, 71.53] # see Gromacs manual
+        else:
+            # custom shape
+            if len(box_side)!=6:
+                print("ERROR: for custom boxes, box_side must be a list of 6 values ([a,b,c,alpha,beta,gamma])")
+                exit()
+            self.box=box_side
+
+    def center_box(self):
+
+        """Center the atoms in the box with gmx editconf (equivalent to gmx editconf -c)
+
+        """
+
+        import subprocess
+
+        self.save_pdb('TEMP_STRUCT_TO_BE_CENTERED.pdb')
+        result=subprocess.run('{0} editconf -f {1}/TEMP_STRUCT_TO_BE_CENTERED.pdb -o {1}/CENTERED_STRUCT.pdb -c'.format(self.gromacs,self.path),stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+
+        
+        self._update_coordinates(self.path+'/CENTERED_STRUCT.pdb')
+
+        
+    def _update_coordinates(self,structure_file,start=0,end=np.inf):
+        """Assign the coordinates of atoms from a PDB structure file.
+
+        :param structure_file: PDB file from which coordinates are read.
+        :type structure_file: str
+        :param start: index of the first molecule of the system for which atomic coordinates are updated. Defaults to 0. 
+        :type start: int
+        :param end: index of the last molecule (included) of the system for which atomic coordinates are updated. Defaults to np.inf.
+        :type end: int
+        
+        """
+
+        iresid=0
         iatom=0
-        molatom=0
+
+        prev_resid=None
+        prev_iresid=None
+        with open(structure_file,'r') as f:
+            for line in f:
+                if line.startswith('ATOM') or line.startswith('HETATM'):
+                    resid=int(line[22:26])-1
+
+
+                    if prev_resid==None:
+                        prev_resid=resid
+                        #print(prev_resid,resid,iatom)
+                    if not prev_iresid:
+                        prev_iresid=iresid
+                        
+                    if resid!=prev_resid:
+                        iresid+=1
+                        prev_resid=resid
+                        iatom=0
+
+
+                    if iresid>=start and iresid<=end:
+
+                        #print(iresid,resid, self.molecules[iresid].index,self.molecules[iresid].resname, len(self.molecules[iresid].atoms), iatom)
+                        newcoords=[float(line[30:38])/10, float(line[38:46])/10, float(line[46:54])/10]
+                        self.molecules[iresid].atoms[iatom].coordinates=newcoords
+
+                        iatom+=1
+                        prev_iresid=iresid
+
+                    
+
+
+                                            
+                    
+
+    def _loadfrommol2(self,name: str, mol2file: str, keep_coordinates: bool=True):
+        """Load molecules from a MOL2 structure file.
+
+        :param name: name of the MOL2 structure file.
+        :type name: str
+        :param mol2file: name of the MOL2 structure file.
+        :type mol2file: str
+        :param keep_coordinates: keep coordinates read from the structure file. Defaults to True.
+        :type keep_coordinates: bool
         
-        for imol,mol in enumerate(self.molecules):
-            for n in range(self.composition[imol]):
-                for i in range(mol._natoms):
-                    self._atoms[iatom]._atomID=iatom+1
-                    mol._atoms[molatom]._atomID=iatom+1
-                    iatom+=1
-                    molatom+=1
-                molatom=0
-                
+        """
+        
+        with open(mol2file,'r') as f:
+
+            read_coordinates=False
+            read_bonds=False
+           
+            molecules=[]
+            atoms=[]
             
+            for line in f:
+                if line.strip().endswith('<TRIPOS>ATOM'):
+                    read_coordinates=True
+                elif line.strip().endswith('<TRIPOS>BOND'):
+                    read_bonds=True
+                    natoms=len(atoms)
+                    #bond_matrix=dia_array((natoms,natoms),dtype='bool')
+
+                if line.startswith('@<TRIPOS>') and not line.strip().endswith('ATOM'):
+                    read_coordinates=False
+                if line.startswith('@<TRIPOS>') and not line.strip().endswith('BOND'):
+                    read_bonds=False
+
+                if read_coordinates and not line.strip().endswith('<TRIPOS>ATOM'):
+                    cols=line.split()
+                    index=int(cols[0])-1
+                    name=cols[1]
+                    if keep_coordinates:
+                        coordinates=[float(cols[2])/10,float(cols[3])/10,float(cols[4])/10]
+                    else:
+                        coordinates=[0.0, 0.0, 0.0]
+                    atomtype=cols[5]
+                    resid=int(cols[6])  # CAVEAT: one residue per molecule
+                    resname=cols[7]
+
+                    atoms.append(Atom(name,
+                                      index=index,
+                                      atomtype=atomtype,
+                                      resname=resname,
+                                      coordinates=coordinates,
+                                      resid=resid))
+
+                elif read_bonds and not line.strip().endswith('<TRIPOS>BOND'):
+
+                    #print(line)
+
+                    cols=line.split()
+                    i_index=int(cols[1])-1                  
+                    j_index=int(cols[2])-1
+                    atoms[i_index].bonds.append(j_index)
+                    for ia,a in enumerate(atoms):
+                       if j_index in a.bonds and ia not in atoms[j_index].bonds:
+                            atoms[j_index].bonds.append(ia)                            
+                    #bond_matrix[i_index, j_index]
+
+        self._assign_atoms_to_molecules(name,atoms)
+        
+
+    def _assign_atoms_to_molecules(self, name: str, atoms: list):
+        """Add atom objects to molecule objects.
+
+        :param name: name of the molecule.
+        :type name: str
+        :param atoms: list of atom objects.
+        :type atoms: list
+        
+        """
+
+        molecules=[]
+        for ia,a in enumerate(atoms):
+
+            if ia==0:
+                newmolecule=Molecule(name,resname=a.resname,index=a.resid)
+                prev_id=a.resid
+            elif a.resid!=prev_id:
+                molecules.append(newmolecule)
+                newmolecule=Molecule(name,resname=a.resname,index=a.resid)
+                prev_id=a.resid
+
+            newmolecule.atoms.append(a)     
+        molecules.append(newmolecule)
+
+        for im,m in enumerate(molecules):
+            m._renumber_atoms()
+            self._molecules.append(m)
+          
+
+
+    def _update_molecule_indexes(self):
+        """Renumber the indexes of the molecules (0-based).
+        """
+
+        for im,m in enumerate(self.molecules):
+            
+            m.index=im
+            m._update_atom_resid()
+                    
+        
 
 class Molecule():
     """The molecule class that stores and manage all the information and methods.
 
-    Attributes:
-       name : name of the molecule type
-       resname : residue name
-       structure_path : location of the structure of the molecule type
-       topology_path : location of the topology (.top) file of the molecule type
-       include_path : location of the include topology (.itp) file of the molecule type 
-       mw : molecular weight in [g/mol]
-       mol_attributes : arbitrary attributes of the molecule
-       nmols : number of molecules of this type
-       natoms : number of atoms per molecule 
-       atoms : list of atom types of the molecule type
+    Attributes:\n
+       - name : name of the molecule type\n
+       - resname : residue name\n
+       - index : index of the molecule\n
+       - mw : molecular weight in [Da]\n
+       - atoms : list of atom types of the molecule type\n
+       - contact_matrix : NxN matrix (N=number of atoms in the molecule) of the bonds between the atoms.\n
 
-    Methods:
-       help(): print the help for this class.
+    Methods:\n
+       - help(): print the help for this class.
+
     """
 
+    def __init__(self, name: str, resname='UNK', index=None):
 
-    def __init__(self,name: str, index=None, resname='UNK', structure=None):
         """Molecule Class Constructor
-  
-        Args: 
-           name (str) : name of the molecule
-           resname (str, optional) : residue name for the molecule. Defaults to 'UNK'.
-           structure_path (str, optional) : position of the structure file. Defaults to None.
-        """
 
+        :param name: name of the molecule
+        :type name: str
+        :param resname: 3-letter residue name of the molecule
+        :type resname: 
+        :param index: index of the molecule
+        :type index: 
+
+        """
+        
         self._name=name
         self._resname=resname
-        self._structure_path=structure
-        self._topology_path=None
-        self._include_path=None
-        self._mw=None
-        self._mol_attributes=[]
-        self._nmols=0
-        self._natoms=0
-        self._atoms=list()
         self._index=index
+        self._mw=None
+        self._atoms=list()
         self._contact_matrix=None
-
-        if structure is not None:
-
-            import MDAnalysis as mda
-            import warnings
-            warnings.filterwarnings('ignore')
-
-            u=mda.Universe(structure)
-            self._natoms=u.atoms.n_atoms
-            self._mw=0
-            for iatom in range(self._natoms):
-
-                new_atom=Atom(u.atoms.names[iatom],atom_index=u.atoms.ids[iatom],resname=resname,
-                              mass=u.atoms.masses[iatom],element=u.atoms.types[iatom],coordinates=u.atoms.positions[iatom])
-                                
-                self._mw+=u.atoms.masses[iatom]
-                self._atoms.append(new_atom)
-
+        self._com=None
 
     @property
     def name(self):
@@ -1104,34 +1352,14 @@ class Molecule():
         return self._resname
 
     @property
-    def structure_path(self):
-        return self._structure_path
-
-    @property
-    def topology_path(self):
-        return self._topology_path
-
-    @property
-    def include_path(self):
-        return self._include_path
+    def index(self):
+        return self._index
 
     @property
     def mw(self):
-        if self._mw is None:
-            self._mw=self._calc_mass(self.atoms)
+        if self._mw==None:
+            self._calc_mass()
         return self._mw
-
-    @property
-    def mol_attributes(self):
-        return self._mol_attributes
-
-    @property
-    def natoms(self):
-        return self._natoms
-
-    @property
-    def nmols(self):
-        return self._nmols
 
     @property
     def atoms(self):
@@ -1139,211 +1367,139 @@ class Molecule():
 
     @property
     def contact_matrix(self):
-        if self._contact_matrix is None:
-            self._generate_contact_matrix()
-            return self._contact_matrix
-        else:
-            return self._contact_matrix    
+        if self._contact_matrix==None:
+            self._compute_contact_matrix()
+        return self._contact_matrix
 
     @property
-    def index(self):
-        return self._index
-    
+    def com(self):
+        if self._com==None:
+            self._get_com()
+        return self._com
+
     @resname.setter
-    def resname(self,resname):
-        self._resname=resname
-
-    @structure_path.setter
-    def structure_path(self,path):
-        self._structure_path=path
-
-    @topology_path.setter
-    def topology_path(self,path):
-        self._topology_path=path
-
-    @include_path.setter
-    def include_path(self,path):
-        self._include_path=path
-
-    @mw.setter
-    def mw(self,mw):
-        self._mw=mw
-
-    @mol_attributes.setter
-    def mol_attributes(self,attr):
-        self._mol_attributes.append(attr)
-
-    @natoms.setter
-    def natoms(self,n):
-        self._natoms=n
-
-    @nmols.setter
-    def nmols(self,n):
-        self._nmols=n
+    def resname(self,rn):
+        self._resname=rn
+        return self._resname
 
     @index.setter
-    def index(self,ndx):
-        self._index=ndx
+    def index(self,n):
+        self._index=n
+        return self._index
 
-    def _generate_contact_matrix(self):
-        """
-        Generate a NxN matrix (with N=number of atoms) with 1 elements if atoms are bonded and 0 if not.
-        """
-        cmat = np.full((len(self._atoms), len(self._atoms)), 0)
-        for ai in range(len(self._atoms)):
-            atom = self._atoms[ai]
-            for bond in atom._bonds:
-                #print(ai,self._atoms[ai].index, atom.bonds, bond,  min([i._index for i in self._atoms]),[i._index for i in self._atoms])
-                aj = bond - min([i._index for i in self._atoms])
-                #print(ai,aj)
-                cmat[ai, aj] = 1
-        self._contact_matrix = cmat
-
-    def get_molecule_com(self,box,ignore_masses=False):
-        """ Compute the center of mass (COM) of a molecule object
-            :parm molecule: Molecule object.
-            :parm box: Box parameters.
-            :parm ignore_masses: if True the center of geometry (COG) is returned. Defaults to False.
-
-            Returns:
-            com: coordinates of COM/COG
-            """
-
-        com=[0,0,0]
-        den=0
-
-        pbc_coords=self.wrap_pbc(box)
-
-        for iatom,atom in enumerate(self.atoms):
-            for i in range(3):
-                if ignore_masses:
-                    com[i]+=pbc_coords[iatom][i]               
-                else:
-                    com[i]+=pbc_coords[iatom][i]*atom.mass
-
-
-        if ignore_masses:
-            den=len(self.atoms)
-        else:
-            den=self.mw
-
-        com=[x/den for x in com]
-
-        return com
-
-
-    def wrap_pbc(self,box):
-
-        """ Recompute coordinates of the molecule in order to make broken molecules whole 
-        :parm molecule: Molecule object
-        :parm box: list of 6 elements with box parameters ([a, b, c, alpha, beta, gamma])
-
-        Returns:
-        pbc_coords: coordinates of the molecule made whole
+    def _calc_mass(self):
+        """Compute the mass of the molecule and store it in self._mw.
         """
 
-        # the first atom of the molecule is taken as reference (even if it is not inside the box)
+        mw=0
+        for a in self.atoms:
+            el=a.element
+            amw=a.mw
+            mw+=amw
+            
+        self._mw=mw
+
+    def _get_com(self):
+
+        self._com=np.array([0., 0., 0.])
+        for a in self.atoms:
+            self._com+=a.coordinates
+
+        self._com/=len(self.atoms)
+        
+    def _renumber_atoms(self):
+        """Renumber the atom indexes in the molecule starting from 0.
+        """
+
+        base_index=self._atoms[0]._index
+        
+        for ia,a in enumerate(self._atoms):
+            newbonds=[]
+            for b in a._bonds:
+                newbonds.append(b-base_index)
+            a._index-=base_index
+
+            a.bonds=newbonds
+            
+
+    def _update_atom_resid(self):
+        """Renumber the molecular index of the atoms (i.e. the index of the molecule they belong to).
+        """
+
+        for ia,a in enumerate(self._atoms):
+            a._resid=self.index
+
+
+    def _compute_contact_matrix(self):
+        """Compute the matrix of bonds of the molecule.
+        """
 
         import numpy as np
 
-        n2=(np.cos(box[3])-np.cos(box[5])*np.cos(box[4]))/np.sin(box[5])
-        M=np.array([[1, 0, 0],
-                    [np.cos(box[5]), np.sin(box[5]), 0],
-                    [np.cos(box[4]), n2, np.sqrt(np.sin(box[4])**2-n2*n2)]])
-
-        M_inv=np.linalg.inv(M)
-
-        pbc_coords=[a.coordinates for a in self.atoms]
-
-        #print(pbc_coords)
-
-        temp_coords=[]
-        for iatom,atom in enumerate(self.atoms):
-            temp_coords.append(M_inv.dot(atom.coordinates))
-
-        for iatom,atom in enumerate(self.atoms):
-            sij=temp_coords[iatom]-temp_coords[0]
-            sij-=np.rint(sij)
-            rij=M.dot(sij)
-
-            pbc_coords[iatom]=rij+self.atoms[0].coordinates
-
-        return pbc_coords
-            
-    @staticmethod
-    def _calc_mass(atoms):
-        mw=0
-        for ia,a in enumerate(atoms):
-            mw+=a.mass
-        return mw
+        n_atoms=len(self._atoms)
         
-    @staticmethod
-    def help():
-        print("""Attributes:
-       name : name of the molecule type
-       resname : residue name
-       structure_path : location of the structure of the molecule type
-       topology_path : location of the topology (.top) file of the molecule type
-       include_path : location of the include topology (.itp) file of the molecule type 
-       mw : molecular weight in [g/mol]
-       mol_attributes : arbitrary attributes of the molecule
-       nmols : number of molecules of this type
-       natoms : number of atoms per molecule 
-       atoms : list of atom types of the molecule type
+        contact_matrix=np.zeros((n_atoms,n_atoms))
+        
+        for ia,a in enumerate(self._atoms):
+            for ja in a._bonds:
+                contact_matrix[ia,ja]=1
+                contact_matrix[ja,ia]=1
+                
 
-Methods:
-       help(): print the help for this class.
-    """)
-
- 
+        self._contact_matrix=contact_matrix
+    
 class Atom():
     """
     The atom class that stores and manage all the information and methods.
 
-    Attributes:
-       name (str) : name of the atom.
-       mass (float) : atomic mass.
-       atomtype (str) : atom type.
-       atom_index (int) : atom index.
-       resnum (int) : number of the residue the atom is part of.
-       resname (str) : name of the residue the atom is part of.
-       element (str) : chemical element of the atom.
+    Attributes:\n
+       - name (str) : name of the atom.\n
+       - index (int) : atom index.\n
+       - atomtype (str) : atom type.\n
+       - resname (str) : name of the residue the atom is part of.\n
+       - coordinates (list): coordinates of the atom in nm.\n
+       - resid (int) : index of the molecule the atom is part of.\n
+       - element (str) : chemical element of the atom.\n
+       - mw (float) : atomic mass in Da.\n
+       - bonds (list) : list of the index of the atoms in the same molecule that the atom is bound to.\n
+
+    Static Methods:\n
+       - _getelement(atomtype) : Assign atomic element of the atom based on its name.\n
+       - _getmw(element) : Assign mass to the atom based on its atomic element.\n
+       
     """
-    def __init__(self,name: str, mass=None, atomtype=None, atom_index=0, resname=None, element=None, coordinates=list()):
+
+    def __init__(self, name: str, index: int=None, atomtype: str=None, resname: str=None, coordinates: list=None, resid: int=None):
         """Atom Class Constructor
 
-        Args:
-            name (str): Atom name. Defaults to None.
-            mass (float, optional): Mass of the atom. Defaults to None.
-            atomtype (str, optional): AtomType of the atom. Defaults to None.
-            atom_index (int, optional): AtomID of the atom. Defaults to 0.
-            resnum (int, optional): Residue Number of the atom. Defaults to 0.
-            resname (str, optional): Residue Name of the atom. Defaults to None.
-            element (str, optional): Element of the atom. Defaults to None.
-            coordinates (list, optional): Coordinates of the atom. Defaults to None.
-        """
+        :param name: name of the atom.
+        :type name: str
+        :param index: atom index. Defaults to None.
+        :type index: int
+        :param atomtype: atom type. Defaults to None.
+        :type atomtype: str
+        :param resname: residue name (resname) the atom is part of.  Defaults to None.
+        :type resname: str
+        :param coordinates: coordinates of the atom in nm.  Defaults to None.
+        :type coordinates: list
+        :param resid: index of the molecule the atom is part of.  Defaults to None.
+        :type resid: int
 
+        """
+        
         self._name=name
-        self._mass=mass
+        self._index=index
         self._atomtype=atomtype
-        self._index=atom_index
-        self._element=element
+        self._resname=resname
         self._coordinates=coordinates
+        self._resid=resid
+        self._element=None
+        self._mw=None        
         self._bonds=list()
-    
+
     @property
     def name(self):
         return self._name
-
-    @property
-    def mass(self):
-        if self._mass is None:
-            self._mass=self._assign_mass(self._element)
-        return self._mass
-
-    @property
-    def atomtype(self):
-        return self._atomtype
 
     @property
     def index(self):
@@ -1351,47 +1507,72 @@ class Atom():
 
     @property
     def element(self):
+        if self._element==None:
+            self._element=self._getelement(self._atomtype)
         return self._element
 
     @property
-    def coordinates(self):
-        return self._coordinates
+    def mw(self):
+        if self._mw==None:
+            self._mw=self._getmw(self._element)
+        return self._mw
 
     @property
     def bonds(self):
         return self._bonds
 
-    @name.setter
-    def name(self,n):
-        self._name=n
+    @property
+    def resname(self):
+        return self._resname
 
-    @mass.setter
-    def mass(self,mw):
-        self._mass=mw
+    @property
+    def resid(self):
+        return self._resid
 
-    @atomtype.setter
-    def atomtype(self,atype):
-        self._atomtype=atype
+    @property
+    def coordinates(self):
+        return self._coordinates
 
     @index.setter
-    def atom_index(self,aid):
-        self._index=aid
+    def index(self,n):
+        self._index=n
+        return self._index
 
-    @element.setter
-    def element(self,el):
-        self._element=el
-
-    @coordinates.setter
-    def coordinates(self,r):
-        self._coordinates=r
+    @resid.setter
+    def resid(self,r):
+        self._resid=r
+        return self._resid
 
     @bonds.setter
     def bonds(self,b):
         self._bonds=b
+        return self._bonds
+
+    @coordinates.setter
+    def coordinates(self,x):
+        self._coordinates=x
+        return self._coordinates
+
+    
+    @staticmethod
+    def _getelement(atomtype):
+        """Assign atomic element of the atom based on its name.
+        """
+
+        if atomtype[0].upper() in ['H','C','N','O','F','S']:
+            return atomtype[0].upper()
+        elif atomtype[0].upper()+atomtype[1].lower() in ['Cl']:
+            return atomtype[0].upper()+atomtype[1].lower()
+        else:
+            print("ERROR: Couldn't recognize the element from the atom type")
+            exit()
+
 
     @staticmethod
-    def _assign_mass(element):
-
+    def _getmw(element):
+        """Assign mass to the atom based on its atomic element.
+        """
+        
         masses={'H':1.0079,
                 'C':12.0107,
                 'N':14.0067,
@@ -1404,5 +1585,9 @@ class Atom():
         if element in masses:
             return masses[element]
         else:
-            print('WARNING: element not found, check and in case add it manually!')
-            return None
+            print('ERROR: element not known')
+    
+
+        
+        
+

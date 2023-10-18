@@ -4,209 +4,248 @@ import sim_launch_py.plumed as plumed
 
 class _Simulation():
 
-        def __init__(self, name: str, mdrun_options: str, topology: str, path: str):
-            """Simulation Class Constructor
+        def __init__(self, name: str, index: int):
+                """Simulation Class Constructor
 
-            Args:
-                name (str): Name of the simulation
-                mdrun_options (str): options for running MD simulation
-                topology (str): name of the topology file
-                path (str): path definition
-            """
-            self._name=name
-            self._mdrun_options=mdrun_options
-            self._topology=topology
-            #self._run_options=run_options
-            self._path=path
-            self._run=False
+                :param name: Name of the simulation.
+                :type name: str
+                :param index: Index of the simulation.
+                :type index: int 
 
+                """
+                self._name=name
+                self._index=index
+                self._path=None
+                self._type=None
+                self._state=None
+                self._gromacs=None                
+                self._mdrun_options=None
+                # if running also grompp
+                self._topology=None
+                self._coordinates=None
+                self._mdp=None
+                self._maxwarn=None
+                # if running directly mdrun
+                self._tpr=None
+                                
         @property
         def name(self):
-            return self._name
+                return self._name
 
         @property
-        def mdrun_options(self):
-            return self._mdrun_options
-
-        @property
-        def topology(self):
-            return self._topology
-
-        @property
-        def run(self):
-            return self._run
-
-        #@property
-        #def run_options(self):
-        #    return self._run_options
+        def index(self):
+                return self._index
 
         @property
         def path(self):
-            return self._path
+                return self._path
+
+        @property
+        def state(self):
+                return self._state
+
+        @property
+        def gromacs(self):
+                return self._gromacs
+
+        @property
+        def mdrun_options(self):
+                return self._mdrun_options
+
+        @property
+        def topology(self):
+                return self._topology
+
+        @property
+        def coordinates(self):
+                return self._coordinates
+
+        @property
+        def mdp(self):
+                return self._mdp
+
+        @property
+        def maxwarn(self):
+                return self._maxwarn
+
+        @property
+        def tpr(self):
+                return self._tpr
+
+        @property
+        def type(self):
+                return self._type
 
         @name.setter
         def name(self,n):
-            self._name=n
+                self._name=n
 
-        @run.setter
-        def run(self,r):
-            self._run=r
+        @index.setter
+        def index(self,ndx):
+                self._index=ndx
 
+        @path.setter
+        def path(self,p):
+                self._path=p
+
+        @state.setter
+        def state(self,s):
+                self._state=s
+
+        @gromacs.setter
+        def gromacs(self,gmx):
+                self._gromacs=gmx
+
+        @mdrun_options.setter
+        def mdrun_options(self,run_opt):
+                self._mdrun_options=run_opt
+
+        @topology.setter
+        def topology(self,top):
+                self._topology=top
+
+        @coordinates.setter
+        def coordinates(self,x):
+                self._coordinates=x
+
+        @mdp.setter
+        def mdp(self,m):
+                self._mdp=m
+
+        @maxwarn.setter
+        def maxwarn(self,mw):
+                self._maxwarn=mw
+
+        @tpr.setter
+        def tpr(self,t):
+                self._tpr=t
+
+        @type.setter
+        def type(self,t):
+                self._type=t
+
+        def _print_gmx_command(self):
+                """Create the list of commands used to preprocess (grompp) and run (mdrun) the simulation 
+
+                :returns gmx_commands: Gromacs commands.
+                :rtype gmx_commands: list
+
+                """
+
+                gmx_commands=[]
+                if self.mdp:
+
+                        gmx_commands.append('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5}'.format(self.gromacs,self.mdp,self.name,self.maxwarn,self.topology,self.coordinates))
+
+                gmx_commands.append('{0} mdrun -deffnm {1} {2}'.format(self.gromacs,self.name,self.mdrun_options))
+                
+                return gmx_commands
+
+                
 
 class MD(_Simulation):
-    
-    def __init__(self,  name: str, mdrun_options='', coord='', topology='',
-                 path_mdp='', path_input='', path_output='', temperature=300, thermostat='vv',
-                 pressure=1, barostat='Parrinello-Rahman', nsteps=100,
-                 print_bash=False, maxwarn=0, gmxbin='gmx_mpi',
-                 plumed=None):
-        """MD simulation class constructor
-
-        Args:
-            name (str): Name of the system / project
-            mdrun_options (str, optional): MD simulation options. Defaults to ''.
-            coord (str, optional): coordinate file name. Defaults to ''.
-            topology (str, optional): topology file name. Defaults to ''.
-            path_mdp (str, optional): path to mdp. Defaults to ''.
-            path_input (str, optional): path to inout file. Defaults to ''.
-            path_output (str, optional): path to output file. Defaults to ''.
-            temperature (int, optional): temperature of the MD simulation. Defaults to 300.
-            thermostat (str, optional): thermostat. Defaults to 'vv'.
-            pressure (int, optional): pressure. Defaults to 1.
-            barostat (str, optional): barostat. Defaults to 'Parrinello-Rahman'.
-            nsteps (int, optional): number of simulation steps. Defaults to 100.
-            plumed (str, optional): plumed file. Defaults to None.
-            print_bash (bool, optional): print a bash string. Defaults to False.
-            maxwarn (int, optional): number of warnings tollerated. Defaults to 0.
-            gmxbin (str, optional): gromacs executable name. Defaults to 'gmx_mpi'.
-
-        """
-
-        # Inherit properties of the _Simulation Class
-        super().__init__(name, mdrun_options, topology, path_output)
-
-        self._name=name
-        self._cvs=[]
-        self._biases=[]
-
-        # copy mdp files
-        shutil.copy(path_mdp,path_input)
-
-        # Print bash string
-        if print_bash:
-            mdp=os.path.basename(path_mdp)
-
-            grompp = "{0} grompp -f {1} -p {2} -c {3} -o {4}.tpr -maxwarn {5}".format(gmxbin,
-                                                                                          mdp,
-                                                                                          topology,
-                                                                                          coord,
-                                                                                          name,
-                                                                                          maxwarn)
-            mdrun = "{0} mdrun -deffnm {1} {2}".format(gmxbin,name,mdrun_options)
-                       
-            if plumed is not None:
-                    mdrun +=" -plumed {}".format(plumed)
-
-            self.bash_command="{}\n{}\n".format(grompp,mdrun)
-
-    ###
-
-    @property
-    def cvs(self):
-        return self._cvs
-
-    @property
-    def biases(self):
-        return self._biases
-
-    def add_cv(self, name: str ,cvtype: str ,**kwargs):
-        """ Add a collective variable to the simulation
- 
-        Args:
-           name (str) : name of the cv
-           cvtype (str) : type of cv
-           **kwargs : keyword arguments that depend on the specific CV
-
-        Return:
-          new_cv (_CV object) : the new collective variable
-        """
         
-        supported=['TORSION','ENERGY']
+        def __init__(self,  name: str, index: int):
+                """MD simulation class constructor
+
+                :param name: Name of the simulation.
+                :type name: str
+                :param index: Index of the simulation.
+                :type index: int
+
+                """
+                # Inherit properties of the _Simulation Class
+                super().__init__(name, index)
+
+                self._cvs=[]
+                self._biases=[]
+
+                self._type='md'
         
-        if cvtype.upper()=='TORSION':
-            new_cv=plumed.Torsion(name,kwargs['atoms'])
-            self._cvs.append(new_cv)
-        elif cvtype.upper()=='ENERGY':
-            new_cv=plumed.PotentialEnergy(name)
-            self._cvs.append(new_cv)
-        else:
-            print("Error: for the moment only {} are supported as collective variables... sorry".format(supported))
-            exit()
+        @property
+        def cvs(self):
+            return self._cvs
 
-        return new_cv
+        @property
+        def biases(self):
+            return self._biases
+
+        def add_cv(self, name: str ,cvtype: str , **kwargs):
+
+            """ Add a collective variable to the simulation
+
+            :param name: name of the collective variable
+            :type name: str
+            :param cvtype: type of collective variable, available types are: 'TORSION', 'ENERGY'.
+            :type cvtype: str
+            :param **kwargs : keyword arguments for the chosen type of variable
+            :returns new_cv: the new collective variable
+            :rtype new_cv: CV object 
+
+            """
+        
+            supported=['TORSION','ENERGY']
+
+            if cvtype.upper()=='TORSION':
+                    new_cv=plumed.Torsion(name,kwargs['atoms'])
+                    self._cvs.append(new_cv)
+            elif cvtype.upper()=='ENERGY':
+                    new_cv=plumed.PotentialEnergy(name)
+                    self._cvs.append(new_cv)
+            else:
+                    print("Error: for the moment only {} are supported as collective variables... sorry".format(supported))
+                    exit()
+
+            return new_cv
     
-    def add_bias(self, name: str ,biastype: str ,cv: object ,**kwargs):
-        """ Add a bias to the simulation
-       
-        Args: 
-           name (str): name of the bias
-           biastype (str): type of bias
-           cv (_CV object): collective variable to bias 
-           **kwargs: keyword arguments that depend on the specific bias
+        def add_bias(self, name: str, biastype: str, cv: object ,**kwargs):
 
-        Return:
-           new_bias (_Bias object): the new bias
-        """           
+                """ Add a bias to the simulation
 
-        supported=["METAD","UPPER_WALLS","LOWER_WALLS"]
+                :param name: name of the bias
+                :type name: str
+                :param biastype: type of bias to apply, available types are:  'METAD', 'UPPER_WALLS', 'LOWER_WALLS'
+                :type biastype: str
+                :param cv: name of the collective variable to bias
+                :type cv: object
+                :param **kwargs : keyword arguments that depend on the specific bias
+                :returns new_bias: the new bias object
+                :rtype object: 
 
-        if biastype.upper()=='METAD':
-            new_bias=plumed.Metad(name,cv,**kwargs)            
-        elif biastype.upper()=="UPPER_WALLS":
-            new_bias=plumed.UpperWalls(name,cv,**kwargs)
-        elif biastype.upper()=="LOWER_WALLS":
-            new_bias=plumed.LowerWalls(name,cv,**kwargs)                            
-        else:
-            print("Error: for the moment only {} are supported as bias... sorry".format(supported))
-            exit()
+                """
+                
+                supported=["METAD","UPPER_WALLS","LOWER_WALLS"]
+        
+                if biastype.upper()=='METAD':
+                    new_bias=plumed.Metad(name,cv,**kwargs)            
+                elif biastype.upper()=="UPPER_WALLS":
+                    new_bias=plumed.UpperWalls(name,cv,**kwargs)
+                elif biastype.upper()=="LOWER_WALLS":
+                    new_bias=plumed.LowerWalls(name,cv,**kwargs)                            
+                else:
+                    print("Error: for the moment only {} are supported as bias... sorry".format(supported))
+                    exit()
 
-        self._biases.append(new_bias)
+                self._biases.append(new_bias)
 
-        return new_bias
+                return new_bias
             
 class EnergyMinimization(_Simulation):
 
-    def __init__(self,name: str,
-                 mdrun_options='', coord='start.pdb', topology='topol.top',
-                 path_mdp='', path_input='',path_output='',
-                 print_bash=False,maxwarn=0,gmxbin='gmx_mpi'):
-        """Energy minimization class
+        def __init__(self, name: str, index: int):
+                """Energy minimization class
 
-        Args:
-            name (str): Name of the system / project
-            mdrun_options (str, optional): MD simulation options. Defaults to ''.
-            coord (str, optional): coordinate file name. Defaults to ''.
-            topology (str, optional): topology file name. Defaults to ''.
-            path_mdp (str, optional): path to mdp. Defaults to ''.
-            path_input (str, optional): path to inout file. Defaults to ''.
-            path_output (str, optional): path to output file. Defaults to ''.
-            print_bash (bool, optional): print a bash string. Defaults to False.
-            maxwarn (int, optional): number of warnings tollerated. Defaults to 0.
-            gmxbin (str, optional): gromacs executable name. Defaults to 'gmx_mpi'.
-        """        
-        # Inherit properties of the _Simulation Class
-        super().__init__(name, mdrun_options, topology, path_output)
+                :param name: Name of the simulation.
+                :type name: str
+                :param index: Index of the simulation
+                :type index: int
 
-        self._name=name
+                """
+                # Inherit properties of the _Simulation Class
+                super().__init__(name, index)
 
-        # copy mdp files
-        shutil.copy(path_mdp,path_input)
+                self._type='em'
 
-        # Print bash string
-        if print_bash:
-            mdp=os.path.basename(path_mdp)
-            self.bash_command="{5} grompp -f {0} -p {1} -c {2} -o {3}.tpr -maxwarn {4}\n\n".format(mdp,topology,coord,name,maxwarn,gmxbin)+\
-                "{2} mdrun -deffnm {0} {1}\n".format(name,mdrun_options,gmxbin)
                 
 
 

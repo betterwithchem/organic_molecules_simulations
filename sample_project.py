@@ -1,138 +1,110 @@
 from sim_launch_py.classes import Project
-from sim_launch_py.ffparms import gaff, getTop
+from sim_launch_py.utilities import get_distance
 import numpy as np
-import pandas as pd
 import os
 
-import sim_launch_py.plumed as plumed
-from sim_launch_py.external.molecules import findTorsionalAngles
+# Create a new Project
 
-molecules=pd.read_csv('molecules.list',sep='\s+',header=0)
-systems=pd.read_csv('systems.list',sep='\s+',header=1)
-
-pname='single_mol'
+pname='sample_project'
 ppath='./{}'.format(pname)
 
 
-##### create a new project
-project=Project.new_project(pname,ppath,overwrite=True)
+p=Project.new_project(pname,ppath,overwrite=True)
+
+# Create a system
+
+p.add_system('UNOGIN_eq1_bulk')
+
+s=p.systems[0]
+
+s.add_molecule('olanzapine', structure_file='/home/matteo/Work/organic_molecules_simulations/UNOGIN_eq1.pdb')
+
+s.replicate_cell(repl=[10,10,10])
+
+s.save_pdb('replicated_cell.pdb')
 
 
-##### save it
-#project.save()
+# center of the box
+cob=np.array([0. for i in range(3)])
 
-##### load existing project
-#project=Project.load_project(ppath)
+n=0
+for m in s.molecules:
+    for a in m.atoms:
+            cob+=a.coordinates
+            n+=1
 
-##### add species that will be used
- 
-# how to import the list of molecules to be used in the project is up to the user
-# it could be a pandas dataframe from a text file or a dict or lists...
-# this is done in order to keep a degree of flexibility in the user experience
+cob/=n
 
+# lets keep only the molecules that have COM within 2nm of the center of the box
 
-for i,name in enumerate(molecules.molname):
-    project.add_molecule(name,
-                         resname=molecules.loc[i].at['resname'],
-                         structure=molecules.loc[i].at['path']+'/'+name+'.pdb')
+delete_mols=[]
+cutoff=2 #nm
+for m in s.molecules:
+    if get_distance(m.com,ref=cob,box=s.box)>cutoff:
+        delete_mols.append(m.index)
 
+s.delete_molecule(delete_mols)
+s.save_pdb('remaining_mols.pdb')
 
-##### this will create also include topology (itp) files and a file with all atom types
-for i,mol in enumerate(project.molecules):
+s.add_box(6,shape='cubic')
+s.center_box()
+s.save_pdb('centered.pdb')
 
-    # if necessary, compute force field parameters
-    #gaff(mol, os.path.abspath(project.topology_path),
-    #     res_name=mol.resname, generate_charges='bcc', atomtype='gaff2',
-    #     overwrite=False)
+#get center of the seed:
+seed_com=np.array([0., 0., 0.])
 
-    # or copy them from a defined location
-    getTop(mol,fromPath=os.path.abspath("Topologies") ,toPath=project.topology_path)
-
-
-##### add systems to be simulated
-
-for i,name in enumerate(systems.mol_1):
-    project.add_system('s{}'.format(i))
-
-for i,sys in enumerate(project.systems):
-    sys.temperature=systems.loc[i].at['temperature']
-    sys.add_molecule(systems.loc[i].at['mol_1'],moltype='solvent',knownmolecules=project.molecules)
-    sys.add_molecule(systems.loc[i].at['mol_2'],moltype='solute',knownmolecules=project.molecules)
+n=0
+for m in s.molecules:
+    for a in m.atoms:
+        seed_com+=a.coordinates
+        n+=1
     
+seed_com/=n
 
-    
-    # build initial configurations:
-
-    # in this example we have a solute in a solvent. We first create a box, then we fill it with
-    # solvent molecules at a given concentration. Finally, we add solute molecules at a given
-    # concentration and remove overlapping solvent molecules
+s.insert_molecules('olanzapine','/home/matteo/Work/organic_molecules_simulations/Structures/olanzapine/olanzapine.pdb', initial_conf='centered.pdb', final_conf='added_olanzapine.pdb', nmol=6)
 
 
-for i,sys in enumerate(project.systems):
+nwat_to_add=int(1000/18*6.022/10*(s.box[0]**3))-300
 
-    sys.addBox(systems.loc[i].at['side'],shape='dodecahedron')
-    
-    for mol in sys.molecules:
-        if 'solvent' in mol.mol_attributes:
-            solvent=mol
-            print(sys.gromacs)
-            sys.createSolventBox(solvent,output_structure='{}/solvent_box.pdb'.format(sys.path),density=systems.loc[i].at['conc_1'])
+s.insert_molecules('water','/home/matteo/Work/organic_molecules_simulations/Structures/water/water.pdb',initial_conf='added_olanzapine.pdb',final_conf='with_water.pdb',nmol=nwat_to_add)
 
-    for mol in sys.molecules:
-        if 'solute' in mol.mol_attributes:
-            solute=mol
-            sys.insertSolute(solute,solvent,solvent_box='{}/solvent_box.pdb'.format(sys.path),concentration=systems.loc[i].at['conc_2'],output_structure='{}/start.pdb'.format(sys.path))
-    
-    # write topology
-    sys.writeTop(project.topology_path+'/atomtypes.itp')
+# once water molecules have been inserted, remove those that could be within the seed
 
-    # we can now create the files needed for the simulations:
-    # for unbiased simulations we just need mdp files
+water_mols=s.find_molecule_by_resname('WAT')
 
-#project.save()
+delete_mols=[]
+for wm in s.molecules[water_mols[0]:water_mols[-1]]:
+    if get_distance(wm.com,ref=seed_com, box=s.box)<=cutoff:
+        delete_mols.append(wm.index)
 
+s.delete_molecule(delete_mols)
 
-#project=Project.load_project(ppath)
+s.save_pdb('removed_water_in_seed.pdb')
+
+s.species['OLA']['top']='/home/matteo/Work/organic_molecules_simulations/Topologies/olanzapine.top'
+s.species['WAT']['top']='/home/matteo/Work/organic_molecules_simulations/Topologies/water.top'
+
+#s.species['OLA']['itp']='/home/matteo/Work/organic_molecules_simulations/Topologies/olanzapine.itp'
+#s.species['WAT']['itp']='/home/matteo/Work/organic_molecules_simulations/Topologies/water.itp'
 
 
-project.job_script_path=os.path.abspath('sim_launch_py/job_scripts')
+s.create_topology('topol.top')
 
 
-mdpdir=os.path.abspath('sim_launch_py/mdp/')
+s.add_simulation('em','em',
+                 gromacs=s.gromacs, mdrun_options='-v', topology=s.topology,
+                 path_mdp='/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/em.mdp',
+                 maxwarn=2, coordinates='{}/{}'.format(s.path,'removed_water_in_seed.pdb'),gmxbin='gmx_mpi')
+
+s.add_simulation('md1','md',
+                 gromacs=s.gromacs, mdrun_options='-v', topology=s.topology,
+                 path_mdp='/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/mdparrinello.mdp',
+                 maxwarn=2, coordinates='{}/{}.gro'.format(s.simulations[-1].path,s.simulations[-1].name),
+                 gmxbin='gmx_mpi')
 
 
+s.create_run_script('run.job',platform='myriad')
 
 
-for sys in project.systems:
-
-    sys.add_simulation('em','em',mdrun_options='-v -nsteps 500',start_coord=sys.path+'/start.pdb', mdp="{}/em.mdp".format(mdpdir))
-    sys.add_simulation('npt','md',mdrun_options='-v -nsteps 100000',mdp="{}/mdvvberendsen.mdp".format(mdpdir),maxwarn=1)
-
-    md=sys.add_simulation('md','md',mdrun_options='-v -nsteps 10000000',mdp="{}/mdparrinello.mdp".format(mdpdir), plumed="plumed.dat" )
-
-    mol=sys.molecules[-1]
-    dihangles=findTorsionalAngles(mol.structure_path)
-
-    md.add_cv('ene', 'energy')
-    
-    for iangle,angle in enumerate(dihangles):
-        md.add_cv('dih_{}'.format(iangle), 'torsion', atoms=[mol.atoms[i].index for i in angle])   
-
-        md.add_bias('metad_dih_{}'.format(iangle),'metad','dih_{}'.format(iangle),sigma=5*np.pi/180,
-                    height=1.5, temp=300, pace=500, hills_file='HILLS_dih{}'.format(iangle),
-                    biasfactor=5, grid_min='-pi', grid_max='pi', grid_spacing=2.5*np.pi/180)
-
-    plumed.writePlumedFile("{}/plumed.dat".format(sys.path),md,colvar="COLVAR",printstride=50)
-
-    sys.setSimsToRun(sys.simulations)
-    
-
-project.save()
-    
-project.write_sub_command('launch_jobs.sh',system='myriad')
-
-
-    
-    
-    
+                 
 
