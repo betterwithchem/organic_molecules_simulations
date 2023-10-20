@@ -941,12 +941,15 @@ export OMP_NUM_THREADS={3}
                 f.write('cd {}\n'.format(os.path.basename(sim.path)))
 
                 if sim.mdp:
-                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5}\n'.format('gmx_mpi',
+                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5} '.format('gmx_mpi',
                                                                                               sim.mdp,
                                                                                               sim.name,
                                                                                               sim.maxwarn,
                                                                                               sim.topology,
                                                                                               sim.coordinates))
+
+                if sim.simtype=='posre':
+                    f.write('-r {} \n'.format(sim.posre))
 
                 f.write('{0} mdrun -deffnm {1} {2} '.format('gerun gmx_mpi',sim.name,sim.mdrun_options))
 
