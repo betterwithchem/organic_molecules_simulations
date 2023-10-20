@@ -950,6 +950,8 @@ export OMP_NUM_THREADS={3}
 
                 if sim.simtype=='posre':
                     f.write('-r {} \n'.format(sim.posre))
+                else:
+                    f.write('\n')
 
                 f.write('{0} mdrun -deffnm {1} {2} '.format('gerun gmx_mpi',sim.name,sim.mdrun_options))
 
