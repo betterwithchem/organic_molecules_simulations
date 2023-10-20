@@ -819,7 +819,11 @@ class System():
         util.create('{}/{}'.format(self.path,name), arg_type='dir', backup=False)
 
         
+
         newsim_index=len(self.simulations)
+        newsim_path='{}/{}'.format(self.path,name)
+        
+        
         if simtype=='em':
             newsim=sim.EnergyMinimization(name, newsim_index)
 
@@ -836,9 +840,15 @@ class System():
             except KeyError:
                 print('ERROR: you tried to add a simulation with position restraints but no'\
                       'reference structure for the restraint has been passed')
-                
-        newsim.path='{}/{}'.format(self.path,name)
+                return
+            newsim.posre=os.path.relpath(newsim.posre,start=newsim_path)
+
+
+        
+        newsim.path=newsim_path
         newsim.state='Pending'
+        
+        
         try:
             newsim.coordinates=simulation_dict.pop('coordinates')
         except KeyError:
