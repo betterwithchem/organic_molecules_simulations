@@ -16,7 +16,7 @@ class _Simulation():
                 self._name=name
                 self._index=index
                 self._path=None
-                self._type=None
+                self._simtype=None
                 self._state=None
                 self._gromacs=None                
                 self._mdrun_options=None
@@ -27,6 +27,7 @@ class _Simulation():
                 self._maxwarn=None
                 # if running directly mdrun
                 self._tpr=None
+                self._nsteps=None
                                 
         @property
         def name(self):
@@ -73,8 +74,12 @@ class _Simulation():
                 return self._tpr
 
         @property
-        def type(self):
-                return self._type
+        def simtype(self):
+                return self._simtype
+
+        @property
+        def nsteps(self):
+                return self._nsteps
 
         @name.setter
         def name(self,n):
@@ -120,9 +125,13 @@ class _Simulation():
         def tpr(self,t):
                 self._tpr=t
 
-        @type.setter
-        def type(self,t):
-                self._type=t
+        @simtype.setter
+        def simtype(self,t):
+                self._simtype=t
+
+        @nsteps.setter
+        def nsteps(self,n):
+                self._nsteps=n
 
         def _print_gmx_command(self):
                 """Create the list of commands used to preprocess (grompp) and run (mdrun) the simulation 
@@ -140,35 +149,6 @@ class _Simulation():
                 gmx_commands.append('{0} mdrun -deffnm {1} {2}'.format(self.gromacs,self.name,self.mdrun_options))
                 
                 return gmx_commands
-
-                
-
-class MD(_Simulation):
-        
-        def __init__(self,  name: str, index: int):
-                """MD simulation class constructor
-
-                :param name: Name of the simulation.
-                :type name: str
-                :param index: Index of the simulation.
-                :type index: int
-
-                """
-                # Inherit properties of the _Simulation Class
-                super().__init__(name, index)
-
-                self._cvs=[]
-                self._biases=[]
-
-                self._type='md'
-        
-        @property
-        def cvs(self):
-            return self._cvs
-
-        @property
-        def biases(self):
-            return self._biases
 
         def add_cv(self, name: str ,cvtype: str , **kwargs):
 
@@ -229,6 +209,35 @@ class MD(_Simulation):
                 self._biases.append(new_bias)
 
                 return new_bias
+                
+
+class MD(_Simulation):
+        
+        def __init__(self,  name: str, index: int):
+                """MD simulation class constructor
+
+                :param name: Name of the simulation.
+                :type name: str
+                :param index: Index of the simulation.
+                :type index: int
+
+                """
+                # Inherit properties of the _Simulation Class
+                super().__init__(name, index)
+
+                self._cvs=[]
+                self._biases=[]
+
+                self._simtype='md'
+        
+        @property
+        def cvs(self):
+            return self._cvs
+
+        @property
+        def biases(self):
+            return self._biases
+
             
 class EnergyMinimization(_Simulation):
 
@@ -244,7 +253,35 @@ class EnergyMinimization(_Simulation):
                 # Inherit properties of the _Simulation Class
                 super().__init__(name, index)
 
-                self._type='em'
+                self._simtype='em'
+
+
+class Posre_MD(_Simulation):
+
+        def __init__(self, name: str, index: int):
+                """Position Restrained Molecular Dynamics Simulation
+
+                :param name: Name of the simulation.
+                :type name: str
+                :param index: Index of the simulation
+                :type index: int
+
+                """
+                # Inherit properties of the _Simulation Class
+                super().__init__(name, index)
+
+                self._cvs=[]
+                self._biases=[]
+                
+                self._simtype='posre'
+
+        @property
+        def cvs(self):
+            return self._cvs
+
+        @property
+        def biases(self):
+            return self._biases                
 
                 
 

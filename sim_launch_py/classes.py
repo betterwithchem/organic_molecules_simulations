@@ -162,7 +162,7 @@ class Project():
         :param path: Project path.
         :type path: str
         :param overwrite: Overwrite previous project? Defaults to False.
-        :type overwrite: bool
+        :type overwrite: bool, optional
         :returns nproject: new project
 
         """
@@ -189,9 +189,7 @@ class Project():
         #util.create(nproject._topology_path, arg_type='dir')
         #util.create(nproject._mdp_path, arg_type='dir')
 
-        print(os.path.abspath(os.path.curdir))
         os.chdir(path)
-        print(os.path.abspath(os.path.curdir))
         
         return nproject
 
@@ -200,7 +198,7 @@ class Project():
         :param newpath: new position of the project. The new position of the project will be newpath/Project.name 
         :type newpath: str
         :param reset_program_paths: Update programs (Gromacs, Ambertools, ...) paths? Defaults to False
-        :type reset_program_paths: bool
+        :type reset_program_paths: bool, optional
 
         """
         import shutil
@@ -223,10 +221,6 @@ class Project():
             self._checkAmberTools()
 
 
-
-
-            
-    
 
     def add_system(self, name:str):
         
@@ -374,7 +368,7 @@ class System():
         self._ambertools=None
         self._atomtypes={}
         self._species={}
-               
+        self._last_saved_structure=None
 
     @property
     def name(self):
@@ -419,47 +413,47 @@ class System():
     @property
     def species(self):
         return self._species
+
+    @property
+    def last_saved_structure(self):
+        return self._last_saved_structure
     
     @name.setter
     def name(self,n):
         self._name=n
-        return self._name
     
     @index.setter
     def index(self,ndx):
         self._index=ndx
-        return self._index
 
     @molecules.setter
     def molecules(self,ms):
         self._molecules=ms
-        return self._molecules
 
     @box.setter
     def box(self,box_vector):
         self._box=box_vector
-        return self._box
 
     @path.setter
     def path(self,p):
         self._path=p
-        return self._path
 
     @topology.setter
     def topology(self,tp):
         self._topology=tp
-        return self._topology
 
     @gromacs.setter
     def gromacs(self,gp):
         self._gromacs=gp
-        return self._gromacs
 
     @ambertools.setter
     def ambertools(self,ap):
         self._ambertools=ap
-        return self._ambertools
 
+    @last_saved_structure.setter
+    def last_saved_structure(self,pdb):
+        self._last_saved_structure=pdb
+        
 
     @staticmethod
     def help():
@@ -501,7 +495,6 @@ class System():
         :type keep_box: bool, optional
 
         """
-        
         import subprocess
         
         if not structure_file:
@@ -516,9 +509,6 @@ class System():
                 
         mol2file=self.path+'/{}'.format(basename_structure_file+'.mol2')
 
-        #print(structure_file,mol2file)
-        #print(self.ambertools)
-        
         result=subprocess.run('{3} -i {0} -fi {1} -o {2} -fo mol2 -j 5 -dr no -at gaff2'.format(structure_file,
                                                                                                 extension,
                                                                                                 mol2file,
@@ -566,7 +556,6 @@ class System():
         :type nmol: int, optional
         
         """
-
         if len(self.molecules)>0 and initial_conf==None:
             print("ERROR: you are trying to insert new molecules without taking into account molecules" \
                   "that are already in the system.")
@@ -728,7 +717,7 @@ class System():
         :param structure: pdb file with the current configuration (needed for the number of molecules)
         :type structure: str
         :param topology: name of the resulting topology file. Defaults to 'topology.top'.
-        :type topology: str
+        :type topology: str, optional
 
         """
 
@@ -806,7 +795,7 @@ class System():
          
         
         
-    def add_simulation(self, name: str, simtype: str, **kwargs):
+    def add_simulation(self, name: str, simtype: str, simulation_dict: dict=None):
 
         """Add a simulation to the current system object.
 
@@ -814,15 +803,14 @@ class System():
         :type name: str
         :param simtype: Type of simulation. Available types are 'em' and 'md'.
         :type simtype: str
-
-        :Keyword Arguments: Keyword arguments for simulation classes.
-        :returns: 
+        :param simulation_dict: dict with simulation specific parameters. Defaults to None. Values in the dict are: 'coordinates', 'mdrun_options', 'topology', 'path_mdp', 'maxwarn', 'tpr', 'nsteps', 'plumed'.
+        :type simulation_dict: dict, optional
+ 
         """
-        from sim_launch_py.gromacs import EnergyMinimization,MD
+        import sim_launch_py.gromacs as sim
         import shutil
-        
-        accepted_simtypes=['em','md']
 
+        accepted_simtypes=['em','md','posre']
 
         if simtype not in accepted_simtypes:
             print("ERROR: provided simtype, {}, is not valid. Acceptable values are {}.".format(simtype,accepted_simtypes))
@@ -830,25 +818,40 @@ class System():
 
         util.create('{}/{}'.format(self.path,name), arg_type='dir', backup=False)
 
+        
         newsim_index=len(self.simulations)
         if simtype=='em':
-            newsim=EnergyMinimization(name, newsim_index)
+            newsim=sim.EnergyMinimization(name, newsim_index)
 
         elif simtype=='md':
 
-            newsim=MD(name, newsim_index)
-            newsim.plumed=kwargs.pop('plumed',None)
+            newsim=sim.MD(name, newsim_index)
+            newsim.plumed=simulation_dict.pop('plumed',None)
 
-        
+        elif simtype=='posre':
+            
+            newsim=sim.Posre_MD(name, newsim_index)
+            try:
+                newsim.posre=simulation_dict.pop('posre')
+            except KeyError:
+                print('ERROR: you tried to add a simulation with position restraints but no'\
+                      'reference structure for the restraint has been passed')
+                
         newsim.path='{}/{}'.format(self.path,name)
         newsim.state='Pending'
-        newsim.gromacs=kwargs.pop('gromacs',self.gromacs)
-        newsim.mdrun_options=kwargs.pop('mdrun_options',None)
-        newsim.topology=kwargs.pop('topology',self.topology)
-        newsim.mdp=kwargs.pop('path_mdp',None)
-        newsim.maxwarn=kwargs.pop('maxwarn',0)
-        newsim.coordinates=kwargs.pop('coordinates',None)
-        newsim.tpr=kwargs.pop('tpr',None)
+        try:
+            newsim.coordinates=simulation_dict.pop('coordinates')
+        except KeyError:
+            print("ERROR: unknown starting configuration, please specify a structure file.")
+            return
+        else:
+            print("Simulation {}(type {}) will start from configuration {}.".format(name,simtype,newsim.coordinates))      
+        newsim.mdrun_options=simulation_dict.pop('mdrun_options','-v')
+        newsim.topology=simulation_dict.pop('topology',self.topology)
+        newsim.mdp=simulation_dict.pop('path_mdp',None)
+        newsim.maxwarn=simulation_dict.pop('maxwarn',0)
+        newsim.tpr=simulation_dict.pop('tpr',None)
+        newsim.nsteps=simulation_dict.pop('nsteps',None)
 
         shutil.copy(newsim.mdp,newsim.path)
         newsim.mdp=os.path.basename(newsim.mdp)
@@ -859,19 +862,19 @@ class System():
         #shutil.copy(newsim.coordinates,newsim.path)
         newsim.coordinates=os.path.relpath(newsim.coordinates,start=newsim.path)
 
-        if newsim.type=='md' and newsim.plumed:
+        if newsim.simtype=='md' and newsim.plumed:
             newsim.mdrun_options+=' -plumed {}'.format(newsim.plumed)
 
         
-        if len(kwargs)>0:
-            print("Warning: While creating the simulation object, there are remaining keyword arguments that have not been used: {}".format(kwargs.keys()))
+        if len(simulation_dict)>0:
+            print("Warning: While creating the simulation object, there are remaining keyword arguments that have not been used: {}".format(simulation_dict.keys()))
 
         self.simulations.append(newsim)
 
         print("Added simulation {} ({}) to system {} ({}).".format(name,newsim_index,self.name,self.index))
 
 
-    def create_run_script(self, scriptname: str, simulations: list=None, platform: str='bash'):
+    def create_run_script(self, scriptname: str, simulations: list=None, platform: str='bash', platform_dict: dict=None):
 
         """Create the script to run the simulations.
 
@@ -879,9 +882,10 @@ class System():
         :type scriptname: str 
         :param simulations: which simulations need to be run. Defaults to None (which means all simulations. I know...)
         :type simulations: list
-        :param platform: type of platform on which simulations will be run. Available are 'bash' for running locally, or 'myriad' to run on Myriad HPC @ UCL.
-        :type platform: str
-        
+        :param platform: type of platform on which simulations will be run. Available are 'bash' for running locally, or 'myriad' to run on Myriad HPC @ UCL. Defaults to 'bash'
+        :type platform: str, optional
+        :param platform_dict: dict with platform specific parameters. Defaults to None.
+        :type platform_dict: dict, optional
 
         """
         if simulations is None:
@@ -902,7 +906,7 @@ class System():
 # Batch script to run an MPI parallel job under SGE with Intel MPI.
 
 # Request two hours of wallclock time (format hours:minutes:seconds).
-#$ -l h_rt=24:00:00
+#$ -l h_rt={0}
 
 # Request 1 gigabyte of RAM per process (must be an integer followed by M, G, or T)
 #$ -l mem=1G
@@ -912,10 +916,10 @@ class System():
 #$ -l tmpfs=2G
 
 # Set the name of the job.
-#$ -N MDjob
+#$ -N {1}
 
 # Select the MPI parallel environment and 36 processes.
-#$ -pe mpi 12
+#$ -pe mpi {2}
 
 # Set the working directory to somewhere in your scratch space.
 #$ -cwd 
@@ -924,7 +928,10 @@ class System():
 module unload -f compilers mpi
 module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheval flex plumed/2.5.2/intel-2018 gromacs/2019.3/plumed/intel-2018
 
-"""
+export OMP_NUM_THREADS={3}
+
+""".format(platform_dict['wallclock'],platform_dict['job_name'],platform_dict['mpi'],platform_dict['omp'])
+                
                 f.write(header)
             
             for sim_index in simulations:
@@ -934,14 +941,17 @@ module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheva
                 f.write('cd {}\n'.format(os.path.basename(sim.path)))
 
                 if sim.mdp:
-                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5}\n'.format(self.gromacs,
+                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5}\n'.format('gmx_mpi',
                                                                                               sim.mdp,
                                                                                               sim.name,
                                                                                               sim.maxwarn,
                                                                                               sim.topology,
                                                                                               sim.coordinates))
 
-                f.write('{0} mdrun -deffnm {1} {2}'.format(self.gromacs,sim.name,sim.mdrun_options))
+                f.write('{0} mdrun -deffnm {1} {2} '.format('gerun gmx_mpi',sim.name,sim.mdrun_options))
+
+                if sim.nsteps:
+                    f.write('-nsteps {}'.format(sim.nsteps))
                      
                 f.write('\ncd ..\n\n')
 
@@ -1030,9 +1040,7 @@ module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheva
 
         self._update_composition()
 
-
-
-
+        
     def find_molecule_by_resname(self,resname: str):
         """Find the molecules in a system with the given residue name.
 
@@ -1102,8 +1110,12 @@ module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheva
                                                                                                                          a.element))
                 iatom+=1
 
+        self.last_saved_structure=f.name
+        
         f.close()
 
+
+        
         
 
     def add_box(self, box_side: float, shape: str='cubic'):
@@ -1112,7 +1124,7 @@ module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheva
         :param box_side: side of the box in nm.
         :type box_side: float
         :param shape: shape of the box. Defaults to 'cubic'.
-        :type shape: str
+        :type shape: str, optioal
 
         """
 
@@ -1153,9 +1165,9 @@ module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheva
         :param structure_file: PDB file from which coordinates are read.
         :type structure_file: str
         :param start: index of the first molecule of the system for which atomic coordinates are updated. Defaults to 0. 
-        :type start: int
+        :type start: int, optional
         :param end: index of the last molecule (included) of the system for which atomic coordinates are updated. Defaults to np.inf.
-        :type end: int
+        :type end: int, optional
         
         """
 
@@ -1205,7 +1217,7 @@ module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheva
         :param mol2file: name of the MOL2 structure file.
         :type mol2file: str
         :param keep_coordinates: keep coordinates read from the structure file. Defaults to True.
-        :type keep_coordinates: bool
+        :type keep_coordinates: bool, optional
         
         """
         
@@ -1464,8 +1476,8 @@ class Atom():
        - bonds (list) : list of the index of the atoms in the same molecule that the atom is bound to.\n
 
     Static Methods:\n
-       - _getelement(atomtype) : Assign atomic element of the atom based on its name.\n
-       - _getmw(element) : Assign mass to the atom based on its atomic element.\n
+       - _get_element(atomtype) : Assign atomic element of the atom based on its name.\n
+       - _get_mw(element) : Assign mass to the atom based on its atomic element.\n
        
     """
 
@@ -1475,15 +1487,15 @@ class Atom():
         :param name: name of the atom.
         :type name: str
         :param index: atom index. Defaults to None.
-        :type index: int
+        :type index: int, optional
         :param atomtype: atom type. Defaults to None.
-        :type atomtype: str
+        :type atomtype: str, optional
         :param resname: residue name (resname) the atom is part of.  Defaults to None.
-        :type resname: str
+        :type resname: str, optional
         :param coordinates: coordinates of the atom in nm.  Defaults to None.
-        :type coordinates: list
+        :type coordinates: list, optional
         :param resid: index of the molecule the atom is part of.  Defaults to None.
-        :type resid: int
+        :type resid: int, optional
 
         """
         
@@ -1508,13 +1520,13 @@ class Atom():
     @property
     def element(self):
         if self._element==None:
-            self._element=self._getelement(self._atomtype)
+            self._element=self._get_element(self._atomtype)
         return self._element
 
     @property
     def mw(self):
         if self._mw==None:
-            self._mw=self._getmw(self._element)
+            self._mw=self._get_mw(self._element)
         return self._mw
 
     @property
@@ -1555,7 +1567,7 @@ class Atom():
 
     
     @staticmethod
-    def _getelement(atomtype):
+    def _get_element(atomtype):
         """Assign atomic element of the atom based on its name.
         """
 
@@ -1569,7 +1581,7 @@ class Atom():
 
 
     @staticmethod
-    def _getmw(element):
+    def _get_mw(element):
         """Assign mass to the atom based on its atomic element.
         """
         

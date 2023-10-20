@@ -173,9 +173,9 @@ def getTop(molecule: str,fromPath: str='',toPath: str=''):
     :param molecule: molecule name
     :type molecule: str
     :param fromPath: path where the topology is. Defaults to ''.
-    :type fromPath: str
+    :type fromPath: str, optional
     :param toPath: path where the topology goes. Defaults to ''.
-    :type toPath: str
+    :type toPath: str, optional
 
     """
     

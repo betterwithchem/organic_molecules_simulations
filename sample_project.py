@@ -91,19 +91,38 @@ s.species['WAT']['top']='/home/matteo/Work/organic_molecules_simulations/Topolog
 s.create_topology('topol.top')
 
 
-s.add_simulation('em','em',
-                 gromacs=s.gromacs, mdrun_options='-v', topology=s.topology,
-                 path_mdp='/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/em.mdp',
-                 maxwarn=2, coordinates='{}/{}'.format(s.path,'removed_water_in_seed.pdb'),gmxbin='gmx_mpi')
+em_dict={'path_mdp':'/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/em.mdp',
+         'maxwarn':2, 'nsteps':1000, 'coordinates':s.last_saved_structure}
 
-s.add_simulation('md1','md',
-                 gromacs=s.gromacs, mdrun_options='-v', topology=s.topology,
-                 path_mdp='/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/mdparrinello.mdp',
-                 maxwarn=2, coordinates='{}/{}.gro'.format(s.simulations[-1].path,s.simulations[-1].name),
-                 gmxbin='gmx_mpi')
+s.add_simulation('em','em', simulation_dict=em_dict)
+
+nvt_dict={'path_mdp': '/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/nvt.mdp',
+          'maxwarn':2, 'coordinates':'{}/{}.gro'.format(s.simulations[-1].path,s.simulations[-1].name),
+          'posre':'{}/{}.gro'.format(s.simulations[-1].path,s.simulations[-1].name),
+          'nsteps':50000}
+
+s.add_simulation('nvt','posre',simulation_dict=nvt_dict)
+
+npt_dict={'path_mdp': '/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/npt.mdp',
+          'maxwarn':2, 'coordinates':'{}/{}.gro'.format(s.simulations[-1].path,s.simulations[-1].name),
+          'posre':'{}/{}.gro'.format(s.simulations[-1].path,s.simulations[-1].name),
+          'nsteps':50000}
+
+s.add_simulation('npt','posre',simulation_dict=npt_dict)
+
+md_dict={'path_mdp': '/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/mdparrinello.mdp',
+         'maxwarn':2, 'coordinates':'{}/{}.gro'.format(s.simulations[-1].path,s.simulations[-1].name),
+         'nsteps':5000000}
+
+s.add_simulation('md','md', simulation_dict=md_dict)
 
 
-s.create_run_script('run.job',platform='myriad')
+platform_dict={'wallclock':'06:00:00',
+               'job_name':s.name,
+               'mpi':16,
+               'omp':4}
+
+s.create_run_script('run.job',platform='myriad',platform_dict=platform_dict)
 
 
                  
