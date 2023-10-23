@@ -72,6 +72,16 @@
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.absindex">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">absindex</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.absindex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Atom.atomtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atomtype</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.atomtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Atom.bonds">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bonds</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.bonds" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -109,6 +119,42 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Atom.resname">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">resname</span></span><a class="headerlink" href="#sim_launch_py.classes.Atom.resname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Group">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.classes.</span></span><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Group" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Group._check_duplicates">
+<span class="sig-name descname"><span class="pre">_check_duplicates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Group._check_duplicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if there are duplicate atoms in the group and return the sorted list of unique atom objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Group.atoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atoms</span></span><a class="headerlink" href="#sim_launch_py.classes.Group.atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Group.com">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">com</span></span><a class="headerlink" href="#sim_launch_py.classes.Group.com" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Group.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sim_launch_py.classes.Group.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Group.natoms">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">natoms</span></span><a class="headerlink" href="#sim_launch_py.classes.Group.natoms" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -430,6 +476,17 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._renumber_atoms">
+<span class="sig-name descname"><span class="pre">_renumber_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._renumber_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign the absolute index to each atom of the system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._update_composition">
 <span class="sig-name descname"><span class="pre">_update_composition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._update_composition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the ‘nmols’ attribute of self.species dictionary by checking the residue names of the molecules in the system</p>
@@ -501,6 +558,24 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.add_to_group">
+<span class="sig-name descname"><span class="pre">add_to_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.add_to_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add atoms to an existing group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the group to which atoms will be added.</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>, </em><em>optional</em>) – List of atoms to add. Defaults to None.</p></li>
+<li><p><strong>molecules</strong> (<em>list</em><em>, </em><em>optional</em>) – List of molecules to add. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.ambertools">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ambertools</span></span><a class="headerlink" href="#sim_launch_py.classes.System.ambertools" title="Permalink to this definition">¶</a></dt>
@@ -520,6 +595,24 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.center_box">
 <span class="sig-name descname"><span class="pre">center_box</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.center_box" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center the atoms in the box with gmx editconf (equivalent to gmx editconf -c)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.create_group">
+<span class="sig-name descname"><span class="pre">create_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.create_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new group of atoms</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the new group</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>, </em><em>optional</em>) – list of atoms to add to the group. Defaults to None</p></li>
+<li><p><strong>molecules</strong> (<em>list</em><em>, </em><em>optional</em>) – list of molecules to add to the group (its atoms will be added to the group). Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -559,6 +652,23 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>delete_list</strong> (<em>list</em>) – list of the indexes of the molecules to be deleted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.find_group_by_name">
+<span class="sig-name descname"><span class="pre">find_group_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.find_group_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the index of a group in a system given its name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the index</p>
+</dd>
+<dt class="field-even">Returns group_index<span class="colon">:</span></dt>
+<dd class="field-even"><p>index of the group</p>
+</dd>
+<dt class="field-odd">Rtype group_index<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -617,6 +727,11 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dl class="py property">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.gromacs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gromacs</span></span><a class="headerlink" href="#sim_launch_py.classes.System.gromacs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.groups">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">groups</span></span><a class="headerlink" href="#sim_launch_py.classes.System.groups" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

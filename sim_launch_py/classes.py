@@ -278,7 +278,8 @@ class Project():
         
         for i,s in enumerate(self.systems):
             s.index=i
-            
+
+        
     def _checkGromacs(self):
         
         """Look for Gromacs binary and add it to the project.
@@ -361,6 +362,7 @@ class System():
         self._index=None
         self._molecules=list()
         self._simulations=list()
+        self._groups=list()
         self._box=None
         self._path=path
         self._topology=None
@@ -385,6 +387,10 @@ class System():
     @property
     def simulations(self):
         return self._simulations
+
+    @property
+    def groups(self):
+        return self._groups
 
     @property
     def box(self):
@@ -501,6 +507,8 @@ class System():
             print('Error: a structure file is required')
             return
 
+        curdir=os.path.abspath(os.path.curdir)
+        os.chdir(self.path)
                 
         # convert structure_file to mol2
 
@@ -511,9 +519,12 @@ class System():
 
         result=subprocess.run('{3} -i {0} -fi {1} -o {2} -fo mol2 -j 5 -dr no -at gaff2'.format(structure_file,
                                                                                                 extension,
-                                                                                                mol2file,
+                                                                                                basename_structure_file+'.mol2',
                                                                                                 self.ambertools),
                               stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+
+
+        os.chdir(curdir)
 
         self._loadfrommol2(name,mol2file,keep_coordinates=keep_coordinates)
 
@@ -540,6 +551,10 @@ class System():
         for m in self.molecules:
             if m.resname not in self.species:
                 self.species[m.resname]={}
+
+        self._renumber_atoms()
+
+
 
     def insert_molecules(self, name: str, molstruct: str, initial_conf: str=None, final_conf: str='inserted.pdb', nmol: int=1):
         """Insert molecules in random positions.
@@ -656,9 +671,93 @@ class System():
 
         #print('Update coordinates for molecules from {} to {} reading from file {}.'.format(index_first_new_mol,index_last_new_mol, final_conf))        
         self._update_coordinates(final_conf, start=index_first_new_mol, end=index_last_new_mol)
+        self._renumber_atoms()
 
+        
         print("{} molecules of residue {} have been added. The file {} has been created.".format(nmol,new_molecule.resname, os.path.relpath(final_conf)))
 
+    def create_group(self, name: str, atoms: list=None,molecules: list=None):
+        """Create a new group of atoms
+
+        :param name: Name of the new group 
+        :type name: str
+        :param atoms: list of atoms to add to the group. Defaults to None 
+        :type atoms: list, optional
+        :param molecules: list of molecules to add to the group (its atoms will be added to the group). Defaults to None. 
+        :type molecules: list, optional
+        :returns: 
+
+        """
+
+        for g in self.groups:
+            if g.name==name:
+                print("ERROR: group with name {} already exists in system {}".format(name,self.name))
+                return
+        
+        newgroup=Group(name)
+        if atoms is not None:
+            for atom in atoms:
+                newgroup.atoms.append(atom)
+
+        if molecules is not None:
+            for molecule in molecules:
+                for atom in molecule.atoms:
+                    newgroup.atoms.append(atom)
+
+        if newgroup.natoms>0:
+            newgroup._check_duplicates()
+        
+        self.groups.append(newgroup)
+
+    def add_to_group(self, name: str, atoms: list=None, molecules: list=None):
+        """Add atoms to an existing group.
+
+        :param name: Name of the group to which atoms will be added. 
+        :type name: str
+        :param atoms: List of atoms to add. Defaults to None.
+        :type atoms: list, optional
+        :param molecules: List of molecules to add. Defaults to None.
+        :type molecules: list, optional
+        :returns: 
+
+        """
+
+        gindex=self.find_group_by_name(name)
+        g=self.groups[gindex]
+
+        if atoms is not None:
+            for atom in atoms:
+                g.atoms.append(atom)
+
+        if molecules is not None:
+            for molecule in molecules:
+                for atom in molecule.atoms:
+                    g.atoms.append(atom)
+
+        g._check_duplicates()
+
+    
+
+
+    def find_group_by_name(self, name: str):
+        """Get the index of a group in a system given its name.
+
+        :param name: Name of the index
+        :type name: str
+        :returns group_index: index of the group
+        :rtype group_index: int 
+
+        """
+
+        for group_index,g in enumerate(self.groups):
+            if g.name==name:
+                return group_index
+
+        print("Warning: Group with name {} not found in system {}.".format(name,self.name))
+        return None
+        
+        
+        
 
     def replicate_cell(self,repl: list=[1, 1, 1]):
         """Replicate the given box in the 3 directions.
@@ -771,7 +870,25 @@ class System():
                 top.write('{}\t{}\n'.format(species,self.species[species]['nmols']))
 
         self.topology='{}'.format(topology)
-                
+
+        
+    def _renumber_atoms(self):
+
+        """Assign the absolute index to each atom of the system
+
+        :returns: 
+
+        """
+
+        index=0
+        for m in self.molecules:
+            for a in m.atoms:
+                a.absindex=index
+                index+=1
+
+        
+        
+
 
             
             
@@ -1516,6 +1633,7 @@ class Atom():
         
         self._name=name
         self._index=index
+        self._absindex=None
         self._atomtype=atomtype
         self._resname=resname
         self._coordinates=coordinates
@@ -1533,15 +1651,24 @@ class Atom():
         return self._index
 
     @property
+    def absindex(self):
+        return self._absindex
+
+    @property
+    def atomtype(self):
+        return self._atomtype
+    
+    @property
     def element(self):
         if self._element==None:
-            self._element=self._get_element(self._atomtype)
+            #self._name
+            self._element=self._get_element(self.atomtype)
         return self._element
 
     @property
     def mw(self):
         if self._mw==None:
-            self._mw=self._get_mw(self._element)
+            self._mw=self._get_mw(self.element)
         return self._mw
 
     @property
@@ -1563,24 +1690,24 @@ class Atom():
     @index.setter
     def index(self,n):
         self._index=n
-        return self._index
+
+    @absindex.setter
+    def absindex(self,an):
+        self._absindex=an
 
     @resid.setter
     def resid(self,r):
         self._resid=r
-        return self._resid
 
     @bonds.setter
     def bonds(self,b):
         self._bonds=b
-        return self._bonds
 
     @coordinates.setter
     def coordinates(self,x):
         self._coordinates=x
-        return self._coordinates
 
-    
+        
     @staticmethod
     def _get_element(atomtype):
         """Assign atomic element of the atom based on its name.
@@ -1615,6 +1742,73 @@ class Atom():
             print('ERROR: element not known')
     
 
+class Group():
+
+    def __init__(self,name):
+        """TODO describe function
+
+        :returns: 
+
+        """
+
+        self._name=name
+        self._atoms=list()
+        self._natoms=0
+        self._com=None
+
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def atoms(self):
+        return self._atoms
+
+    @property
+    def natoms(self):
+        return len(self._atoms)
+
+    @property
+    def com(self):
+        if self._com==None:
+            self._com=np.array([0.,0.,0.])
+            totmass=0
+            for atom in self._atoms:
+                self._com+=np.array(atom.coordinates)*atom.mw
+                totmass+=atom.mw
+            self._com/=totmass
+        return self._com
+
+    @atoms.setter
+    def atoms(self,alist):
+        self._atoms=alist
+
         
+    def _check_duplicates(self):
+
+        """Check if there are duplicate atoms in the group and return the sorted list of unique atom objects
+
+        :returns: 
+
+        """
+        atom_ids=[]
+
+        for atom in self._atoms:
+            atom_ids.append(atom.absindex)
+
+        new_atom_ids, sort_index=np.unique(atom_ids,return_index=True)
+
+        new_atoms_list=[]
+        for ival in sort_index:
+            new_atoms_list.append(self._atoms[ival])
+
+        self.atoms=new_atoms_list
+        
+
+    
+        
+
+    
         
 
