@@ -5,7 +5,7 @@ import os
 
 # Create a new Project
 
-pname='sample_project'
+pname='olanzapine_formIV'
 ppath='./{}'.format(pname)
 
 p=Project.new_project(pname,ppath,overwrite=True)
@@ -16,12 +16,11 @@ p.add_system('UNOGIN_eq1_bulk')
 
 s=p.systems[0]
 
-s.add_molecule('olanzapine', structure_file='/home/matteo/Work/organic_molecules_simulations/UNOGIN_eq1.pdb')
+s.add_molecule('olanzapine', structure_file='/home/matteo/Work/organic_molecules_simulations/form_IV.pdb')
 
-s.replicate_cell(repl=[10,10,10])
+s.replicate_cell(repl=[5,5,5])
 
 s.save_pdb('replicated_cell.pdb')
-
 
 # center of the box position
 cob=np.array([0. for i in range(3)])
@@ -37,7 +36,7 @@ cob/=n
 # lets keep only the molecules that have COM within 2nm of the center of the box
 
 delete_mols=[]
-cutoff=2 #nm
+cutoff=1 #nm
 for m in s.molecules:
     if get_distance(m.com,ref=cob,box=s.box)>cutoff:
         delete_mols.append(m.index)
@@ -45,7 +44,7 @@ for m in s.molecules:
 s.delete_molecule(delete_mols)
 s.save_pdb('remaining_mols.pdb')
 
-s.add_box(6,shape='cubic')
+s.add_box(10.5,shape='cubic')
 s.center_box()
 s.save_pdb('centered.pdb')
 
@@ -60,12 +59,18 @@ for m in s.molecules:
     
 seed_com/=n
 
-s.insert_molecules('olanzapine','/home/matteo/Work/organic_molecules_simulations/Structures/olanzapine/olanzapine.pdb', initial_conf='centered.pdb', final_conf='added_olanzapine.pdb', nmol=6)
+s.create_group('seed',molecules=s.molecules)
 
-# estimate with some criterion the number of solvent molecules to add
-nwat_to_add=int(1000/18*6.022/10*(s.box[0]**3))-300
+
+s.insert_molecules('olanzapine','/home/matteo/Work/organic_molecules_simulations/olanzapine.pdb', initial_conf='centered.pdb', final_conf='added_olanzapine.pdb', nmol=10)
+
+# estimate in some way the number of solvent molecules to add
+
+nwat_to_add=5700
+netoh_to_add=7038
 
 # add solvent molecules
+
 s.insert_molecules('water','/home/matteo/Work/organic_molecules_simulations/Structures/water/water.pdb',initial_conf='added_olanzapine.pdb',final_conf='with_water.pdb',nmol=nwat_to_add)
 
 # once water molecules have been inserted, remove those that could be within the seed
@@ -83,8 +88,24 @@ s.delete_molecule(delete_mols)
 
 s.save_pdb('removed_water_in_seed.pdb')
 
-s.species['OLA']['top']='/home/matteo/Work/organic_molecules_simulations/Topologies/olanzapine.top'
-s.species['WAT']['top']='/home/matteo/Work/organic_molecules_simulations/Topologies/water.top'
+
+s.insert_molecules('ethanol','/home/matteo/Work/organic_molecules_simulations/Structures/ethanol/ethanol.pdb',initial_conf='removed_water_in_seed.pdb',final_conf='with_ethanol.pdb',nmol=netoh_to_add)
+
+etoh_mols=s.find_molecule_by_resname('ETH')
+
+delete_mols=[]
+for etohm in s.molecules[etoh_mols[0]:etoh_mols[-1]]:
+    if get_distance(etohm.com,ref=seed_com,box=s.box)<=cutoff:
+        delete_mols.append(etohm.index)
+
+s.delete_molecule(delete_mols)
+
+s.save_pdb('removed_etoh_in_seed.pdb')
+
+s.species['OLA']['top']='/home/matteo/Work/organic_molecules_simulations/olanzapine/Matteo_P/OLA.top'
+s.species['WAT']['top']='/home/matteo/Work/organic_molecules_simulations/olanzapine/Matteo_P/water.top'
+s.species['ETH']['top']='/home/matteo/Work/organic_molecules_simulations/olanzapine/Matteo_P/ethanol.top'
+
 
 # create a .top file, this will read the .top files of each species, extract the atomtypes and the molecule definitions and compose them in a single .top file.
 s.create_topology('topol.top')
@@ -96,7 +117,7 @@ em_dict={'path_mdp':'/home/matteo/Work/organic_molecules_simulations/sim_launch_
 
 s.add_simulation('em','em', simulation_dict=em_dict)
 
-nvt_dict={'path_mdp': '/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/nvt.mdp',
+nvt_dict={'path_mdp': '/home/matteo/Work/organic_molecules_simulations/sim_launch_py/mdp/nvt_ramp.mdp',
           'maxwarn':2,
           'coordinates':'{}/{}.gro'.format(s.simulations[-1].path,s.simulations[-1].name),
           'posre':'{}/{}.gro'.format(s.simulations[-1].path,s.simulations[-1].name),

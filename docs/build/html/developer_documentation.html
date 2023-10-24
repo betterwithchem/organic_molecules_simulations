@@ -127,7 +127,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Group">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.classes.</span></span><span class="sig-name descname"><span class="pre">Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Group" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>The group class that manages and stores information about arbitrary groups of atoms</p>
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Group._check_duplicates">
 <span class="sig-name descname"><span class="pre">_check_duplicates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Group._check_duplicates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if there are duplicate atoms in the group and return the sorted list of unique atom objects</p>
@@ -480,11 +481,6 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._renumber_atoms">
 <span class="sig-name descname"><span class="pre">_renumber_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._renumber_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assign the absolute index to each atom of the system</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -642,6 +638,20 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <li><p><strong>structure</strong> (<em>str</em>) – pdb file with the current configuration (needed for the number of molecules)</p></li>
 <li><p><strong>topology</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the resulting topology file. Defaults to ‘topology.top’.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.delete_group">
+<span class="sig-name descname"><span class="pre">delete_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.delete_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a group from the system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the group to eliminate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>

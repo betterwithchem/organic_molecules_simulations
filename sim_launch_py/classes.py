@@ -708,6 +708,7 @@ class System():
             newgroup._check_duplicates()
         
         self.groups.append(newgroup)
+        
 
     def add_to_group(self, name: str, atoms: list=None, molecules: list=None):
         """Add atoms to an existing group.
@@ -755,7 +756,23 @@ class System():
 
         print("Warning: Group with name {} not found in system {}.".format(name,self.name))
         return None
-        
+
+
+    def delete_group(self, name: str):
+        """Delete a group from the system
+
+        :param name: Name of the group to eliminate.
+        :type name: str
+        :returns: 
+
+        """
+
+        kept_groups=[]
+        for g in self.groups:
+            if g.name!=name:
+                kept_groups.append(g)
+
+        self.groups=kept_groups
         
         
 
@@ -779,27 +796,28 @@ class System():
                 for zmult in range(0,repl[2]):
                     if any(np.array(repl)>0):
                         factor=[xmult, ymult, zmult]
-                        for im,m in enumerate(self.molecules):
-                            new_mol=copy.deepcopy(m)
-                            for ia,a in enumerate(new_mol.atoms):
+                        if np.any([xmult,ymult,zmult]):
+                            for im,m in enumerate(self.molecules):
+                                new_mol=copy.deepcopy(m)
+                                for ia,a in enumerate(new_mol.atoms):
 
-                                fract_coords=M_inv.dot(a.coordinates)
-                                new_fract_coords=[factor[i]*fract_coords[i] for i in range(3)]
+                                    fract_coords=M_inv.dot(a.coordinates)
+                                    new_fract_coords=[factor[i]*fract_coords[i] for i in range(3)]
 
-                                #new_cart_coords=M.dot(new_fract_coords)
-                                new_cart_coords=[0., 0., 0.]
-                                for idim,rf in enumerate(factor):
-                                    #print(im,ia,factor)
-                                    new_cart_coords[idim]=a.coordinates[idim]+\
-                                        xmult*self.box[0]*M[0][idim]+\
-                                        ymult*self.box[1]*M[1][idim]+\
-                                        zmult*self.box[2]*M[2][idim]
+                                    #new_cart_coords=M.dot(new_fract_coords)
+                                    new_cart_coords=[0., 0., 0.]
+                                    for idim,rf in enumerate(factor):
+                                        #print(im,ia,factor)
+                                        new_cart_coords[idim]=a.coordinates[idim]+\
+                                            xmult*self.box[0]*M[0][idim]+\
+                                            ymult*self.box[1]*M[1][idim]+\
+                                            zmult*self.box[2]*M[2][idim]
 
-                                a.coordinates=new_cart_coords
-                                #print(im,ia,a.coordinates)
-                                #print(new_mol.atoms[ia].coordinates)
+                                    a.coordinates=new_cart_coords
+                                    #print(im,ia,a.coordinates)
+                                    #print(new_mol.atoms[ia].coordinates)
 
-                            newmolecules.append(new_mol)
+                                newmolecules.append(new_mol)
 
         for i in range(3):
             self.box[i]*=repl[i]
@@ -876,22 +894,15 @@ class System():
 
         """Assign the absolute index to each atom of the system
 
-        :returns: 
-
         """
 
         index=0
-        for m in self.molecules:
-            for a in m.atoms:
+        for im in range(len(self.molecules)):
+            for a in self.molecules[im].atoms:
                 a.absindex=index
                 index+=1
 
-        
-        
-
-
-            
-            
+         
 
     def _update_composition(self):
 
@@ -1060,7 +1071,7 @@ export OMP_NUM_THREADS={3}
 """.format(platform_dict['wallclock'],platform_dict['job_name'],platform_dict['mpi'],platform_dict['omp'])
                 
                 f.write(header)
-            
+
             for sim_index in simulations:
 
                 sim=self.simulations[sim_index]
@@ -1447,6 +1458,9 @@ export OMP_NUM_THREADS={3}
             
             m.index=im
             m._update_atom_resid()
+
+        for g in self.groups:
+            g._check_duplicates()
                     
         
 
@@ -1743,6 +1757,9 @@ class Atom():
     
 
 class Group():
+
+    """The group class that manages and stores information about arbitrary groups of atoms
+    """ 
 
     def __init__(self,name):
         """TODO describe function
