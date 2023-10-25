@@ -159,6 +159,23 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.load_project">
+<span class="sig-name descname"><span class="pre">load_project</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.load_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load an existing project. The Project object is saved in the project directory every time the command Project.save()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>project_folder</strong> (<em>str</em>) – Location of the project to be loaded.</p>
+</dd>
+<dt class="field-even">Returns project<span class="colon">:</span></dt>
+<dd class="field-even"><p>Loaded project.</p>
+</dd>
+<dt class="field-odd">Rtype project<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Project.new_project">
 <span class="sig-name descname"><span class="pre">new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.new_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add new project</p>
@@ -174,6 +191,12 @@
 <dd class="field-even"><p>new project</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project to project folder.</p>
 </dd></dl>
 
 </dd></dl>
@@ -303,7 +326,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>scriptname</strong> (<em>str</em>) – name of the final script to launch the simulations.</p></li>
 <li><p><strong>simulations</strong> (<em>list</em>) – which simulations need to be run. Defaults to None (which means all simulations. I know…)</p></li>
-<li><p><strong>platform</strong> (<em>str</em><em>, </em><em>optional</em>) – type of platform on which simulations will be run. Available are ‘bash’ for running locally, or ‘myriad’ to run on Myriad HPC &#64; UCL. Defaults to ‘bash’</p></li>
+<li><p><strong>platform</strong> (<em>str</em><em>, </em><em>optional</em>) – type of platform on which simulations will be run. Available are ‘bash’ for running locally, ‘myriad’ to run on Myriad HPC &#64; UCL, and ‘archer’ to run on Archer2 HPC. Defaults to ‘bash’. ‘myriad’ is a good starting point for GridEngine-like submission scripts, ‘archer’ is a good starting point for SLURM submission scripts.</p></li>
 <li><p><strong>platform_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – dict with platform specific parameters. Defaults to None.</p></li>
 </ul>
 </dd>

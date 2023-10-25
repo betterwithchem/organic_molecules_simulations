@@ -158,4 +158,5 @@ s.create_run_script('run.job',platform='archer',platform_dict=archer_dict)
 
 
                  
+p.save()
 

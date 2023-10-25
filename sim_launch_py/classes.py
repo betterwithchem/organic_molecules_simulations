@@ -270,6 +270,42 @@ class Project():
 
         self._renumber_systems()
 
+    def save(self):
+        """
+	Save project to project folder.
+	"""
+        print("Saving Project...", end="")
+        import pickle
+        import os
+        if os.path.exists(self._pickle_path):
+            os.rename(self._pickle_path, self._project_path+ "/.multisim.bck.pkl")
+        with open(self._pickle_path, "wb") as file_pickle:
+            pickle.dump(self, file_pickle)
+            print("done")
+
+    def load_project(project_folder: str):
+        """Load an existing project. The Project object is saved in the project directory every time the command Project.save()
+
+        :param project_folder: Location of the project to be loaded.
+        :type project_folder: str
+        :returns project: Loaded project.
+        :rtype project: object
+
+        """
+        import pickle
+        project_folder = os.path.realpath(project_folder)
+        file_pickle = project_folder + "/.multisim.pkl"
+        if os.path.exists(file_pickle):
+            project = pickle.load(open(file_pickle, "rb"))
+            print("Loading Project Name: {}\n".format(project._name))
+            if os.path.realpath(project._path) != project_folder:
+                project.path = project_folder
+            return project
+        else:
+            print("No project found in '{}'. Use the 'Project.new_project' module to create a new project."
+                  "".format(project_folder))
+
+
     def _renumber_systems(self):
         
         """Renumber starting from 0 the index of the systems in a project.
