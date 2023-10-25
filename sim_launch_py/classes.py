@@ -1029,7 +1029,7 @@ class System():
         if simulations is None:
             simulations=[sim.index for sim in self.simulations] 
 
-        available_platforms=['bash','myriad','archer']
+        available_platforms=['bash','myriad','archer','custom']
         if platform not in available_platforms:
 
             print("ERROR: platform to run the simulations is not valid. Available values are {}.".format(available_platforms))
@@ -1101,6 +1101,12 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 """.format(platform_dict['job_name'],platform_dict['mpi'],platform_dict['wallclock'],platform_dict['omp'],platform_dict['budget'])
                 
                 f.write(header)
+
+            elif platform=='custom':
+
+                with open(platform_dict['template_file'],'r') as temp_f:
+                    for line in temp_f:
+                        f.write(line)
                 
             for sim_index in simulations:
 

@@ -140,21 +140,21 @@ md_dict={'path_mdp': '/home/matteo/Work/organic_molecules_simulations/sim_launch
 s.add_simulation('md','md', simulation_dict=md_dict)
 
 # options for myriad
-platform_dict={'wallclock':'06:00:00',
-               'job_name':s.name,
-               'mpi':16,
-               'omp':4}
+myriad_dict={'wallclock':'06:00:00',
+             'job_name':s.name,
+             'mpi':16,
+             'omp':4}
 
-#s.create_run_script('run.job',platform='myriad',platform_dict=platform_dict)
+s.create_run_script('run.job',platform='myriad',platform_dict=myriad_dict)
 
 #options for archer
-platform_dict={'wallclock':'06:00:00',
-               'job_name':s.name,
-               'mpi':128,
-               'omp':4,
-               'budget':'e05-pool'}
+archer_dict={'wallclock':'06:00:00',
+             'job_name':s.name,
+             'mpi':128,
+             'omp':4,
+             'budget':'e05-pool'}
 
-s.create_run_script('run.job',platform='archer',platform_dict=platform_dict)
+s.create_run_script('run.job',platform='archer',platform_dict=archer_dict)
 
 
                  
