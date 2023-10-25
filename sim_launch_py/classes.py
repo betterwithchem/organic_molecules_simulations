@@ -1020,7 +1020,7 @@ class System():
         :type scriptname: str 
         :param simulations: which simulations need to be run. Defaults to None (which means all simulations. I know...)
         :type simulations: list
-        :param platform: type of platform on which simulations will be run. Available are 'bash' for running locally, or 'myriad' to run on Myriad HPC @ UCL. Defaults to 'bash'
+        :param platform: type of platform on which simulations will be run. Available are 'bash' for running locally, 'myriad' to run on Myriad HPC @ UCL, and 'archer' to run on Archer2 HPC. Defaults to 'bash'. 'myriad' is a good starting point for GridEngine-like submission scripts, 'archer' is a good starting point for SLURM submission scripts.
         :type platform: str, optional
         :param platform_dict: dict with platform specific parameters. Defaults to None.
         :type platform_dict: dict, optional
@@ -1029,7 +1029,7 @@ class System():
         if simulations is None:
             simulations=[sim.index for sim in self.simulations] 
 
-        available_platforms=['bash','myriad']
+        available_platforms=['bash','myriad','archer']
         if platform not in available_platforms:
 
             print("ERROR: platform to run the simulations is not valid. Available values are {}.".format(available_platforms))
@@ -1072,6 +1072,36 @@ export OMP_NUM_THREADS={3}
                 
                 f.write(header)
 
+
+            elif platform=='archer':
+
+                header="""#!/bin/bash --login
+
+#SBATCH --job-name={0}
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node={1}
+#SBATCH --cpus-per-task=1
+#SBATCH --time={2}
+
+# Replace [budget code] below with your project code (e.g. t01)
+#SBATCH --account={4}
+#SBATCH --partition=standard
+#SBATCH --qos=standard
+
+# Load the gromacs module 
+module load gromacs/2022.4+plumed
+
+# Recommended environment settings
+export OMP_NUM_THREADS={3}
+# Ensure the cpus-per-task option is propagated to srun commands
+export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
+
+# srun launches the parallel program based on the SBATCH options
+
+""".format(platform_dict['job_name'],platform_dict['mpi'],platform_dict['wallclock'],platform_dict['omp'],platform_dict['budget'])
+                
+                f.write(header)
+                
             for sim_index in simulations:
 
                 sim=self.simulations[sim_index]
@@ -1079,7 +1109,7 @@ export OMP_NUM_THREADS={3}
                 f.write('cd {}\n'.format(os.path.basename(sim.path)))
 
                 if sim.mdp:
-                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5} '.format('gmx_mpi',
+                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5} '.format('gmx',
                                                                                               sim.mdp,
                                                                                               sim.name,
                                                                                               sim.maxwarn,
@@ -1091,7 +1121,7 @@ export OMP_NUM_THREADS={3}
                 else:
                     f.write('\n')
 
-                f.write('{0} mdrun -deffnm {1} {2} '.format('gerun gmx_mpi',sim.name,sim.mdrun_options))
+                f.write('{0} mdrun -deffnm {1} {2} '.format('srun gmx_mpi ',sim.name,sim.mdrun_options))
 
                 if sim.nsteps:
                     f.write('-nsteps {}'.format(sim.nsteps))
@@ -1531,7 +1561,7 @@ class Molecule():
 
     @property
     def com(self):
-        if self._com==None:
+        if np.any(self._com==None):
             self._get_com()
         return self._com
 

@@ -12,7 +12,7 @@ p=Project.new_project(pname,ppath,overwrite=True)
 
 # Create a system
 
-p.add_system('UNOGIN_eq1_bulk')
+p.add_system('test1')
 
 s=p.systems[0]
 
@@ -145,7 +145,16 @@ platform_dict={'wallclock':'06:00:00',
                'mpi':16,
                'omp':4}
 
-s.create_run_script('run.job',platform='myriad',platform_dict=platform_dict)
+#s.create_run_script('run.job',platform='myriad',platform_dict=platform_dict)
+
+#options for archer
+platform_dict={'wallclock':'06:00:00',
+               'job_name':s.name,
+               'mpi':128,
+               'omp':4,
+               'budget':'e05-pool'}
+
+s.create_run_script('run.job',platform='archer',platform_dict=platform_dict)
 
 
                  
