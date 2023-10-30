@@ -1187,7 +1187,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
                     f.write('\n')
 
 
-                f.write('{0} {1} mdrun -deffnm {1} {2} '.format(mpirun, gmx, sim.name,sim.mdrun_options))
+                f.write('{0} {1} mdrun -deffnm {2} {3} '.format(mpirun, gmx, sim.name,sim.mdrun_options))
 
                 if sim.nsteps:
                     f.write('-nsteps {}'.format(sim.nsteps))
