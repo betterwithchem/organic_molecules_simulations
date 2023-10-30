@@ -145,7 +145,7 @@ myriad_dict={'wallclock':'06:00:00',
              'mpi':16,
              'omp':4}
 
-s.create_run_script('run.job',platform='myriad',platform_dict=myriad_dict)
+s.create_run_script('run.myriad',platform='myriad',platform_dict=myriad_dict)
 
 #options for archer
 archer_dict={'wallclock':'06:00:00',
@@ -154,7 +154,7 @@ archer_dict={'wallclock':'06:00:00',
              'omp':4,
              'budget':'e05-pool'}
 
-s.create_run_script('run.job',platform='archer',platform_dict=archer_dict)
+s.create_run_script('run.archer',platform='archer',platform_dict=archer_dict)
 
 
                  

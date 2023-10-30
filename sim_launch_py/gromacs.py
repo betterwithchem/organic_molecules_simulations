@@ -28,6 +28,7 @@ class _Simulation():
                 # if running directly mdrun
                 self._tpr=None
                 self._nsteps=None
+                self._cvs=list()
                                 
         @property
         def name(self):
@@ -80,6 +81,10 @@ class _Simulation():
         @property
         def nsteps(self):
                 return self._nsteps
+
+        @property
+        def cvs(self):
+                return self._cvs
 
         @name.setter
         def name(self,n):
@@ -150,34 +155,41 @@ class _Simulation():
                 
                 return gmx_commands
 
-        def add_cv(self, name: str ,cvtype: str , **kwargs):
 
-            """ Add a collective variable to the simulation
+        def add_cv(self, name: str, cv_type: str, cv_dict: dict=None):
+                """Add a Collective Variable to the Simulation.
 
-            :param name: name of the collective variable
-            :type name: str
-            :param cvtype: type of collective variable, available types are: 'TORSION', 'ENERGY'.
-            :type cvtype: str
-            :param **kwargs : keyword arguments for the chosen type of variable
-            :returns new_cv: the new collective variable
-            :rtype new_cv: CV object 
+                :param name: Name of the new collective variable.
+                :type name: str
+                :param cv_type: Type of collective variable. See documentation of sim_launch_py.plumed for details.
+                :type cv_type: str
+                :param cv_dict: dict with the parameters for the collective variable. Defaults to None.
+                :type cv_dict: dict, optional
+                :returns: 
 
-            """
-        
-            supported=['TORSION','ENERGY']
+                """
 
-            if cvtype.upper()=='TORSION':
-                    new_cv=plumed.Torsion(name,kwargs['atoms'])
-                    self._cvs.append(new_cv)
-            elif cvtype.upper()=='ENERGY':
+                import sim_launch_py.plumed as plumed
+
+                available_cv_types=['TORSION','ENERGY']
+
+                if cv_type.upper() not in available_cv_types:
+                    print("!"*20)
+                    print("! ERROR: given cv type ({}) is not a valid type. Acceptable types are {}.".format(cv_type.upper(),available_cv_types))
+                    print("!"*20)
+                    return
+
+                if cv_type.upper()=='TORSION':
+
+                    new_cv=plumed.Torsion(name,cv_dict['atoms'])
+
+                elif cv_type.upper()=='ENERGY':
+
                     new_cv=plumed.PotentialEnergy(name)
-                    self._cvs.append(new_cv)
-            else:
-                    print("Error: for the moment only {} are supported as collective variables... sorry".format(supported))
-                    exit()
 
-            return new_cv
-    
+                self.cvs.append(new_cv)
+        
+
         def add_bias(self, name: str, biastype: str, cv: object ,**kwargs):
 
                 """ Add a bias to the simulation

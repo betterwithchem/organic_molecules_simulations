@@ -455,7 +455,7 @@ class LowerWalls(_Bias):
             
 
     
-def writePlumedFile(plumed_file: str, simulation: object, colvar: str=None, printstride: int=500):
+def write_plumed_file(plumed_file: str, simulation: object, colvar: str=None, printstride: int=500):
 
     """Write Plumed File
     

@@ -193,6 +193,43 @@ class Project():
         
         return nproject
 
+    def save(self):
+        """
+	Save project to project folder.
+	"""
+        print("\nSaving Project...", end="")
+        import pickle
+        import os
+        if os.path.exists(self._pickle_path):
+            os.rename(self._pickle_path, self._project_path+ "/.multisim.bck.pkl")
+        with open(self._pickle_path, "wb") as file_pickle:
+            pickle.dump(self, file_pickle)
+            print("done")
+
+    def load_project(project_folder: str):
+        """Load an existing project. The Project object is saved in the project directory every time the command Project.save()
+
+        :param project_folder: Location of the project to be loaded.
+        :type project_folder: str
+        :returns project: Loaded project.
+        :rtype project: object
+
+        """
+        import pickle
+        project_folder = os.path.realpath(project_folder)
+        file_pickle = project_folder + "/.multisim.pkl"
+        if os.path.exists(file_pickle):
+            project = pickle.load(open(file_pickle, "rb"))
+            print("Loading Project Name: {}\n".format(project._name))
+            if os.path.realpath(project._path) != project_folder:
+                project.path = project_folder
+            os.chdir(project.path)
+            return project
+        else:
+            print("No project found in '{}'. Use the 'Project.new_project' module to create a new project."
+                  "".format(project_folder))
+
+
     def change_path(self, newpath: str, reset_program_paths: bool=False):
         """Change path of the project 
         :param newpath: new position of the project. The new position of the project will be newpath/Project.name 
@@ -249,7 +286,9 @@ class Project():
             
         self.systems.append(newsystem)
 
+        print("*"*50)
         print("Created system {}".format(newsystem.name))
+        print("*"*50)
 
     def delete_system(self, delete_list):
         
@@ -270,41 +309,14 @@ class Project():
 
         self._renumber_systems()
 
-    def save(self):
-        """
-	Save project to project folder.
-	"""
-        print("Saving Project...", end="")
-        import pickle
-        import os
-        if os.path.exists(self._pickle_path):
-            os.rename(self._pickle_path, self._project_path+ "/.multisim.bck.pkl")
-        with open(self._pickle_path, "wb") as file_pickle:
-            pickle.dump(self, file_pickle)
-            print("done")
+    def find_system_by_name(self,name):
 
-    def load_project(project_folder: str):
-        """Load an existing project. The Project object is saved in the project directory every time the command Project.save()
+        for s in self.systems:
+            if s.name==name:
+                return s
 
-        :param project_folder: Location of the project to be loaded.
-        :type project_folder: str
-        :returns project: Loaded project.
-        :rtype project: object
-
-        """
-        import pickle
-        project_folder = os.path.realpath(project_folder)
-        file_pickle = project_folder + "/.multisim.pkl"
-        if os.path.exists(file_pickle):
-            project = pickle.load(open(file_pickle, "rb"))
-            print("Loading Project Name: {}\n".format(project._name))
-            if os.path.realpath(project._path) != project_folder:
-                project.path = project_folder
-            return project
-        else:
-            print("No project found in '{}'. Use the 'Project.new_project' module to create a new project."
-                  "".format(project_folder))
-
+        print("System with name {} not found in the project.".format(name))
+        return None
 
     def _renumber_systems(self):
         
@@ -667,7 +679,7 @@ class System():
             
 
         import subprocess        
-        result=subprocess.run("{0} insert-molecules -f {1} -ci {2} -nmol {3} -o {4}".format("gmx",
+        result=subprocess.run("{0} insert-molecules -f {1} -ci {2} -nmol {3} -o {4} -try 10000".format("gmx",
                                                                                             initial_conf,
                                                                                             molstruct,
                                                                                             nmol,
@@ -681,6 +693,8 @@ class System():
         if added != nmol:
             print("ERROR! {}".format(added_line))
             exit()
+
+        self._last_saved_structure=final_conf
 
 
         # now add/create Molecule and Atom objects
@@ -696,9 +710,12 @@ class System():
             lastmol=len(self.molecules)-1
             import copy
         
-        for i in range(1,nmol):
-            new_molecule=copy.deepcopy(self.molecules[lastmol])
-            self.molecules.append(new_molecule)
+            for i in range(1,nmol):
+                new_molecule=copy.deepcopy(self.molecules[lastmol])
+                self.molecules.append(new_molecule)
+
+        else:
+            new_molecule=self.molecules[-1]
 
         self._update_molecule_indexes()
         self._update_composition()
@@ -708,10 +725,11 @@ class System():
         #print('Update coordinates for molecules from {} to {} reading from file {}.'.format(index_first_new_mol,index_last_new_mol, final_conf))        
         self._update_coordinates(final_conf, start=index_first_new_mol, end=index_last_new_mol)
         self._renumber_atoms()
-
         
         print("{} molecules of residue {} have been added. The file {} has been created.".format(nmol,new_molecule.resname, os.path.relpath(final_conf)))
 
+
+        
     def create_group(self, name: str, atoms: list=None,molecules: list=None):
         """Create a new group of atoms
 
@@ -809,8 +827,7 @@ class System():
                 kept_groups.append(g)
 
         self.groups=kept_groups
-        
-        
+
 
     def replicate_cell(self,repl: list=[1, 1, 1]):
         """Replicate the given box in the 3 directions.
@@ -864,11 +881,9 @@ class System():
         self._update_composition()
         
 
-    def create_topology(self, structure: str, topology: str='topology.top'):
+    def create_topology(self, topology: str='topology.top'):
         """Create topology for the current system
 
-        :param structure: pdb file with the current configuration (needed for the number of molecules)
-        :type structure: str
         :param topology: name of the resulting topology file. Defaults to 'topology.top'.
         :type topology: str, optional
 
@@ -1105,7 +1120,9 @@ module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheva
 export OMP_NUM_THREADS={3}
 
 """.format(platform_dict['wallclock'],platform_dict['job_name'],platform_dict['mpi'],platform_dict['omp'])
-                
+
+                mpirun=platform_dict.get('mpirun','gerun')
+                                
                 f.write(header)
 
 
@@ -1135,7 +1152,8 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 # srun launches the parallel program based on the SBATCH options
 
 """.format(platform_dict['job_name'],platform_dict['mpi'],platform_dict['wallclock'],platform_dict['omp'],platform_dict['budget'])
-                
+
+                mpirun=platform_dict.get('mpirun','srun')
                 f.write(header)
 
             elif platform=='custom':
@@ -1143,6 +1161,9 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
                 with open(platform_dict['template_file'],'r') as temp_f:
                     for line in temp_f:
                         f.write(line)
+
+                mpirun=platform_dict.get('mpirun','')
+                gmx=platform_dict.get('gmx_bin','gmx')
                 
             for sim_index in simulations:
 
@@ -1150,8 +1171,10 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
                 f.write('cd {}\n'.format(os.path.basename(sim.path)))
 
+                gmx=platform_dict['gmx_bin']
+
                 if sim.mdp:
-                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5} '.format('gmx',
+                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5} '.format(gmx,
                                                                                               sim.mdp,
                                                                                               sim.name,
                                                                                               sim.maxwarn,
@@ -1163,7 +1186,8 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
                 else:
                     f.write('\n')
 
-                f.write('{0} mdrun -deffnm {1} {2} '.format('srun gmx_mpi ',sim.name,sim.mdrun_options))
+
+                f.write('{0} {1} mdrun -deffnm {1} {2} '.format(mpirun, gmx, sim.name,sim.mdrun_options))
 
                 if sim.nsteps:
                     f.write('-nsteps {}'.format(sim.nsteps))
@@ -1175,22 +1199,20 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         print('Written run script file in {}/{}'.format(self.path,scriptname))
  
 
-    def find_simulations_by_name(self,name: str):
+    def find_simulation_by_name(self,name: str):
 
         """Find simulations by their name
 
         :param name: Name of the simulation.
         :type name: str
-        :returns: List of simulation indexes.
-        :rtype: list
+        :returns simulation.index: Index of the simulation.
+        :rtype: int
 
         """
         sim_list=[]
         for sim in self.simulations:
             if sim.name==name:
-                sim_list.append(sim.index)
-
-        return sim_list
+                return sim.index
 
     def find_simulations_by_type(self,simtype: str):
 
@@ -1370,6 +1392,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         self.save_pdb('TEMP_STRUCT_TO_BE_CENTERED.pdb')
         result=subprocess.run('{0} editconf -f {1}/TEMP_STRUCT_TO_BE_CENTERED.pdb -o {1}/CENTERED_STRUCT.pdb -c'.format(self.gromacs,self.path),stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
 
+        self._last_saved_structure=self.path+'/CENTERED_STRUCT.pdb'
         
         self._update_coordinates(self.path+'/CENTERED_STRUCT.pdb')
 
@@ -1597,7 +1620,7 @@ class Molecule():
 
     @property
     def contact_matrix(self):
-        if self._contact_matrix==None:
+        if not np.all(self._contact_matrix):
             self._compute_contact_matrix()
         return self._contact_matrix
 
