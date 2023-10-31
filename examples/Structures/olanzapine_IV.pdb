@@ -1,0 +1,45 @@
+HEADER    Crystal 44                              27-07-21
+CRYST1    8.656   15.444   12.556  90.00  95.28  90.00         P1   4
+HETATM    1  H00 OLA     1       4.199  12.988   9.064  1.00                 H  
+HETATM    2  C01 OLA     1       3.928  13.035   8.159  1.00                 C  
+HETATM    3  C02 OLA     1       3.110  14.054   7.739  1.00                 C  
+HETATM    4  C03 OLA     1       4.171  11.938   7.314  1.00                 C  
+HETATM    5  H04 OLA     1       2.864  14.749   8.339  1.00                 H  
+HETATM    6  C05 OLA     1       2.695  14.091   6.426  1.00                 C  
+HETATM    7  H06 OLA     1       4.534  11.151   7.689  1.00                 H  
+HETATM    8  C07 OLA     1       3.668  11.884   6.014  1.00                 C  
+HETATM    9  H08 OLA     1       2.381  14.904   6.076  1.00                 H  
+HETATM   10  C09 OLA     1       2.887  12.987   5.569  1.00                 C  
+HETATM   11  N0A OLA     1       3.756  10.622   5.342  1.00                 N  
+HETATM   12  N0B OLA     1       2.261  12.914   4.286  1.00                 N  
+HETATM   13  C0C OLA     1       3.986  10.479   4.066  1.00                 C  
+HETATM   14  H0D OLA     1       1.318  12.973   4.188  1.00                 H  
+HETATM   15  C0E OLA     1       3.073  12.649   3.174  1.00                 C  
+HETATM   16  C0F OLA     1       3.885  11.541   3.013  1.00                 C  
+HETATM   17  N0G OLA     1       4.205   9.152   3.568  1.00                 N  
+HETATM   18  S0H OLA     1       3.281  13.798   1.869  1.00                 S  
+HETATM   19  C0I OLA     1       4.679  11.648   1.813  1.00                 C  
+HETATM   20  C0J OLA     1       4.290   8.062   4.522  1.00                 C  
+HETATM   21  C0K OLA     1       3.540   8.714   2.340  1.00                 C  
+HETATM   22  C0M OLA     1       4.486  12.797   1.100  1.00                 C  
+HETATM   23  H0N OLA     1       5.226  10.934   1.513  1.00                 H  
+HETATM   24  H0O OLA     1       4.764   8.357   5.294  1.00                 H  
+HETATM   25  H0P OLA     1       3.420   7.787   4.763  1.00                 H  
+HETATM   26  C0Q OLA     1       5.031   6.904   3.906  1.00                 C  
+HETATM   27  H0R OLA     1       2.648   8.463   2.538  1.00                 H  
+HETATM   28  H0S OLA     1       3.537   9.426   1.713  1.00                 H  
+HETATM   29  C0T OLA     1       4.261   7.532   1.750  1.00                 C  
+HETATM   30  C0U OLA     1       4.977  13.152  -0.279  1.00                 C  
+HETATM   31  H0V OLA     1       5.068   6.190   4.538  1.00                 H  
+HETATM   32  H0W OLA     1       5.916   7.182   3.701  1.00                 H  
+HETATM   33  N0X OLA     1       4.375   6.442   2.697  1.00                 N  
+HETATM   34  H0Y OLA     1       3.787   7.231   0.985  1.00                 H  
+HETATM   35  H0Z OLA     1       5.134   7.799   1.488  1.00                 H  
+HETATM   36  H10 OLA     1       4.636  14.008  -0.525  1.00                 H  
+HETATM   37  H11 OLA     1       5.921  13.127  -0.288  1.00                 H  
+HETATM   38  H12 OLA     1       4.671  12.510  -0.900  1.00                 H  
+HETATM   39  C13 OLA     1       5.095   5.322   2.088  1.00                 C  
+HETATM   40  H14 OLA     1       4.527   4.865   1.500  1.00                 H  
+HETATM   41  H15 OLA     1       5.822   5.653   1.625  1.00                 H  
+HETATM   42  H16 OLA     1       5.371   4.710   2.763  1.00                 H  
+END

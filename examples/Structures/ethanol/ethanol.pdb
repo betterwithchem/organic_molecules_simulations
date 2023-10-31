@@ -1,0 +1,19 @@
+HETATM    1  C1  ETH     1       1.285  -0.246  -0.000  1.00  0.00           C
+HETATM    2  C2  ETH     1      -0.011   0.566   0.000  1.00  0.00           C
+HETATM    3  O1  ETH     1      -1.130  -0.322   0.000  1.00  0.00           O
+HETATM    4  H1  ETH     1       2.139   0.432  -0.000  1.00  0.00           H
+HETATM    5  H2  ETH     1       1.320  -0.874   0.890  1.00  0.00           H
+HETATM    6  H3  ETH     1       1.320  -0.874  -0.890  1.00  0.00           H
+HETATM    7  H4  ETH     1      -0.046   1.195   0.890  1.00  0.00           H
+HETATM    8  H5  ETH     1      -0.046   1.195  -0.890  1.00  0.00           H
+HETATM    9  H6  ETH     1      -1.925   0.229   0.000  1.00  0.00           H
+CONECT    1    2    5    6    4
+CONECT    2    7    1    8    3
+CONECT    4    1
+CONECT    5    1
+CONECT    6    1
+CONECT    7    2
+CONECT    8    2
+CONECT    9    3
+CONECT    3    2    9
+END

@@ -1,0 +1,17 @@
+
+# CV section
+
+dih_0: TORSION ATOMS=3,4,8,9
+dih_1: TORSION ATOMS=4,8,9,12
+dih_2: TORSION ATOMS=8,9,12,17
+
+# Bias section
+
+
+# Print section
+
+PRINT ...
+	FILE=COLVAR
+	STRIDE=500
+	ARG=dih_0,dih_1,dih_2,
+... PRINT

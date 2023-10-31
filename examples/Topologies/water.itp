@@ -1,0 +1,36 @@
+[ moleculetype ]
+; Name            nrexcl
+WAT          3
+
+[ atoms ]
+;   nr       type  resnr residue  atom   cgnr    charge       mass  typeB    chargeB      massB
+; residue    1 WAT rtp WAT q -0.0
+    1         oh      1    WAT     O1      1 -0.78460000  16.000000   ; qtot -0.784600
+    2         ho      1    WAT     H1      2 0.39230000   1.008000   ; qtot -0.392300
+    3         ho      1    WAT     H2      3 0.39230000   1.008000   ; qtot -0.000000
+
+#ifdef FLEXIBLE
+
+[ bonds ]
+;    ai     aj funct         c0         c1         c2         c3
+      1      2     1   0.09725 448114.768000
+      1      3     1   0.09725 448114.768000
+
+[ angles ]
+;    ai     aj     ak funct         c0         c1         c2         c3
+      2      1      3     1   106.5700456 467.687520
+
+
+#else
+
+[ settles ]
+; i     funct   doh     dhh
+1     1   0.09725000   0.15591497
+
+#endif
+
+[ exclusions ]
+1  2  3
+2  1  3
+3  1  2
+

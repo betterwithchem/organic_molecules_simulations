@@ -201,7 +201,7 @@ class Project():
         import pickle
         import os
         if os.path.exists(self._pickle_path):
-            os.rename(self._pickle_path, self._project_path+ "/.multisim.bck.pkl")
+            os.rename(self._pickle_path, self._path+ "/.multisim.bck.pkl")
         with open(self._pickle_path, "wb") as file_pickle:
             pickle.dump(self, file_pickle)
             print("done")
@@ -1171,7 +1171,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
                 f.write('cd {}\n'.format(os.path.basename(sim.path)))
 
-                gmx=platform_dict['gmx_bin']
+                gmx=platform_dict.get('gmx_bin','gmx_mpi')
 
                 if sim.mdp:
                      f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5} '.format(gmx,
@@ -1205,14 +1205,14 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         :param name: Name of the simulation.
         :type name: str
-        :returns simulation.index: Index of the simulation.
-        :rtype: int
+        :returns simulation: Simulation object
+        :rtype simulation: object
 
         """
         sim_list=[]
-        for sim in self.simulations:
-            if sim.name==name:
-                return sim.index
+        for simulation in self.simulations:
+            if simulation.name==name:
+                return simulation
 
     def find_simulations_by_type(self,simtype: str):
 

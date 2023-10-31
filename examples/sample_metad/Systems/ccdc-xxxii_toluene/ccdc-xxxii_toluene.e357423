@@ -1,0 +1,8 @@
+/var/opt/sge/node-d00a-016/job_scripts/357423: line 31: gmx: command not found
+/var/opt/sge/node-d00a-016/job_scripts/357423: line 32: srun: command not found
+/var/opt/sge/node-d00a-016/job_scripts/357423: line 36: gmx: command not found
+/var/opt/sge/node-d00a-016/job_scripts/357423: line 37: srun: command not found
+/var/opt/sge/node-d00a-016/job_scripts/357423: line 41: gmx: command not found
+/var/opt/sge/node-d00a-016/job_scripts/357423: line 42: srun: command not found
+/var/opt/sge/node-d00a-016/job_scripts/357423: line 46: gmx: command not found
+/var/opt/sge/node-d00a-016/job_scripts/357423: line 47: srun: command not found

@@ -1,0 +1,49 @@
+#!/bin/bash -l
+
+# Batch script to run an MPI parallel job under SGE with Intel MPI.
+
+# Request two hours of wallclock time (format hours:minutes:seconds).
+#$ -l h_rt=06:00:00
+
+# Request 1 gigabyte of RAM per process (must be an integer followed by M, G, or T)
+#$ -l mem=1G
+
+# Request 1 gigabyte of TMPDIR space per node 
+# (default is 10 GB - remove if cluster is diskless)
+#$ -l tmpfs=2G
+
+# Set the name of the job.
+#$ -N test1
+
+# Select the MPI parallel environment and 36 processes.
+#$ -pe mpi 16
+
+# Set the working directory to somewhere in your scratch space.
+#$ -cwd 
+
+# load gromacs
+module unload -f compilers mpi
+module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheval flex plumed/2.5.2/intel-2018 gromacs/2019.3/plumed/intel-2018
+
+export OMP_NUM_THREADS=4
+
+cd em
+gmx_mpi grompp -f em.mdp -o em.tpr -maxwarn 2 -p topol.top -c ../removed_etoh_in_seed.pdb 
+gerun gmx_mpi mdrun -deffnm em -v -nsteps 1000
+cd ..
+
+cd nvt
+gmx_mpi grompp -f nvt_ramp.mdp -o nvt.tpr -maxwarn 2 -p topol.top -c ../em/em.gro -r ../em/em.gro 
+gerun gmx_mpi mdrun -deffnm nvt -v -nsteps 50000
+cd ..
+
+cd npt
+gmx_mpi grompp -f npt.mdp -o npt.tpr -maxwarn 2 -p topol.top -c ../nvt/nvt.gro -r ../nvt/nvt.gro 
+gerun gmx_mpi mdrun -deffnm npt -v -nsteps 50000
+cd ..
+
+cd md
+gmx_mpi grompp -f mdparrinello.mdp -o md.tpr -maxwarn 2 -p topol.top -c ../npt/npt.gro 
+gerun gmx_mpi mdrun -deffnm md -v -nsteps 5000000
+cd ..
+

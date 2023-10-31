@@ -190,37 +190,36 @@ class _Simulation():
                 self.cvs.append(new_cv)
         
 
-        def add_bias(self, name: str, biastype: str, cv: object ,**kwargs):
+        def add_bias(self, name: str, biastype: str, cv: object , bias_dict: dict=None):
 
                 """ Add a bias to the simulation
 
                 :param name: name of the bias
                 :type name: str
-                :param biastype: type of bias to apply, available types are:  'METAD', 'UPPER_WALLS', 'LOWER_WALLS'
+                :param biastype: type of bias to apply, available types are:  'METAD'
                 :type biastype: str
                 :param cv: name of the collective variable to bias
                 :type cv: object
-                :param **kwargs : keyword arguments that depend on the specific bias
-                :returns new_bias: the new bias object
-                :rtype object: 
-
+                :param bias_dict : dict of parameters for the bias. Defaults to None.
+                :type bias_dict: dict, optional.
+                
                 """
                 
-                supported=["METAD","UPPER_WALLS","LOWER_WALLS"]
+                supported=["METAD"] #,"UPPER_WALLS","LOWER_WALLS"]
         
                 if biastype.upper()=='METAD':
-                    new_bias=plumed.Metad(name,cv,**kwargs)            
-                elif biastype.upper()=="UPPER_WALLS":
-                    new_bias=plumed.UpperWalls(name,cv,**kwargs)
-                elif biastype.upper()=="LOWER_WALLS":
-                    new_bias=plumed.LowerWalls(name,cv,**kwargs)                            
+                    new_bias=plumed.Metad(name,cv,bias_dict)            
+                #elif biastype.upper()=="UPPER_WALLS":
+                #    new_bias=plumed.UpperWalls(name,cv,bias_dict)
+                #elif biastype.upper()=="LOWER_WALLS":
+                #    new_bias=plumed.LowerWalls(name,cv,bias_dict)                            
                 else:
                     print("Error: for the moment only {} are supported as bias... sorry".format(supported))
                     exit()
 
                 self._biases.append(new_bias)
 
-                return new_bias
+                #return new_bias
                 
 
 class MD(_Simulation):

@@ -1,0 +1,25 @@
+
+# CV section
+
+dih_0: TORSION ATOMS=42,1,34,37
+dih_1: TORSION ATOMS=40,6,31,30
+dih_2: TORSION ATOMS=31,6,40,2
+dih_3: TORSION ATOMS=21,8,16,17
+dih_4: TORSION ATOMS=19,9,25,26
+dih_5: TORSION ATOMS=11,10,26,25
+dih_6: TORSION ATOMS=33,12,28,29
+dih_7: TORSION ATOMS=28,12,33,36
+dih_8: TORSION ATOMS=9,25,26,10
+dih_9: TORSION ATOMS=28,29,30,31
+dih_10: TORSION ATOMS=12,33,36,38
+
+# Bias section
+
+
+# Print section
+
+PRINT ...
+	FILE=COLVAR
+	STRIDE=500
+	ARG=dih_0,dih_1,dih_2,dih_3,dih_4,dih_5,dih_6,dih_7,dih_8,dih_9,dih_10,
+... PRINT

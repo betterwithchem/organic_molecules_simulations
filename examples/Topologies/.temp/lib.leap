@@ -1,0 +1,4 @@
+ETH=loadmol2 ETH.mol2
+saveoff ETH ETH.lib
+savepdb ETH ETH_leap.pdb
+quit

@@ -1,0 +1,43 @@
+#!/bin/bash --login
+
+#SBATCH --job-name=test1
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=128
+#SBATCH --cpus-per-task=1
+#SBATCH --time=06:00:00
+
+# Replace [budget code] below with your project code (e.g. t01)
+#SBATCH --account=e05-pool
+#SBATCH --partition=standard
+#SBATCH --qos=standard
+
+# Load the gromacs module 
+module load gromacs/2022.4+plumed
+
+# Recommended environment settings
+export OMP_NUM_THREADS=4
+# Ensure the cpus-per-task option is propagated to srun commands
+export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
+
+# srun launches the parallel program based on the SBATCH options
+
+cd em
+gmx_mpi grompp -f em.mdp -o em.tpr -maxwarn 2 -p topol.top -c ../removed_etoh_in_seed.pdb 
+srun gmx_mpi mdrun -deffnm em -v -nsteps 1000
+cd ..
+
+cd nvt
+gmx_mpi grompp -f nvt_ramp.mdp -o nvt.tpr -maxwarn 2 -p topol.top -c ../em/em.gro -r ../em/em.gro 
+srun gmx_mpi mdrun -deffnm nvt -v -nsteps 50000
+cd ..
+
+cd npt
+gmx_mpi grompp -f npt.mdp -o npt.tpr -maxwarn 2 -p topol.top -c ../nvt/nvt.gro -r ../nvt/nvt.gro 
+srun gmx_mpi mdrun -deffnm npt -v -nsteps 50000
+cd ..
+
+cd md
+gmx_mpi grompp -f mdparrinello.mdp -o md.tpr -maxwarn 2 -p topol.top -c ../npt/npt.gro 
+srun gmx_mpi mdrun -deffnm md -v -nsteps 5000000
+cd ..
+

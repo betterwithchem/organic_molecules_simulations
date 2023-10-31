@@ -1,0 +1,19 @@
+CHARGE      0.00 ( 0 )
+Formula: H6 C2 O1 
+ATOM      1  C1  ETH     1       1.285  -0.246  -0.000  0.000000        c3
+ATOM      2  C2  ETH     1      -0.011   0.566   0.000  0.000000        c3
+ATOM      3  O1  ETH     1      -1.130  -0.322   0.000  0.000000        oh
+ATOM      4  H1  ETH     1       2.139   0.432  -0.000  0.000000        hc
+ATOM      5  H2  ETH     1       1.320  -0.874   0.890  0.000000        hc
+ATOM      6  H3  ETH     1       1.320  -0.874  -0.890  0.000000        hc
+ATOM      7  H4  ETH     1      -0.046   1.195   0.890  0.000000        h1
+ATOM      8  H5  ETH     1      -0.046   1.195  -0.890  0.000000        h1
+ATOM      9  H6  ETH     1      -1.925   0.229   0.000  0.000000        ho
+BOND    1    1    2    0     C1   C2
+BOND    2    1    4    0     C1   H1
+BOND    3    1    5    0     C1   H2
+BOND    4    1    6    0     C1   H3
+BOND    5    2    3    0     C2   O1
+BOND    6    2    7    0     C2   H4
+BOND    7    2    8    0     C2   H5
+BOND    8    3    9    0     O1   H6

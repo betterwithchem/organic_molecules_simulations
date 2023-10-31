@@ -1,0 +1,340 @@
+HEADER    Crystal 44                              27-07-21
+CRYST1    8.656   15.444   12.556  90.00  95.28  90.00         P1   4
+HETATM    1  H00 OLA     1       4.199  12.988   9.064  1.00                 H  
+HETATM    2  C01 OLA     1       3.928  13.035   8.159  1.00                 C  
+HETATM    3  C02 OLA     1       3.110  14.054   7.739  1.00                 C  
+HETATM    4  C03 OLA     1       4.171  11.938   7.314  1.00                 C  
+HETATM    5  H04 OLA     1       2.864  14.749   8.339  1.00                 H  
+HETATM    6  C05 OLA     1       2.695  14.091   6.426  1.00                 C  
+HETATM    7  H06 OLA     1       4.534  11.151   7.689  1.00                 H  
+HETATM    8  C07 OLA     1       3.668  11.884   6.014  1.00                 C  
+HETATM    9  H08 OLA     1       2.381  14.904   6.076  1.00                 H  
+HETATM   10  C09 OLA     1       2.887  12.987   5.569  1.00                 C  
+HETATM   11  N0A OLA     1       3.756  10.622   5.342  1.00                 N  
+HETATM   12  N0B OLA     1       2.261  12.914   4.286  1.00                 N  
+HETATM   13  C0C OLA     1       3.986  10.479   4.066  1.00                 C  
+HETATM   14  H0D OLA     1       1.318  12.973   4.188  1.00                 H  
+HETATM   15  C0E OLA     1       3.073  12.649   3.174  1.00                 C  
+HETATM   16  C0F OLA     1       3.885  11.541   3.013  1.00                 C  
+HETATM   17  N0G OLA     1       4.205   9.152   3.568  1.00                 N  
+HETATM   18  S0H OLA     1       3.281  13.798   1.869  1.00                 S  
+HETATM   19  C0I OLA     1       4.679  11.648   1.813  1.00                 C  
+HETATM   20  C0J OLA     1       4.290   8.062   4.522  1.00                 C  
+HETATM   21  C0K OLA     1       3.540   8.714   2.340  1.00                 C  
+HETATM   22  C0M OLA     1       4.486  12.797   1.100  1.00                 C  
+HETATM   23  H0N OLA     1       5.226  10.934   1.513  1.00                 H  
+HETATM   24  H0O OLA     1       4.764   8.357   5.294  1.00                 H  
+HETATM   25  H0P OLA     1       3.420   7.787   4.763  1.00                 H  
+HETATM   26  C0Q OLA     1       5.031   6.904   3.906  1.00                 C  
+HETATM   27  H0R OLA     1       2.648   8.463   2.538  1.00                 H  
+HETATM   28  H0S OLA     1       3.537   9.426   1.713  1.00                 H  
+HETATM   29  C0T OLA     1       4.261   7.532   1.750  1.00                 C  
+HETATM   30  C0U OLA     1       4.977  13.152  -0.279  1.00                 C  
+HETATM   31  H0V OLA     1       5.068   6.190   4.538  1.00                 H  
+HETATM   32  H0W OLA     1       5.916   7.182   3.701  1.00                 H  
+HETATM   33  N0X OLA     1       4.375   6.442   2.697  1.00                 N  
+HETATM   34  H0Y OLA     1       3.787   7.231   0.985  1.00                 H  
+HETATM   35  H0Z OLA     1       5.134   7.799   1.488  1.00                 H  
+HETATM   36  H10 OLA     1       4.636  14.008  -0.525  1.00                 H  
+HETATM   37  H11 OLA     1       5.921  13.127  -0.288  1.00                 H  
+HETATM   38  H12 OLA     1       4.671  12.510  -0.900  1.00                 H  
+HETATM   39  C13 OLA     1       5.095   5.322   2.088  1.00                 C  
+HETATM   40  H14 OLA     1       4.527   4.865   1.500  1.00                 H  
+HETATM   41  H15 OLA     1       5.822   5.653   1.625  1.00                 H  
+HETATM   42  H16 OLA     1       5.371   4.710   2.763  1.00                 H  
+HETATM   43  H00 OLA     2       8.206   5.266  -2.813  1.00                 H  
+HETATM   44  C01 OLA     2       8.477   5.313  -1.908  1.00                 C  
+HETATM   45  C02 OLA     2       9.295   6.332  -1.488  1.00                 C  
+HETATM   46  C03 OLA     2       8.234   4.216  -1.063  1.00                 C  
+HETATM   47  H04 OLA     2       9.541   7.027  -2.088  1.00                 H  
+HETATM   48  C05 OLA     2       9.710   6.369  -0.175  1.00                 C  
+HETATM   49  H06 OLA     2       7.871   3.429  -1.438  1.00                 H  
+HETATM   50  C07 OLA     2       8.737   4.162   0.238  1.00                 C  
+HETATM   51  H08 OLA     2      10.024   7.182   0.175  1.00                 H  
+HETATM   52  C09 OLA     2       9.519   5.265   0.683  1.00                 C  
+HETATM   53  N0A OLA     2       8.649   2.900   0.909  1.00                 N  
+HETATM   54  N0B OLA     2      10.144   5.192   1.965  1.00                 N  
+HETATM   55  C0C OLA     2       8.419   2.757   2.185  1.00                 C  
+HETATM   56  H0D OLA     2      11.087   5.251   2.063  1.00                 H  
+HETATM   57  C0E OLA     2       9.332   4.927   3.077  1.00                 C  
+HETATM   58  C0F OLA     2       8.520   3.819   3.238  1.00                 C  
+HETATM   59  N0G OLA     2       8.200   1.430   2.683  1.00                 N  
+HETATM   60  S0H OLA     2       9.124   6.076   4.382  1.00                 S  
+HETATM   61  C0I OLA     2       7.726   3.926   4.438  1.00                 C  
+HETATM   62  C0J OLA     2       8.115   0.340   1.729  1.00                 C  
+HETATM   63  C0K OLA     2       8.865   0.992   3.911  1.00                 C  
+HETATM   64  C0M OLA     2       7.919   5.075   5.151  1.00                 C  
+HETATM   65  H0N OLA     2       7.179   3.212   4.738  1.00                 H  
+HETATM   66  H0O OLA     2       7.641   0.635   0.958  1.00                 H  
+HETATM   67  H0P OLA     2       8.985   0.065   1.488  1.00                 H  
+HETATM   68  C0Q OLA     2       7.374  -0.819   2.345  1.00                 C  
+HETATM   69  H0R OLA     2       9.758   0.741   3.713  1.00                 H  
+HETATM   70  H0S OLA     2       8.868   1.703   4.538  1.00                 H  
+HETATM   71  C0T OLA     2       8.144  -0.190   4.501  1.00                 C  
+HETATM   72  C0U OLA     2       7.428   5.430   6.530  1.00                 C  
+HETATM   73  H0V OLA     2       7.337  -1.532   1.713  1.00                 H  
+HETATM   74  H0W OLA     2       6.489  -0.541   2.550  1.00                 H  
+HETATM   75  N0X OLA     2       8.030  -1.280   3.554  1.00                 N  
+HETATM   76  H0Y OLA     2       8.619  -0.491   5.266  1.00                 H  
+HETATM   77  H0Z OLA     2       7.272   0.077   4.763  1.00                 H  
+HETATM   78  H10 OLA     2       7.769   6.286   6.776  1.00                 H  
+HETATM   79  H11 OLA     2       6.484   5.405   6.539  1.00                 H  
+HETATM   80  H12 OLA     2       7.734   4.788   7.151  1.00                 H  
+HETATM   81  C13 OLA     2       7.310  -2.400   4.163  1.00                 C  
+HETATM   82  H14 OLA     2       7.879  -2.857   4.751  1.00                 H  
+HETATM   83  H15 OLA     2       6.583  -2.070   4.626  1.00                 H  
+HETATM   84  H16 OLA     2       7.035  -3.012   3.488  1.00                 H  
+HETATM   85  H00 OLA     3       3.300   2.456   3.438  1.00                 H  
+HETATM   86  C01 OLA     3       3.571   2.409   4.343  1.00                 C  
+HETATM   87  C02 OLA     3       4.389   1.390   4.763  1.00                 C  
+HETATM   88  C03 OLA     3       3.329   3.506   5.189  1.00                 C  
+HETATM   89  H04 OLA     3       4.635   0.695   4.163  1.00                 H  
+HETATM   90  C05 OLA     3       4.804   1.353   6.076  1.00                 C  
+HETATM   91  H06 OLA     3       2.965   4.293   4.813  1.00                 H  
+HETATM   92  C07 OLA     3       3.831   3.560   6.489  1.00                 C  
+HETATM   93  H08 OLA     3       5.118   0.541   6.426  1.00                 H  
+HETATM   94  C09 OLA     3       4.613   2.457   6.934  1.00                 C  
+HETATM   95  N0A OLA     3       3.743   4.822   7.160  1.00                 N  
+HETATM   96  N0B OLA     3       5.238   2.530   8.217  1.00                 N  
+HETATM   97  C0C OLA     3       3.513   4.965   8.437  1.00                 C  
+HETATM   98  H0D OLA     3       6.181   2.471   8.314  1.00                 H  
+HETATM   99  C0E OLA     3       4.426   2.795   9.328  1.00                 C  
+HETATM  100  C0F OLA     3       3.615   3.903   9.489  1.00                 C  
+HETATM  101  N0G OLA     3       3.294   6.292   8.934  1.00                 N  
+HETATM  102  S0H OLA     3       4.219   1.646  10.633  1.00                 S  
+HETATM  103  C0I OLA     3       2.820   3.796  10.690  1.00                 C  
+HETATM  104  C0J OLA     3       3.209   7.382   7.980  1.00                 C  
+HETATM  105  C0K OLA     3       3.959   6.731  10.162  1.00                 C  
+HETATM  106  C0M OLA     3       3.014   2.647  11.402  1.00                 C  
+HETATM  107  H0N OLA     3       2.273   4.510  10.990  1.00                 H  
+HETATM  108  H0O OLA     3       2.735   7.087   7.209  1.00                 H  
+HETATM  109  H0P OLA     3       4.079   7.657   7.739  1.00                 H  
+HETATM  110  C0Q OLA     3       2.468   8.541   8.597  1.00                 C  
+HETATM  111  H0R OLA     3       4.852   6.981   9.964  1.00                 H  
+HETATM  112  H0S OLA     3       3.962   6.019  10.790  1.00                 H  
+HETATM  113  C0T OLA     3       3.238   7.912  10.752  1.00                 C  
+HETATM  114  C0U OLA     3       2.522   2.292  12.781  1.00                 C  
+HETATM  115  H0V OLA     3       2.431   9.254   7.964  1.00                 H  
+HETATM  116  H0W OLA     3       1.584   8.263   8.802  1.00                 H  
+HETATM  117  N0X OLA     3       3.124   9.002   9.806  1.00                 N  
+HETATM  118  H0Y OLA     3       3.713   8.213  11.517  1.00                 H  
+HETATM  119  H0Z OLA     3       2.366   7.645  11.015  1.00                 H  
+HETATM  120  H10 OLA     3       2.863   1.436  13.028  1.00                 H  
+HETATM  121  H11 OLA     3       1.578   2.317  12.790  1.00                 H  
+HETATM  122  H12 OLA     3       2.829   2.934  13.403  1.00                 H  
+HETATM  123  C13 OLA     3       2.404  10.122  10.415  1.00                 C  
+HETATM  124  H14 OLA     3       2.973  10.579  11.002  1.00                 H  
+HETATM  125  H15 OLA     3       1.677   9.792  10.877  1.00                 H  
+HETATM  126  H16 OLA     3       2.129  10.734   9.739  1.00                 H  
+HETATM  127  H00 OLA     4      -0.707  10.178  15.315  1.00                 H  
+HETATM  128  C01 OLA     4      -0.978  10.131  14.410  1.00                 C  
+HETATM  129  C02 OLA     4      -1.796   9.112  13.990  1.00                 C  
+HETATM  130  C03 OLA     4      -0.735  11.228  13.565  1.00                 C  
+HETATM  131  H04 OLA     4      -2.042   8.417  14.590  1.00                 H  
+HETATM  132  C05 OLA     4      -2.211   9.075  12.677  1.00                 C  
+HETATM  133  H06 OLA     4      -0.372  12.016  13.940  1.00                 H  
+HETATM  134  C07 OLA     4      -1.238  11.282  12.265  1.00                 C  
+HETATM  135  H08 OLA     4      -2.525   8.263  12.327  1.00                 H  
+HETATM  136  C09 OLA     4      -2.019  10.179  11.820  1.00                 C  
+HETATM  137  N0A OLA     4      -1.150  12.544  11.594  1.00                 N  
+HETATM  138  N0B OLA     4      -2.645  10.252  10.537  1.00                 N  
+HETATM  139  C0C OLA     4      -0.920  12.687  10.317  1.00                 C  
+HETATM  140  H0D OLA     4      -3.588  10.193  10.440  1.00                 H  
+HETATM  141  C0E OLA     4      -1.832  10.517   9.426  1.00                 C  
+HETATM  142  C0F OLA     4      -1.021  11.625   9.264  1.00                 C  
+HETATM  143  N0G OLA     4      -0.700  14.014   9.819  1.00                 N  
+HETATM  144  S0H OLA     4      -1.625   9.368   8.120  1.00                 S  
+HETATM  145  C0I OLA     4      -0.226  11.518   8.064  1.00                 C  
+HETATM  146  C0J OLA     4      -0.616  15.104  10.773  1.00                 C  
+HETATM  147  C0K OLA     4      -1.366  14.453   8.592  1.00                 C  
+HETATM  148  C0M OLA     4      -0.420  10.369   7.351  1.00                 C  
+HETATM  149  H0N OLA     4       0.321  12.232   7.764  1.00                 H  
+HETATM  150  H0O OLA     4      -0.142  14.809  11.545  1.00                 H  
+HETATM  151  H0P OLA     4      -1.486  15.379  11.015  1.00                 H  
+HETATM  152  C0Q OLA     4       0.125  16.263  10.157  1.00                 C  
+HETATM  153  H0R OLA     4      -2.258  14.703   8.789  1.00                 H  
+HETATM  154  H0S OLA     4      -1.368  13.741   7.964  1.00                 H  
+HETATM  155  C0T OLA     4      -0.645  15.634   8.002  1.00                 C  
+HETATM  156  C0U OLA     4       0.071  10.014   5.972  1.00                 C  
+HETATM  157  H0V OLA     4       0.162  16.976  10.790  1.00                 H  
+HETATM  158  H0W OLA     4       1.010  15.985   9.952  1.00                 H  
+HETATM  159  N0X OLA     4      -0.531  16.724   8.948  1.00                 N  
+HETATM  160  H0Y OLA     4      -1.119  15.935   7.236  1.00                 H  
+HETATM  161  H0Z OLA     4       0.228  15.367   7.739  1.00                 H  
+HETATM  162  H10 OLA     4      -0.270   9.158   5.726  1.00                 H  
+HETATM  163  H11 OLA     4       1.015  10.039   5.964  1.00                 H  
+HETATM  164  H12 OLA     4      -0.235  10.656   5.351  1.00                 H  
+HETATM  165  C13 OLA     4       0.190  17.844   8.339  1.00                 C  
+HETATM  166  H14 OLA     4      -0.379  18.301   7.752  1.00                 H  
+HETATM  167  H15 OLA     4       0.916  17.514   7.877  1.00                 H  
+HETATM  168  H16 OLA     4       0.465  18.456   9.014  1.00                 H  
+CONECT    1    2
+CONECT    2    1    3    4
+CONECT    3    2    6    5
+CONECT    4    2    8    7
+CONECT    5    3
+CONECT    6    3    9   10
+CONECT    7    4
+CONECT    8    4   10   11
+CONECT    9    6
+CONECT   10    6    8   12
+CONECT   11    8   13
+CONECT   12   10   14   15
+CONECT   13   11   16   17
+CONECT   14   12
+CONECT   15   12   18   16
+CONECT   16   13   15   19
+CONECT   17   13   20   21
+CONECT   18   15   22
+CONECT   19   16   22   23
+CONECT   20   17   25   24   26
+CONECT   21   17   27   28   29
+CONECT   22   18   19   30
+CONECT   23   19
+CONECT   24   20
+CONECT   25   20
+CONECT   26   20   31   32   33
+CONECT   27   21
+CONECT   28   21
+CONECT   29   21   33   35   34
+CONECT   30   22   36   37   38
+CONECT   31   26
+CONECT   32   26
+CONECT   33   26   29   39
+CONECT   34   29
+CONECT   35   29
+CONECT   36   30
+CONECT   37   30
+CONECT   38   30
+CONECT   39   33   42   40   41
+CONECT   40   39
+CONECT   41   39
+CONECT   42   39
+CONECT   43   44
+CONECT   44   43   45   46
+CONECT   45   44   48   47
+CONECT   46   44   50   49
+CONECT   47   45
+CONECT   48   45   51   52
+CONECT   49   46
+CONECT   50   46   52   53
+CONECT   51   48
+CONECT   52   48   50   54
+CONECT   53   50   55
+CONECT   54   52   56   57
+CONECT   55   53   58   59
+CONECT   56   54
+CONECT   57   54   60   58
+CONECT   58   55   57   61
+CONECT   59   55   62   63
+CONECT   60   57   64
+CONECT   61   58   64   65
+CONECT   62   59   67   66   68
+CONECT   63   59   69   70   71
+CONECT   64   60   61   72
+CONECT   65   61
+CONECT   66   62
+CONECT   67   62
+CONECT   68   62   73   74   75
+CONECT   69   63
+CONECT   70   63
+CONECT   71   63   75   77   76
+CONECT   72   64   78   79   80
+CONECT   73   68
+CONECT   74   68
+CONECT   75   68   71   81
+CONECT   76   71
+CONECT   77   71
+CONECT   78   72
+CONECT   79   72
+CONECT   80   72
+CONECT   81   75   84   82   83
+CONECT   82   81
+CONECT   83   81
+CONECT   84   81
+CONECT   85   86
+CONECT   86   85   87   88
+CONECT   87   86   90   89
+CONECT   88   86   92   91
+CONECT   89   87
+CONECT   90   87   93   94
+CONECT   91   88
+CONECT   92   88   94   95
+CONECT   93   90
+CONECT   94   90   92   96
+CONECT   95   92   97
+CONECT   96   94   98   99
+CONECT   97   95  100  101
+CONECT   98   96
+CONECT   99   96  102  100
+CONECT  100   97   99  103
+CONECT  101   97  104  105
+CONECT  102   99  106
+CONECT  103  100  106  107
+CONECT  104  101  109  108  110
+CONECT  105  101  111  112  113
+CONECT  106  102  103  114
+CONECT  107  103
+CONECT  108  104
+CONECT  109  104
+CONECT  110  104  115  116  117
+CONECT  111  105
+CONECT  112  105
+CONECT  113  105  117  119  118
+CONECT  114  106  120  121  122
+CONECT  115  110
+CONECT  116  110
+CONECT  117  110  113  123
+CONECT  118  113
+CONECT  119  113
+CONECT  120  114
+CONECT  121  114
+CONECT  122  114
+CONECT  123  117  126  124  125
+CONECT  124  123
+CONECT  125  123
+CONECT  126  123
+CONECT  127  128
+CONECT  128  127  129  130
+CONECT  129  128  132  131
+CONECT  130  128  134  133
+CONECT  131  129
+CONECT  132  129  135  136
+CONECT  133  130
+CONECT  134  130  136  137
+CONECT  135  132
+CONECT  136  132  134  138
+CONECT  137  134  139
+CONECT  138  136  140  141
+CONECT  139  137  142  143
+CONECT  140  138
+CONECT  141  138  144  142
+CONECT  142  139  141  145
+CONECT  143  139  146  147
+CONECT  144  141  148
+CONECT  145  142  148  149
+CONECT  146  143  151  150  152
+CONECT  147  143  153  154  155
+CONECT  148  144  145  156
+CONECT  149  145
+CONECT  150  146
+CONECT  151  146
+CONECT  152  146  157  158  159
+CONECT  153  147
+CONECT  154  147
+CONECT  155  147  159  161  160
+CONECT  156  148  162  163  164
+CONECT  157  152
+CONECT  158  152
+CONECT  159  152  155  165
+CONECT  160  155
+CONECT  161  155
+CONECT  162  156
+CONECT  163  156
+CONECT  164  156
+CONECT  165  159  168  166  167
+CONECT  166  165
+CONECT  167  165
+CONECT  168  165
+MASTER    0    0    0    0    0    0    0    0  168    0  168    0
+END

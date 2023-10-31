@@ -122,9 +122,11 @@ class _Bias():
         
 class Metad(_Bias):
 
-    def __init__(self, name: str, cv: list, sigma: list=None, height: list=None, temp: float=300., pace: int=500,
-                 hills_file: str='HILLS', biasfactor: float=None,
-                 grid_min: list=None, grid_max: list=None, grid_spacing: list=None):
+    def __init__(self, name: str, cv: list, bias_dict: dict):
+
+        #sigma: list=None, height: list=None, temp: float=300., pace: int=500,
+        #         hills_file: str='HILLS', biasfactor: float=None,
+        #         grid_min: list=None, grid_max: list=None, grid_spacing: list=None):
 
 
         """Metadynamics bias class constructor
@@ -159,6 +161,7 @@ class Metad(_Bias):
 
         #self._name=name
 
+
         if isinstance(cv,str):
             ncvs=1
             cv=[cv]
@@ -168,24 +171,84 @@ class Metad(_Bias):
         if ncvs==0:
             print("Error: you need at least one CV to apply bias!")
             exit()
-            
-        if isinstance(sigma,float) or isinstance(sigma,int):
-            if ncvs==1:
-                sigma=[sigma]
+        
+        try:
+            sigma=bias_dict.pop('sigma')
+        except:
+            print('! ERROR: sigma attribute is mandatory in bias_dict for METAD')
+            return
+        else:
+            if isinstance(sigma,float) or isinstance(sigma,int):
+                if ncvs==1:
+                    sigma=[sigma]
+
 
         if len(cv)!=len(sigma):
-            print("Error: The number of sigma values need to be equal to the number of collective variables."\
+            print("! ERROR: The number of sigma values need to be equal to the number of collective variables."\
                   "Given {} cv values ({}) and {} sigma values ({})".format(len(cv),cv,len(sigma),sigma))
-            exit()
+            return
 
+        height=bias_dict.pop('height',2.5)
+        
+        
+        biasfactor=bias_dict.pop('biasfactor',-1)
+
+        if biasfactor==-1:
+            #then it's a standard metad simulation, not well tempered
+            WTmetad=False
+            temp=None
+        else:
+            WTmetad=True
+            temp=bias_dict.pop('temperature',300.)
+                
+
+        
         do_grid=False
-        if any([grid_min, grid_max, grid_spacing]):
-            if all([grid_min, grid_max, grid_spacing]):
+        if any([bias_dict.get('grid_min'), bias_dict.get('grid_max'), bias_dict.get('grid_spacing')]):
+            if all([bias_dict.get('grid_min'), bias_dict.get('grid_max'), bias_dict.get('grid_spacing')]):
                 do_grid=True
             else:
-                print("Error: To use grids during a Metadynamics simulation all grid-related variables need to be provided (grid_min, grid_max, grid_spacing).")
-                exit()
-        
+                print("! ERROR: To use grids during a Metadynamics simulation all grid-related variables need to be provided (grid_min, grid_max, grid_spacing).")
+                return
+
+        if do_grid:
+            try:
+                grid_min=bias_dict.pop('grid_min')
+            except:
+                print('! ERROR: grid_min attribute is mandatory in bias_dict for METAD')
+            else:
+                if isinstance(grid_min,float) or isinstance(grid_min,int) or isinstance(grid_min,str):
+                    if ncvs==1:
+                        grid_min=[grid_min]
+
+
+            try:
+                grid_max=bias_dict.pop('grid_max')
+            except:
+                print('! ERROR: grid_max attribute is mandatory in bias_dict for METAD')
+            else:
+                if isinstance(grid_max,float) or isinstance(grid_max,int)  or isinstance(grid_max,str):
+                    if ncvs==1:
+                        grid_max=[grid_max]
+
+            try:
+                grid_spacing=bias_dict.pop('grid_spacing')
+            except:
+                grid_spacing=[]
+                for sig in sigma:
+                    grid_spacing.append(sig/2)
+            else:
+                if isinstance(grid_spacing,float) or isinstance(grid_spacing,int):
+                    if ncvs==1:
+                        grid_spacing=[grid_spacing]
+
+        try:
+            hills_file=bias_dict.pop('hills_file')
+        except:
+            print("! ERROR: hills_file attribute is mandatory in bias_dict for METAD")
+            return
+
+        pace=bias_dict.pop('pace',500)
         
         self.directive="METAD ...\n"\
             "    ARG="
@@ -204,9 +267,18 @@ class Metad(_Bias):
             self.directive+="    BIASFACTOR={}\n"\
                 "    TEMP={}\n".format(biasfactor,temp)
         if do_grid:
-            self.directive+="    GRID_MIN={}\n"\
-            "    GRID_MAX={}\n"\
-            "    GRID_SPACING={}\n".format(grid_min,grid_max,grid_spacing)
+            self.directive+="    GRID_MIN="
+            for gmin in grid_min:
+                self.directive+="{},".format(gmin)
+            self.directive+="\n"
+            self.directive+="    GRID_MAX="
+            for gmax in grid_max:
+                self.directive+="{},".format(gmax)
+            self.directive+="\n"
+            self.directive+="    GRID_SPACING="
+            for gspace in grid_spacing:
+                self.directive+="{},".format(gspace)
+            self.directive+="\n"
     
         self.directive+="... METAD\n"
 

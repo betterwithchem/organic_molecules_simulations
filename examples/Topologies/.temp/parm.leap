@@ -1,0 +1,6 @@
+source leaprc.gaff2
+loadamberparams ETH.frcmod
+loadoff ETH.lib
+a=loadpdb ETH_leap.pdb
+saveamberparm a ethanol.prmtop ethanol.inpcrd
+quit
