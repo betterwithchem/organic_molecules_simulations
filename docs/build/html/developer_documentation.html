@@ -733,11 +733,11 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the simulation.</p>
 </dd>
-<dt class="field-even">Returns simulation.index</dt>
-<dd class="field-even"><p>Index of the simulation.</p>
+<dt class="field-even">Returns simulation</dt>
+<dd class="field-even"><p>Simulation object</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
+<dt class="field-odd">Rtype simulation</dt>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -909,20 +909,19 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.gromacs._Simulation.add_bias">
-<span class="sig-name descname"><span class="pre">add_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">biastype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.gromacs._Simulation.add_bias" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">biastype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.gromacs._Simulation.add_bias" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a bias to the simulation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – name of the bias</p></li>
-<li><p><strong>biastype</strong> (<em>str</em>) – type of bias to apply, available types are:  ‘METAD’, ‘UPPER_WALLS’, ‘LOWER_WALLS’</p></li>
+<li><p><strong>biastype</strong> (<em>str</em>) – type of bias to apply, available types are:  ‘METAD’</p></li>
 <li><p><strong>cv</strong> (<em>object</em>) – name of the collective variable to bias</p></li>
 </ul>
 </dd>
 </dl>
-<p>:param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs : keyword arguments that depend on the specific bias
-:returns new_bias: the new bias object
-:rtype object:</p>
+<p>:param bias_dict : dict of parameters for the bias. Defaults to None.
+:type bias_dict: dict, optional.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1088,7 +1087,7 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sim_launch_py.plumed.Metad">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">Metad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hills_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'HILLS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">biasfactor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_spacing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed.Metad" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">Metad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed.Metad" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
@@ -1238,35 +1237,8 @@ structure_format (str, optional): format of the structure file. Defaults to ‘p
 </dd></dl>
 
 <span class="target" id="module-sim_launch_py.external.gaussianFit"></span><dl class="py function">
-<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit.gaussianFit">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">gaussianFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dihedral_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotFit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit.gaussianFit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimate fit parameters</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dihedral_angles</strong> (<em>str</em>) – text file with the values of dihedral angles</p></li>
-<li><p><strong>datacol</strong> (<em>int</em><em>, </em><em>optional</em>) – column (0-indexed) where data is. Defaults to 1.</p></li>
-<li><p><strong>plotFit</strong> (<em>bool</em><em>, </em><em>optional</em>) – plot the original histogram and the fitted gaussians? Defaults to False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns centers</dt>
-<dd class="field-even"><p>centers of the fitted distributions</p>
-</dd>
-<dt class="field-odd">Rtype centers</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-<dt class="field-even">Returns sigma</dt>
-<dd class="field-even"><p>sigma values of the fitted distributions</p>
-</dd>
-<dt class="field-odd">Rtype sigma</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit.histogram">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dihedral_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probcutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit.histogram" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit._histogram">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dihedral_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probcutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0075</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit._histogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the probability distribution given a timeseries of dihedral angles</p>
 <blockquote>
 <div><p>centers,histo (list,list) : centers of the bins and values of the probability distribution.</p>
@@ -1295,8 +1267,8 @@ structure_format (str, optional): format of the structure file. Defaults to ‘p
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit.sumGaussFunct">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">sumGaussFunct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit.sumGaussFunct" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit._sumGaussFunct">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">_sumGaussFunct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit._sumGaussFunct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sum of Gaussian functions</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1309,6 +1281,33 @@ structure_format (str, optional): format of the structure file. Defaults to ‘p
 <dd class="field-even"><p>y axis values</p>
 </dd>
 <dt class="field-odd">Rtype f</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit.gaussianFit">
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">gaussianFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dihedral_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotFit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit.gaussianFit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate fit parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dihedral_angles</strong> (<em>str</em>) – text file with the values of dihedral angles</p></li>
+<li><p><strong>datacol</strong> (<em>int</em><em>, </em><em>optional</em>) – column (0-indexed) where data is. Defaults to 1.</p></li>
+<li><p><strong>plotFit</strong> (<em>bool</em><em>, </em><em>optional</em>) – plot the original histogram and the fitted gaussians? Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns centers</dt>
+<dd class="field-even"><p>centers of the fitted distributions</p>
+</dd>
+<dt class="field-odd">Rtype centers</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Returns sigma</dt>
+<dd class="field-even"><p>sigma values of the fitted distributions</p>
+</dd>
+<dt class="field-odd">Rtype sigma</dt>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>

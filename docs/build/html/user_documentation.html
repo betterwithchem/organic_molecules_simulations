@@ -410,11 +410,11 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the simulation.</p>
 </dd>
-<dt class="field-even">Returns simulation.index</dt>
-<dd class="field-even"><p>Index of the simulation.</p>
+<dt class="field-even">Returns simulation</dt>
+<dd class="field-even"><p>Simulation object</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
+<dt class="field-odd">Rtype simulation</dt>
+<dd class="field-odd"><p>object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -636,56 +636,6 @@ structure_format (str, optional): format of the structure file. Defaults to ‘p
 <dd class="field-even"><p>sigma values of the fitted distributions</p>
 </dd>
 <dt class="field-odd">Rtype sigma</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit.histogram">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dihedral_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probcutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit.histogram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the probability distribution given a timeseries of dihedral angles</p>
-<blockquote>
-<div><p>centers,histo (list,list) : centers of the bins and values of the probability distribution.</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dihedral_angles</strong> (<em>str</em>) – text file with the timeseries. Angle values are assumed to be in the second column of the file.</p></li>
-<li><p><strong>datacol</strong> (<em>int</em><em>, </em><em>optional</em>) – column (0-indexed) where data is. Defaults to 1.</p></li>
-<li><p><strong>probcutoff</strong> (<em>float</em><em>, </em><em>optional</em>) – cutoff value for the population of a bin to take into account in the final histogram. Defaults to 0.001</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns centers</dt>
-<dd class="field-even"><p>centers of the bins of the probability distribution.</p>
-</dd>
-<dt class="field-odd">Rtype centers</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-<dt class="field-even">Returns histo</dt>
-<dd class="field-even"><p>values of the histogram of the probability distribution</p>
-</dd>
-<dt class="field-odd">Rtype histo</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="sim_launch_py.external.gaussianFit.sumGaussFunct">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.external.gaussianFit.</span></span><span class="sig-name descname"><span class="pre">sumGaussFunct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.external.gaussianFit.sumGaussFunct" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sum of Gaussian functions</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>list</em>) – x axis values</p></li>
-<li><p><strong>parameters</strong> (<em>list</em>) – list of parameters of length 3*N where N is the number of Gaussians to estimate. Order of the parameters is A,mu,sigma.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns f</dt>
-<dd class="field-even"><p>y axis values</p>
-</dd>
-<dt class="field-odd">Rtype f</dt>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
