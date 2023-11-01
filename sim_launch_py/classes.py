@@ -1167,30 +1167,32 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
                 sim=self.simulations[sim_index]
 
-                f.write('cd {}\n'.format(os.path.basename(sim.path)))
+                if sim.state=='Pending':
 
-                gmx=platform_dict.get('gmx_bin','gmx_mpi')
+                    f.write('cd {}\n'.format(os.path.basename(sim.path)))
 
-                if sim.mdp:
-                     f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5} '.format(gmx,
-                                                                                              sim.mdp,
-                                                                                              sim.name,
-                                                                                              sim.maxwarn,
-                                                                                              sim.topology,
-                                                                                              sim.coordinates))
+                    gmx=platform_dict.get('gmx_bin','gmx_mpi')
 
-                if sim.simtype=='posre':
-                    f.write('-r {} \n'.format(sim.posre))
-                else:
-                    f.write('\n')
+                    if sim.mdp:
+                         f.write('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5} '.format(gmx,
+                                                                                                  sim.mdp,
+                                                                                                  sim.name,
+                                                                                                  sim.maxwarn,
+                                                                                                  sim.topology,
+                                                                                                  sim.coordinates))
+
+                    if sim.simtype=='posre':
+                        f.write('-r {} \n'.format(sim.posre))
+                    else:
+                        f.write('\n')
 
 
-                f.write('{0} {1} mdrun -deffnm {2} {3} '.format(mpirun, gmx, sim.name,sim.mdrun_options))
+                    f.write('{0} {1} mdrun -deffnm {2} {3} '.format(mpirun, gmx, sim.name,sim.mdrun_options))
 
-                if sim.nsteps:
-                    f.write('-nsteps {}'.format(sim.nsteps))
-                     
-                f.write('\ncd ..\n\n')
+                    if sim.nsteps:
+                        f.write('-nsteps {}'.format(sim.nsteps))
+
+                    f.write('\ncd ..\n\n')
 
             
 
