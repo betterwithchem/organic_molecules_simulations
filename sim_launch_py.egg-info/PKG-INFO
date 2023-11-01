@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: sim-launch-py
+Version: 0.1a0
+Summary: A module to prepare and run MD simulations
+Author: Matteo Paloni
+Author-email: m.paloni@ucl.ac.uk
