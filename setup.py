@@ -7,5 +7,5 @@ setup(
    author='Matteo Paloni',
    author_email='m.paloni@ucl.ac.uk',
    packages=['sim_launch_py'],  #same as name
-   #install_requires=['wheel', 'bar', 'greek'], #external packages as dependencies
+   install_requires=['numpy'], #external packages as dependencies
 )
