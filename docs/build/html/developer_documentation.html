@@ -274,11 +274,6 @@
 <li><p>save(self) : save Project() in Project().pickle_path.</p></li>
 <li><p>load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl.</p></li>
 <li><p>write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.</p></li>
-</ul>
-<blockquote>
-<div><p>#### TODO METHODS ####</p>
-</div></blockquote>
-<ul class="simple">
 <li><p>change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.</p></li>
 </ul>
 <dl class="py method">
@@ -385,7 +380,7 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Project.new_project">
-<span class="sig-name descname"><span class="pre">new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.new_project" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_gmx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ambertools</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.new_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add new project</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -393,10 +388,15 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <li><p><strong>name</strong> (<em>str</em>) – Project Name.</p></li>
 <li><p><strong>path</strong> (<em>str</em>) – Project path.</p></li>
 <li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – Overwrite previous project? Defaults to False.</p></li>
+<li><p><strong>check_gmx</strong> (<em>bool</em><em>, </em><em>optional</em>) – Check if GROMACS is in PATH? Defaults to True.</p></li>
+<li><p><strong>check_ambertools</strong> (<em>bool</em><em>, </em><em>optional</em>) – Check if AmberTools is in PATH? Defaults to True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns nproject</dt>
-<dd class="field-even"><p>new project</p>
+<dd class="field-even"><p>New project</p>
+</dd>
+<dt class="field-odd">Rtype nproject</dt>
+<dd class="field-odd"><p>project object.</p>
 </dd>
 </dl>
 </dd></dl>

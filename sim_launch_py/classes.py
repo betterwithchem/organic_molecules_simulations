@@ -26,9 +26,7 @@ class Project():
     - new_project(name=None, path=None, overwrite=False) : create new Project(). \n
     - save(self) : save Project() in Project().pickle_path. \n
     - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. \n
-    - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts. \n
-    
-     #### TODO METHODS #### \n
+    - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts. \n   
     - change_project_path(self,newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.\n
 
     """
@@ -37,9 +35,9 @@ class Project():
         
         """Project Class Constructor
 
-        :param name: name of the project.
+        :param name: Name of the project.
         :type name: str
-        :param path: path of the project
+        :param path: Path of the project
         :type path: str
         
         """
@@ -144,17 +142,12 @@ class Project():
     - help() : print the help for this class.
     - add_system(self,name: str) : add and initialize System() to the Project()
     - new_project(name=None, path=None, overwrite=False) : create new Project()
-    
-    
-
-     #### TODO METHODS ####
     - change_project_path(self, newpath: str) : when implemented, it will allow to copy the project to a new path and change all the pertinent path attributes.
     - save(self) : save Project() in Project().pickle_path
     - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. 
     - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.""")
 
-    def new_project(name: str, path: str, overwrite=False):
-        
+    def new_project(name: str, path: str, overwrite=False, check_gmx: bool=True, check_ambertools: bool=True):
         """Add new project
 
         :param name: Project Name.
@@ -163,7 +156,12 @@ class Project():
         :type path: str
         :param overwrite: Overwrite previous project? Defaults to False.
         :type overwrite: bool, optional
-        :returns nproject: new project
+        :param check_gmx: Check if GROMACS is in PATH? Defaults to True.
+        :type check_gmx: bool, optional
+        :param check_ambertools: Check if AmberTools is in PATH? Defaults to True.
+        :type check_ambertools: bool, optional
+        :returns nproject: New project
+        :rtype nproject: project object.
 
         """
         
@@ -620,7 +618,7 @@ class System():
         
         """
         if len(self.molecules)>0 and initial_conf==None:
-            print("ERROR: you are trying to insert new molecules without taking into account molecules" \
+            print("ERROR: you are trying to insert new molecules without taking into account molecules " \
                   "that are already in the system.")
 
             return
