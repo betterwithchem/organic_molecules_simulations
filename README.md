@@ -11,6 +11,7 @@ A typical installation procedure would be:
 > conda activate myenv
 
 Then package can be installed locally in a conda environment running the following command from the directory where the `setup.py` file is  
+
 > pip -e install .  
 
 ## Code and Documentation
@@ -31,6 +32,8 @@ Sometimes it happen that Python throws the following error when importing numpy:
 >        your python interpreter from there.
 
 This is due to a modification of PYTHONPATH when sourcing AmberTools. Running
+
 > export PYTHONPATH=""  
+
 solves it.
 
