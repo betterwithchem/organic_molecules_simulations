@@ -31,6 +31,6 @@ Sometimes it happen that Python throws the following error when importing numpy:
 >        your python interpreter from there.
 
 This is due to a modification of PYTHONPATH when sourcing AmberTools. Running
-> export PYTHONPATH=""
+> export PYTHONPATH=""  
 solves it.
 
