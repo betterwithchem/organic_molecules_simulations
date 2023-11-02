@@ -1050,20 +1050,7 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dl class="py function">
 <dt class="sig sig-object py" id="sim_launch_py.ffparms.gaff">
 <span class="sig-prename descclassname"><span class="pre">sim_launch_py.ffparms.</span></span><span class="sig-name descname"><span class="pre">gaff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'UNK'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_charges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'bcc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gaff2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.ffparms.gaff" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is used to compute gaff parameters for small molecules using tleap, and to transform them in a gromacs friendly form.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>molecule</strong> (<em>str</em>) – name of the molecule</p></li>
-<li><p><strong>path_output</strong> (<em>str</em>) – path to output</p></li>
-<li><p><strong>res_name</strong> (<em>str</em><em>, </em><em>optional</em>) – residue name. Defaults to ‘UNK’.</p></li>
-<li><p><strong>generate_charges</strong> (<em>str</em><em>, </em><em>optional</em>) – charge assignment method. Defaults to ‘bcc’.</p></li>
-<li><p><strong>atomtype</strong> (<em>str</em><em>, </em><em>optional</em>) – atomtype scheme definition (gaff, gaff2). Defaults to ‘gaff2’.</p></li>
-<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – overwrite existing files?. Defaults to False.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sim_launch_py.ffparms.getTop">
@@ -1124,6 +1111,11 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dt class="sig sig-object py" id="sim_launch_py.plumed._Bias">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sim_launch_py.plumed.</span></span><span class="sig-name descname"><span class="pre">_Bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.plumed._Bias" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py property">
+<dt class="sig sig-object py" id="sim_launch_py.plumed._Bias.biastype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">biastype</span></span><a class="headerlink" href="#sim_launch_py.plumed._Bias.biastype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="sim_launch_py.plumed._Bias.name">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sim_launch_py.plumed._Bias.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
