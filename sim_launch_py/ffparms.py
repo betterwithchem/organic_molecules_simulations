@@ -5,23 +5,38 @@ import parmed as pmd
 import shutil
 import sim_launch_py.utilities as util
 
-def gaff(molecule: str, path_output: str, res_name: str='UNK', generate_charges: str='bcc', atomtype: str='gaff2', overwrite: bool=False):
+'''
+def gaff(mol_path: str, output_path: str, molecule_name: str='UNK',  generate_charges: str='bcc', atomtype: str='gaff2', overwrite: bool=False):
+
     """This function is used to compute gaff parameters for small molecules using tleap, and to transform them in a gromacs friendly form. 
 
-    :param molecule: name of the molecule
-    :type molecule: str
-    :param path_output: path to output 
+    :param mol_path: Structure file of the molecule.
+    :type mol_path: str
+    :param path_output: Output topology (.top) file. 
     :type path_output: str
-    :param res_name: residue name. Defaults to 'UNK'.
+    :param res_name: Name of the molecule, it will be used in the .top file. Defaults to UNK.
     :type res_name: str, optional
-    :param generate_charges: charge assignment method. Defaults to 'bcc'.
+    :param generate_charges: Charge assignment method. Defaults to 'bcc'.
     :type generate_charges: str, optional
-    :param atomtype: atomtype scheme definition (gaff, gaff2). Defaults to 'gaff2'.
+    :param atomtype: Atomtype scheme definition (gaff, gaff2). Defaults to 'gaff2'.
     :type atomtype: str, optional
-    :param overwrite: overwrite existing files?. Defaults to False. 
+    :param overwrite: Overwrite existing files? Defaults to False.
     :type overwrite: bool, optional
+    :returns: 
 
     """
+
+    
+    path_parmchk =  "parmchk2"
+    path_antechamber = "antechamber"
+    path_leap = "tleap"
+
+
+
+'''
+
+
+def gaff(molecule: str, path_output: str, res_name: str='UNK', generate_charges: str='bcc', atomtype: str='gaff2', overwrite: bool=False):
         
     path_parmchk =  "parmchk2"
     path_antechamber = "antechamber"

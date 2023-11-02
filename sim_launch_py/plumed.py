@@ -110,14 +110,23 @@ class _Bias():
 
         """
         self._name=name
+        self._biastype=None
 
     @property
     def name(self):
         return self._name
 
+    @property
+    def biastype(self):
+        return self._biastype
+
     @name.setter
     def name(self,n):
         self._name=n
+
+    @biastype.setter
+    def biastype(self,bt):
+        self._biastype=bt
 
         
 class Metad(_Bias):
@@ -452,7 +461,7 @@ class LowerWalls(_Bias):
 
         if isinstance(kappa,float) or isinstance(kappa,int):
             if ncvs==1:
-                kappa=[kappa]
+                kapp[kappa]
 
         if len(cv)!=len(kappa):
              print("Error: The number of kappa values need to be equal to the number of collective variables."\
@@ -548,6 +557,8 @@ def write_plumed_file(plumed_file: str, simulation: object, colvar: str=None, pr
     if os.path.isfile(plumed_file):
         location=os.path
         shutil.copy(plumed_file,"{}.bkp".format(plumed_file))
+
+    additional_cvs=[]
         
     with open(plumed_file,'w') as f:
 
@@ -564,6 +575,8 @@ def write_plumed_file(plumed_file: str, simulation: object, colvar: str=None, pr
         if hasattr(simulation,'biases'):
             f.write("\n# Bias section\n\n")
             for ibias,bias in enumerate(simulation.biases):
+                if bias.biastype=='METAD':
+                    additional_cvs.append("{}.bias".format(bias.name))
                 f.write("{}\n".format(bias.directive))
 
         if  hasattr(simulation,'cvs') and colvar is not None:
@@ -572,8 +585,11 @@ def write_plumed_file(plumed_file: str, simulation: object, colvar: str=None, pr
                     "\tFILE={0}\n"
                     "\tSTRIDE={1}\n"
                     "\tARG=".format(colvar,printstride))
-            for icv,cv in enumerate(simulation.cvs):
+            for cv in simulation.cvs:
                 f.write("{},".format(cv.name))
+            for addcv in additional_cvs:
+                f.write("{},".format(addcv))
+            
             f.write("\n")
             f.write("... PRINT\n")
 

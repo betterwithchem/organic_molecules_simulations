@@ -208,7 +208,8 @@ class _Simulation():
                 supported=["METAD"] #,"UPPER_WALLS","LOWER_WALLS"]
         
                 if biastype.upper()=='METAD':
-                    new_bias=plumed.Metad(name,cv,bias_dict)            
+                    new_bias=plumed.Metad(name,cv,bias_dict)
+                    new_bias.biastype=biastype
                 #elif biastype.upper()=="UPPER_WALLS":
                 #    new_bias=plumed.UpperWalls(name,cv,bias_dict)
                 #elif biastype.upper()=="LOWER_WALLS":
@@ -217,6 +218,8 @@ class _Simulation():
                     print("Error: for the moment only {} are supported as bias... sorry".format(supported))
                     exit()
 
+                
+                    
                 self._biases.append(new_bias)
 
                 #return new_bias

@@ -164,5 +164,5 @@ METAD ...
 PRINT ...
 	FILE=COLVAR
 	STRIDE=500
-	ARG=dih_0,dih_1,dih_2,dih_3,dih_4,dih_5,dih_6,dih_7,dih_8,dih_9,dih_10,
+	ARG=dih_0,dih_1,dih_2,dih_3,dih_4,dih_5,dih_6,dih_7,dih_8,dih_9,dih_10,metad_dih_0.bias,metad_dih_1.bias,metad_dih_2.bias,metad_dih_3.bias,metad_dih_4.bias,metad_dih_5.bias,metad_dih_6.bias,metad_dih_7.bias,metad_dih_8.bias,metad_dih_9.bias,metad_dih_10.bias,
 ... PRINT
