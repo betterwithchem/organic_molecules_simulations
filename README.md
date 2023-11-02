@@ -7,7 +7,7 @@ the code will look for gromacs and ambertools in $PATH.
 
 A typical installation procedure would be:
 
-` conda create -n myenv python=3.8 numpy pandas scipy jupyter conda-forge::parmed conda-forge::mdanalysis conda-forge::matplotlib conda-forge::rdkit conda-forge::nglview`
+`conda create -n myenv python=3.8 numpy pandas scipy jupyter conda-forge::parmed conda-forge::mdanalysis conda-forge::matplotlib conda-forge::rdkit conda-forge::nglview`
 
 `conda activate myenv`
 
