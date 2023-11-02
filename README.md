@@ -27,9 +27,9 @@ Jupyter notebooks can be found in `examples/notebooks`
 
 Sometimes it happen that Python throws the following error when importing numpy:
 
->ImportError: Error importing numpy: you should not try to import numpy from
->        its source directory; please exit the numpy source tree, and relaunch
->        your python interpreter from there.
+>ImportError: Error importing numpy: you should not try to import numpy from\
+>        its source directory; please exit the numpy source tree, and relaunch\
+>        your python interpreter from there.  
 
 This is due to a modification of PYTHONPATH when sourcing AmberTools. Running
 
