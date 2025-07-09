@@ -11,7 +11,7 @@ A typical installation procedure would be:
 
 `conda activate myenv`
 
-Then package can be installed locally in a conda environment running the following command from the directory where the `setup.py` file is  
+Then the package can be installed locally in a conda environment running the following command from the directory where the `setup.py` file is  
 
 `pip -e install .  `
 
@@ -26,7 +26,7 @@ Jupyter notebooks can be found in `examples/notebooks`
 
 ## Known Issues
 
-Sometimes it happen that Python throws the following error when importing numpy:
+Sometimes it happens that Python throws the following error when importing numpy:
 
 `ImportError: Error importing numpy: you should not try to import numpy from
         its source directory; please exit the numpy source tree, and relaunch
