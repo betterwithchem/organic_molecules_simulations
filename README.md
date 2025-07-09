@@ -2,8 +2,8 @@
 # organic_molecules_simulations
 
 ## Installation
-Needed python packages can be found in environment.yaml. On top of these, when creating a project, 
-the code will look for gromacs and ambertools in $PATH.
+Needed python packages can be found in `environment.yaml`. On top of these, when creating a project, 
+the code will look for gromacs and ambertools in `$PATH`.
 
 A typical installation procedure would be:
 
