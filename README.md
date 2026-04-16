@@ -13,7 +13,7 @@ A typical installation procedure would be:
 
 Then the package can be installed locally in a conda environment running the following command from the directory where the `setup.py` file is  
 
-`pip -e install .  `
+`pip install -e .  `
 
 ## Code and Documentation
 
