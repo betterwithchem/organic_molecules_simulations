@@ -149,7 +149,12 @@ class _Simulation():
                 gmx_commands=[]
                 if self.mdp:
 
-                        gmx_commands.append('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5}'.format(self.gromacs,self.mdp,self.name,self.maxwarn,self.topology,self.coordinates))
+                        gmx_commands.append('{0} grompp -f {1} -o {2}.tpr -maxwarn {3} -p {4} -c {5}'.format(self.gromacs,
+                                                                                                             self.mdp,
+                                                                                                             self.name,
+                                                                                                             self.maxwarn,
+                                                                                                             self.topology,
+                                                                                                             self.coordinates))
 
                 gmx_commands.append('{0} mdrun -deffnm {1} {2}'.format(self.gromacs,self.name,self.mdrun_options))
                 

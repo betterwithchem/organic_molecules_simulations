@@ -380,7 +380,7 @@ class System():
     - gromacs : gromacs binary path, inherited from the Project(). \n
     - composition : composition of the system. Order of values is the same of the order in self.molecules.\n
     - atoms : list of Atom() objects in the system.\n
-    - natoms : total numer of atoms in the systems.\n
+    - n_atoms : total numer of atoms in the systems.\n
     
     Methods:\n
     - help() : print the help for this class\n
@@ -522,7 +522,7 @@ class System():
     - gromacs : gromacs binary path, inherited from the Project(). 
     - composition : composition of the system. Order of values is the same of the order in self.molecules.
     - atoms : list of Atom() objects in the system.
-    - natoms : total numer of atoms in the systems.
+    - n_atoms : total numer of atoms in the systems.
 
     Methods:
     - help() : print the help for this class
@@ -740,7 +740,7 @@ class System():
 
 
         
-    def create_group(self, name: str, atoms: list=None,molecules: list=None):
+    def create_group(self, name: str, atoms_list: list=None,molecules_list: list=None):
         """Create a new group of atoms
 
         :param name: Name of the new group 
@@ -759,22 +759,29 @@ class System():
                 return
         
         newgroup=Group(name)
-        if atoms is not None:
-            for atom in atoms:
+
+        if atoms_list is not None:
+           _all_atoms = [a for m in self.molecules for a in m.atoms]
+           atoms = [_all_atoms[i] for i in atoms_list]
+           for atom in atoms:
                 newgroup.atoms.append(atom)
+
+        molecules = [self.molecules[i] for i in molecules_list]
 
         if molecules is not None:
             for molecule in molecules:
+                newgroup.molecules.append(molecule)
                 for atom in molecule.atoms:
                     newgroup.atoms.append(atom)
+                
 
-        if newgroup.natoms>0:
+        if newgroup.n_atoms>0:
             newgroup._check_duplicates()
         
         self.groups.append(newgroup)
         
 
-    def add_to_group(self, name: str, atoms: list=None, molecules: list=None):
+    def add_to_group(self, name: str, atoms_list: list=None, molecules_list: list=None):
         """Add atoms to an existing group.
 
         :param name: Name of the group to which atoms will be added. 
@@ -1056,6 +1063,7 @@ class System():
             return
         else:
             print("Simulation {}(type {}) will start from configuration {}.".format(name,simtype,newsim.coordinates))      
+        
         newsim.mdrun_options=simulation_dict.pop('mdrun_options','-v')
         newsim.topology=simulation_dict.pop('topology',self.topology)
         newsim.mdp=simulation_dict.pop('path_mdp',None)
@@ -1583,6 +1591,19 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         for g in self.groups:
             g._check_duplicates()
 
+        self._update_atom_absolute_indexes()
+        
+
+    def _update_atom_absolute_indexes(self):
+        """Renumber the absolute indexes of the atoms (0-based)
+        """
+        ia = 0
+        for im,m in enumerate(self.molecules):
+            for a in m.atoms:
+                a.absindex = ia
+                ia+=1
+
+
     def rename_molecules(self, idx_list:list, new_name_list: list):
         """Rename the molecule in the Molecule object
 
@@ -1613,8 +1634,11 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         :type order: list, optional
         """
 
+        print('Reordering molecules...')
+
         existing_species = [s for s in self.species]
         reordered = [] 
+
         if order == None:
             reordering_species = existing_species
             add_solvent = False
@@ -1629,7 +1653,9 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
             if name in ['SOL','WAT']:
                 final_chunk = _chunk
                 add_solvent = True
-            reordered+=_chunk
+            else:
+                reordered+=_chunk
+        
         if add_solvent:
             reordered+=final_chunk
            
@@ -1791,7 +1817,8 @@ class Atom():
 
     Attributes:\n
        - name (str) : name of the atom.\n
-       - index (int) : atom index.\n
+       - index (int) : atom index (i.e. referred to its molecule). \n
+       - absindex (int) : atom absolute index (i.e. referred to the system). \n
        - atomtype (str) : atom type.\n
        - resname (str) : name of the residue the atom is part of.\n
        - coordinates (list): coordinates of the atom in nm.\n
@@ -1949,7 +1976,8 @@ class Group():
 
         self._name=name
         self._atoms=list()
-        self._natoms=0
+        self._molecules=list()
+        self._n_atoms=0
         self._com=None
 
 
@@ -1960,10 +1988,18 @@ class Group():
     @property
     def atoms(self):
         return self._atoms
+    
+    @property
+    def molecules(self):
+        return self._molecules
 
     @property
-    def natoms(self):
+    def n_atoms(self):
         return len(self._atoms)
+    
+    @property
+    def n_molecules(self):
+        return len(self._molecules)
 
     @property
     def com(self):
@@ -1980,6 +2016,9 @@ class Group():
     def atoms(self,alist):
         self._atoms=alist
 
+    @molecules.setter
+    def molecules(self,mlist):
+        self._molecules=mlist
         
     def _check_duplicates(self):
 
