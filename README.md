@@ -11,8 +11,8 @@
 
 ##### Added:
 
--`System.rename_molecules(self, idx_list:list, new_name_list: list)` to easily rename selected `Molecule` objects.
--`System.reorder_molecules()` to reorder the molecules in the `System`.
+- `System.rename_molecules(self, idx_list:list, new_name_list: list)` to easily rename selected `Molecule` objects.
+- `System.reorder_molecules()` to reorder the molecules in the `System`.
 
 ## Installation
 Needed python packages can be found in environment.yaml. 
