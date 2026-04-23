@@ -5,13 +5,14 @@
 
 ##### Bug fixes:
 
-`System.delete_molecule()` had an issue in the numbering of the indexes
-`System._update_composition()` now removes from the `System.species` `dict` species that don't have any molecule with that resname (e.g. following deletion or renaming)
+- `System.delete_molecule()` had an issue in the numbering of the indexes
+- `System._update_composition()` now removes from the `System.species` `dict` species that don't have any molecule with that resname (e.g. following deletion or renaming)
+- Fixed bug that was not allowing to update the absolute indexes of the atoms, with repercussions of groups creation.
 
 ##### Added:
 
-`System.rename_molecules(self, idx_list:list, new_name_list: list)` to easily rename selected `Molecule` objects.
-`System.reorder_molecules()` to reorder the molecules in the `System`.
+-`System.rename_molecules(self, idx_list:list, new_name_list: list)` to easily rename selected `Molecule` objects.
+-`System.reorder_molecules()` to reorder the molecules in the `System`.
 
 ## Installation
 Needed python packages can be found in environment.yaml. 
