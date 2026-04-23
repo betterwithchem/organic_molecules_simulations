@@ -598,7 +598,9 @@ class System():
             if m.resname not in self.species:
                 self.species[m.resname]={}
 
+        self._update_molecule_indexes()
         self._renumber_atoms()
+        self._update_composition()
 
 
 
@@ -975,8 +977,21 @@ class System():
             else:
                 found_species[m.resname]+=1
 
+        print(found_species)
+
         for sp in found_species:
-            self.species[sp].update({'nmols':found_species[sp]})
+            if sp in self.species:
+                self.species[sp].update({'nmols':found_species[sp]})
+            else:
+                self.species.update({sp:{'nmols':found_species[sp]}})
+
+        species_to_be_removed = []
+        for sp in self.species:
+            if sp not in found_species:
+                species_to_be_removed.append(sp)
+
+        for sp in species_to_be_removed:        
+            self.species.pop(sp)
 
         
          
@@ -1569,7 +1584,27 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         for g in self.groups:
             g._check_duplicates()
-                    
+
+    def rename_molecules(self, idx_list:list, new_name_list: list):
+        """Rename the molecule in the Molecule object
+
+        :param new_name: New name of the molecule (string of 3 letters)
+        :type new_name: str
+        """
+
+        print([m.resname for m in self.molecules])
+
+        for im,idx in enumerate(idx_list):
+            new_name = new_name_list[im]
+            if len(new_name)!=3:
+                print('Error in renaming the molecule: the new name must be a string of 3 characters (input given is {}, with {} characters)'.format(new_name,len(new_name)))
+                self._update_composition()
+                return 
+            self.molecules[idx].resname=new_name
+
+        print([m.resname for m in self.molecules])
+
+        self._update_composition()
         
 
 class Molecule():

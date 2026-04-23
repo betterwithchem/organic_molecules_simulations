@@ -1,3 +1,4 @@
+README.md
 setup.py
 sim_launch_py/classes.py
 sim_launch_py/ffparms.py
@@ -8,4 +9,5 @@ sim_launch_py/utilities.py
 sim_launch_py.egg-info/PKG-INFO
 sim_launch_py.egg-info/SOURCES.txt
 sim_launch_py.egg-info/dependency_links.txt
+sim_launch_py.egg-info/requires.txt
 sim_launch_py.egg-info/top_level.txt
