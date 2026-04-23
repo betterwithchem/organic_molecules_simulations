@@ -977,8 +977,6 @@ class System():
             else:
                 found_species[m.resname]+=1
 
-        print(found_species)
-
         for sp in found_species:
             if sp in self.species:
                 self.species[sp].update({'nmols':found_species[sp]})
@@ -1606,6 +1604,44 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         self._update_composition()
         
+    def reorder_molecules(self, order=None):
+        """Reorder the molecules in the system by Molecule.resname. 
+        Default behavior (order==None) is to keep the order by appearance in the system with the exception of WAT or SOL residues 
+        that are assumed to be solvent.
+
+        :param order: Desired order of molecules as a list of names, e.g. ['ML1', 'ML2', 'WAT']. Defaults to None
+        :type order: list, optional
+        """
+
+        existing_species = [s for s in self.species]
+        reordered = [] 
+        if order == None:
+            reordering_species = existing_species
+            add_solvent = False
+        else:
+            reordering_species = order
+            for ispecies,sp in enumerate(reordering_species):
+                if sp not in existing_species:
+                    raise ValueError('Molecule {} provided in order parameter is not found in the existing species ({})'.format(sp,existing_species))
+
+        for ispecies,name in enumerate(reordering_species):
+            _chunk = [m for m in self.molecules if m.resname==name ]
+            if name in ['SOL','WAT']:
+                final_chunk = _chunk
+                add_solvent = True
+            reordered+=_chunk
+        if add_solvent:
+            reordered+=final_chunk
+           
+
+        self.molecules=reordered
+        self._update_molecule_indexes()
+        self._update_composition()
+        
+        
+
+                
+
 
 class Molecule():
     """The molecule class that stores and manage all the information and methods.

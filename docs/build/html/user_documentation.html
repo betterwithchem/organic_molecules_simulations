@@ -465,6 +465,19 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.reorder_molecules">
+<span class="sig-name descname"><span class="pre">reorder_molecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.reorder_molecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reorder the molecules in the system by Molecule.resname. 
+Default behavior (order==None) is to keep the order by appearance in the system with the exception of WAT or SOL residues 
+that are assumed to be solvent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>order</strong> (<em>list</em><em>, </em><em>optional</em>) – Desired order of molecules as a list of names, e.g. [‘ML1’, ‘ML2’, ‘WAT’]. Defaults to None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.replicate_cell">
 <span class="sig-name descname"><span class="pre">replicate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.replicate_cell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replicate the given box in the 3 directions.</p>
