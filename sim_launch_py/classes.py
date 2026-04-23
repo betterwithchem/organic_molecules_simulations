@@ -602,7 +602,8 @@ class System():
 
 
 
-    def insert_molecules(self, name: str, molstruct: str, initial_conf: str=None, final_conf: str='inserted.pdb', nmol: int=1):
+    def insert_molecules(self, name: str, molstruct: str, initial_conf: str=None, final_conf: str='inserted.pdb', 
+                         nmol: int=1, exact: bool=True):
         """Insert molecules in random positions.
 
         :param name: name of the molecule.
@@ -677,7 +678,7 @@ class System():
             
 
         import subprocess        
-        result=subprocess.run("{0} insert-molecules -f {1} -ci {2} -nmol {3} -o {4} -try 10000".format("gmx",
+        result=subprocess.run("{0} insert-molecules -f {1} -ci {2} -nmol {3} -o {4}  ".format("gmx",
                                                                                             initial_conf,
                                                                                             molstruct,
                                                                                             nmol,
@@ -689,8 +690,17 @@ class System():
 
         added=int(added_line.split()[1])
         if added != nmol:
-            print("ERROR! {}".format(added_line))
-            exit()
+
+            if exact:
+                print("ERROR! {}".format(added_line))
+                exit()
+            else:
+                print("Warning! {}".format(added_line))
+                print("Will continue with {0} new molecules of {1}, since it was not required to add " \
+                      "exactly {2} molecules (usually done for solvents).".format(added,
+                                                                                 name,
+                                                                                 nmol))
+                
 
         self._last_saved_structure=final_conf
 
@@ -708,7 +718,7 @@ class System():
             lastmol=len(self.molecules)-1
             import copy
         
-            for i in range(1,nmol):
+            for i in range(1,added):
                 new_molecule=copy.deepcopy(self.molecules[lastmol])
                 self.molecules.append(new_molecule)
 
@@ -724,7 +734,7 @@ class System():
         self._update_coordinates(final_conf, start=index_first_new_mol, end=index_last_new_mol)
         self._renumber_atoms()
         
-        print("{} molecules of residue {} have been added. The file {} has been created.".format(nmol,new_molecule.resname, os.path.relpath(final_conf)))
+        print("{} molecules of residue {} have been added. The file {} has been created.".format(added,new_molecule.resname, os.path.relpath(final_conf)))
 
 
         
@@ -1131,7 +1141,7 @@ export OMP_NUM_THREADS={3}
 #SBATCH --job-name={0}
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node={1}
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task={3}
 #SBATCH --time={2}
 
 # Replace [budget code] below with your project code (e.g. t01)
@@ -1392,6 +1402,9 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         self.save_pdb('TEMP_STRUCT_TO_BE_CENTERED.pdb')
         result=subprocess.run('{0} editconf -f {1}/TEMP_STRUCT_TO_BE_CENTERED.pdb -o {1}/CENTERED_STRUCT.pdb -c'.format(self.gromacs,self.path),stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
 
+        if result.returncode != 0:
+            print("GMX editconf exited with code != 0")
+        
         self._last_saved_structure=self.path+'/CENTERED_STRUCT.pdb'
         
         self._update_coordinates(self.path+'/CENTERED_STRUCT.pdb')

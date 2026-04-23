@@ -8,7 +8,7 @@ from scipy.optimize import curve_fit,Bounds
    Adapted from code by Alexandre Ferreira. 
 """
 
-def _histogram(dihedral_angles: str, datacol: int=1, probcutoff: float=0.0075):
+def _histogram(dihedral_angles: str, datacol: int=1, probcutoff: float=0.0025):
     """Compute the probability distribution given a timeseries of dihedral angles
 
        centers,histo (list,list) : centers of the bins and values of the probability distribution.
@@ -110,7 +110,7 @@ def gaussianFit(dihedral_angles: str, datacol: int=1, plotFit: bool=False):
     
     bincenters,histo=_histogram(dihedral_angles,datacol=datacol)
 
-    cutoffdist=20
+    cutoffdist=10
     
     # look for peaks with a inter-peak distance of at least cutoffdist
     peaks,properties=sig.find_peaks(histo, distance=cutoffdist)  
