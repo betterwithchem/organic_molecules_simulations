@@ -1,0 +1,1016 @@
+Developer Documentation
+***********************
+
+class sim_launch_py.classes.Atom(name: str, index: Optional[int] = None, atomtype: Optional[str] = None, resname: Optional[str] = None, coordinates: Optional[list] = None, resid: Optional[int] = None)
+
+   The atom class that stores and manage all the information and
+   methods.
+
+   Attributes:
+
+      * name (str) : name of the atom.
+
+      * index (int) : atom index (i.e. referred to its molecule).
+
+      * absindex (int) : atom absolute index (i.e. referred to the
+        system).
+
+      * atomtype (str) : atom type.
+
+      * resname (str) : name of the residue the atom is part of.
+
+      * coordinates (list): coordinates of the atom in nm.
+
+      * resid (int) : index of the molecule the atom is part of.
+
+      * element (str) : chemical element of the atom.
+
+      * mw (float) : atomic mass in Da.
+
+      * bonds (list) : list of the index of the atoms in the same
+        molecule that the atom is bound to.
+
+   Static Methods:
+
+      * _get_element(atomtype) : Assign atomic element of the atom
+        based on its name.
+
+      * _get_mw(element) : Assign mass to the atom based on its atomic
+        element.
+
+   static _get_element(atomtype)
+
+      Assign atomic element of the atom based on its name.
+
+   static _get_mw(element)
+
+      Assign mass to the atom based on its atomic element.
+
+   property absindex
+
+   property atomtype
+
+   property bonds
+
+   property coordinates
+
+   property element
+
+   property index
+
+   property mw
+
+   property name
+
+   property resid
+
+   property resname
+
+class sim_launch_py.classes.Group(name)
+
+   The group class that manages and stores information about arbitrary
+   groups of atoms
+
+   _check_duplicates()
+
+      Check if there are duplicate atoms in the group and return the
+      sorted list of unique atom objects
+
+      Returns:
+   property atoms
+
+   property com
+
+   property molecules
+
+   property n_atoms
+
+   property n_molecules
+
+   property name
+
+class sim_launch_py.classes.Molecule(name: str, resname='UNK', index=None)
+
+   The molecule class that stores and manage all the information and
+   methods.
+
+   Attributes:
+
+      * name : name of the molecule type
+
+      * resname : residue name
+
+      * index : index of the molecule
+
+      * mw : molecular weight in [Da]
+
+      * atoms : list of atom types of the molecule type
+
+      * contact_matrix : NxN matrix (N=number of atoms in the
+        molecule) of the bonds between the atoms.
+
+   Methods:
+
+      * help(): print the help for this class.
+
+   _calc_mass()
+
+      Compute the mass of the molecule and store it in self._mw.
+
+   _compute_contact_matrix()
+
+      Compute the matrix of bonds of the molecule.
+
+   _get_com()
+
+   _renumber_atoms()
+
+      Renumber the atom indexes in the molecule starting from 0.
+
+   _update_atom_resid()
+
+      Renumber the molecular index of the atoms (i.e. the index of the
+      molecule they belong to).
+
+   property atoms
+
+   property com
+
+   property contact_matrix
+
+   property index
+
+   property mw
+
+   property name
+
+   property resname
+
+class sim_launch_py.classes.Project(name: str, path: str)
+
+   The project class that stores and manage all the information and
+   methods.
+
+   Attributes:
+
+   * name : name of the project. This defines the directory where the
+     project will be stored and most of path variables.
+
+   * project_path : absolute path of the project. The name of the
+     directory is derived from the name of the project.
+
+   * systems_path : directory where the data of the simulated systems
+     are stored. This is the parent directory of the systems.
+
+   * topology_path : directory where the topology files (.top and
+     .itp) of the molecules used in the project are stored and
+     retrieved to be used in each system.
+
+   * init_struct_path : path where initial structures of the molecules
+     used in the project are stored and retrieved to be used in each
+     system.
+
+   * mdp_path : path where default .mdp input files for gromacs are
+     stored.
+
+   * pickle_path : path where the project is saved in .pkl format.
+
+   * job_script_path : path where the template files for submission
+     scripts are stored.
+
+   * systems : list of System() objects in the project.
+
+   * molecules : list of Molecule() objects in the project.
+
+   * gromacs : path to gromacs binary.
+
+   * ambertools : path to ambertools binaries directory.
+
+   Methods:
+
+   * help() : print the help for this class.
+
+   * add_system(self,name: str) : add and initialize System() to the
+     Project().
+
+   * new_project(name=None, path=None, overwrite=False) : create new
+     Project().
+
+   * save(self) : save Project() in Project().pickle_path.
+
+   * load_project(project_folder: str) : load Project() stored in
+     project_folde/.multisim.pkl.
+
+   * write_sub_command(self,scriptname: str,hpc_system: str, template:
+     str): write job submission/run scripts for the given HPC system
+     for each System() and a global bash script to call all the job
+     scripts.
+
+   * change_project_path(self,newpath: str) : when implemented, it
+     will allow to copy the project to a new path and change all the
+     pertinent path attributes.
+
+   _checkAmberTools()
+
+      Look for AmberTools binaries directory and add it to the
+      project. This method looks for the antechamber binary. If it is
+      not found, it will prompt the user to input manually the
+      absolute path of the ambertools binaries directory. The value of
+      the attribute is the absolute path of antechamber
+      (/path/to/bin/antechamber).
+
+   _checkGromacs()
+
+      Look for Gromacs binary and add it to the project. This method
+      looks for standard names of gromacs binaries (i.e. 'gmx' and
+      'gmx_mpi'). If either of these is not found, it will prompt the
+      user to input manually the absolute path of the gromacs
+      executable. The value of the attribute is the absolute path of
+      the binary (/path/to/gmx or /path/to/gmx_mpi or
+      /path/to/gmx_bin_custom_name).
+
+   _renumber_systems()
+
+      Renumber starting from 0 the index of the systems in a project.
+
+   add_system(name: str)
+
+      Add system to project
+
+      Parameters:
+         **name** (*str*) -- system name.
+
+   property ambertools
+
+   change_path(newpath: str, reset_program_paths: bool = False)
+
+      Change path of the project  :param newpath: new position of the
+      project. The new position of the project will be
+      newpath/Project.name  :type newpath: str :param
+      reset_program_paths: Update programs (Gromacs, Ambertools, ...)
+      paths? Defaults to False :type reset_program_paths: bool,
+      optional
+
+   property defaults_path
+
+   delete_system(delete_list)
+
+      Delete a system from project and update the index of remaining
+      systems.
+
+      Parameters:
+         **delete_list** -- list of system indexes
+
+   find_system_by_name(name)
+
+   property gromacs
+
+   static help()
+
+   load_project()
+
+      Load an existing project. The Project object is saved in the
+      project directory every time the command Project.save()
+
+      Parameters:
+         **project_folder** (*str*) -- Location of the project to be
+         loaded.
+
+      Returns project:
+         Loaded project.
+
+      Rtype project:
+         object
+
+   property name
+
+   new_project(path: str, overwrite=False, check_gmx: bool = True, check_ambertools: bool = True)
+
+      Add new project
+
+      Parameters:
+         * **name** (*str*) -- Project Name.
+
+         * **path** (*str*) -- Project path.
+
+         * **overwrite** (*bool**, **optional*) -- Overwrite previous
+           project? Defaults to False.
+
+         * **check_gmx** (*bool**, **optional*) -- Check if GROMACS is
+           in PATH? Defaults to True.
+
+         * **check_ambertools** (*bool**, **optional*) -- Check if
+           AmberTools is in PATH? Defaults to True.
+
+      Returns nproject:
+         New project
+
+      Rtype nproject:
+         project object.
+
+   property path
+
+   property pickle_path
+
+   save()
+
+      Save project to project folder.
+
+   property systems
+
+   property systems_path
+
+class sim_launch_py.classes.System(name: str, path=None)
+
+   The system class that stores and manage all the information and
+   methods.
+
+   Attributes:
+
+   * name : name of the system. This is used to create the directory
+     of the system.
+
+   * path : absolute path of the system.
+
+   * molecules : list of Molecule() objects belonging to the system.
+
+   * box : size of the box (of the initial configuration).
+
+   * boxshape : shape of the simulation box.
+
+   * simulations : list of Simulation() objects of the system.
+
+   * run_command : command lines to be used to run the simulations.
+
+   * gromacs : gromacs binary path, inherited from the Project().
+
+   * composition : composition of the system. Order of values is the
+     same of the order in self.molecules.
+
+   * atoms : list of Atom() objects in the system.
+
+   * n_atoms : total numer of atoms in the systems.
+
+   Methods:
+
+   * help() : print the help for this class
+
+   * add_molecule(self, name: str, moltype=None, knownmolecules=None)
+     : add species to the system.
+
+   * add_box(self, box_side: float, shape='cubic') : create simulation
+     box.
+
+   * createSolventBox(self, solvent: object,
+     output_structure="solvent_box.pdb", density=None, nmols=None):
+     add solvent molecules to the simulation box.
+
+   * insertSolute(self, solute: object, solvent: object,
+     solvent_box="solvent_box.pdb", concentration=0,
+     output_structure="start.pdb"): add solute molecules to the box
+     and remove excess solvent molecules.
+
+   * writeTop(self, atomtypes_path: str, molecules: objects): write
+     the topology file for the system in gromacs format.
+
+   * add_simulation(self, simtype: str, mdrun_options='', mdp='',
+     print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''):
+     add simulation to the system.
+
+   * print_command(self, bash_file): print the bash script file to run
+     the simulations.
+
+   _assign_atoms_to_molecules(name: str, atoms: list)
+
+      Add atom objects to molecule objects.
+
+      Parameters:
+         * **name** (*str*) -- name of the molecule.
+
+         * **atoms** (*list*) -- list of atom objects.
+
+   static _box_matrix(box: list)
+
+      Given a box vector [a, b, c, alpha, beta, gamma], compute the
+      box matrix.
+
+      Parameters:
+         **box** (*list*) -- box vector. box vectors (a,b,c) are
+         assumed to be i nm, angles (alpha, beta, gamma) are assumed
+         to be in degrees.
+
+      Returns M:
+         box matrix
+
+      Rtype M:
+         list
+
+   _loadfrommol2(name: str, mol2file: str, keep_coordinates: bool = True)
+
+      Load molecules from a MOL2 structure file.
+
+      Parameters:
+         * **name** (*str*) -- name of the MOL2 structure file.
+
+         * **mol2file** (*str*) -- name of the MOL2 structure file.
+
+         * **keep_coordinates** (*bool**, **optional*) -- keep
+           coordinates read from the structure file. Defaults to True.
+
+   _renumber_atoms()
+
+      Assign the absolute index to each atom of the system
+
+   _update_atom_absolute_indexes()
+
+      Renumber the absolute indexes of the atoms (0-based)
+
+   _update_composition()
+
+      Update the 'nmols' attribute of self.species dictionary by
+      checking the residue names of the molecules in the system
+
+   _update_coordinates(structure_file, start=0, end=inf)
+
+      Assign the coordinates of atoms from a PDB structure file.
+
+      Parameters:
+         * **structure_file** (*str*) -- PDB file from which
+           coordinates are read.
+
+         * **start** (*int**, **optional*) -- index of the first
+           molecule of the system for which atomic coordinates are
+           updated. Defaults to 0.
+
+         * **end** (*int**, **optional*) -- index of the last molecule
+           (included) of the system for which atomic coordinates are
+           updated. Defaults to np.inf.
+
+   _update_molecule_indexes()
+
+      Renumber the indexes of the molecules (0-based).
+
+   add_box(box_side: float, shape: str = 'cubic')
+
+      Create simulation box.
+
+      Parameters:
+         * **box_side** (*float*) -- side of the box in nm.
+
+         * **shape** (*str**, **optioal*) -- shape of the box.
+           Defaults to 'cubic'.
+
+   add_molecule(name: str, structure_file: Optional[str] = None, keep_coordinates: bool = True, keep_box: bool = True)
+
+      Add new molecules to a system starting from a structure file
+      (e.g. a PDB file).
+
+      Parameters:
+         * **name** (*str*) -- name of the molecule.
+
+         * **structure_file** (*str**, **optional*) -- name of the
+           structure file to be read. Defaults to None.
+
+         * **keep_coordinates** (*bool**, **optional*) -- keep the
+           coordinates read from the structure file. Defaults to True.
+
+         * **keep_box** (*bool**, **optional*) -- read the box
+           parameters from the structure file and use them to
+           define/update the box attribute of the system. Defaults to
+           True.
+
+   add_simulation(name: str, simtype: str, simulation_dict: Optional[dict] = None)
+
+      Add a simulation to the current system object.
+
+      Parameters:
+         * **name** (*str*) -- Name of the simulation object
+
+         * **simtype** (*str*) -- Type of simulation. Available types
+           are 'em' and 'md'.
+
+         * **simulation_dict** (*dict**, **optional*) -- dict with
+           simulation specific parameters. Defaults to None. Values in
+           the dict are: 'coordinates', 'mdrun_options', 'topology',
+           'path_mdp', 'maxwarn', 'tpr', 'nsteps', 'plumed'.
+
+   add_to_group(name: str, atoms_list: Optional[list] = None, molecules_list: Optional[list] = None)
+
+      Add atoms to an existing group.
+
+      Parameters:
+         * **name** (*str*) -- Name of the group to which atoms will
+           be added.
+
+         * **atoms** (*list**, **optional*) -- List of atoms to add.
+           Defaults to None.
+
+         * **molecules** (*list**, **optional*) -- List of molecules
+           to add. Defaults to None.
+
+      Returns:
+   property ambertools
+
+   property atomtypes
+
+   property box
+
+   center_box()
+
+      Center the atoms in the box with gmx editconf (equivalent to gmx
+      editconf -c)
+
+   create_group(name: str, atoms_list: Optional[list] = None, molecules_list: Optional[list] = None)
+
+      Create a new group of atoms
+
+      Parameters:
+         * **name** (*str*) -- Name of the new group
+
+         * **atoms** (*list**, **optional*) -- list of atoms to add to
+           the group. Defaults to None
+
+         * **molecules** (*list**, **optional*) -- list of molecules
+           to add to the group (its atoms will be added to the group).
+           Defaults to None.
+
+      Returns:
+   create_run_script(scriptname: str, simulations: Optional[list] = None, platform: str = 'bash', platform_dict: Optional[dict] = None)
+
+      Create the script to run the simulations.
+
+      Parameters:
+         * **scriptname** (*str*) -- name of the final script to
+           launch the simulations.
+
+         * **simulations** (*list*) -- which simulations need to be
+           run. Defaults to None (which means all simulations. I
+           know...)
+
+         * **platform** (*str**, **optional*) -- type of platform on
+           which simulations will be run. Available are 'bash' for
+           running locally, 'myriad' to run on Myriad HPC @ UCL, and
+           'archer' to run on Archer2 HPC. Defaults to 'bash'.
+           'myriad' is a good starting point for GridEngine-like
+           submission scripts, 'archer' is a good starting point for
+           SLURM submission scripts.
+
+         * **platform_dict** (*dict**, **optional*) -- dict with
+           platform specific parameters. Defaults to None.
+
+   create_topology(topology: str = 'topology.top')
+
+      Create topology for the current system
+
+      Parameters:
+         **topology** (*str**, **optional*) -- name of the resulting
+         topology file. Defaults to 'topology.top'.
+
+   delete_group(name: str)
+
+      Delete a group from the system
+
+      Parameters:
+         **name** (*str*) -- Name of the group to eliminate.
+
+      Returns:
+   delete_molecule(delete_list: list)
+
+      Delete molecules from a system and update the index of the
+      remaining molecules.
+
+      Parameters:
+         **delete_list** (*list*) -- list of the indexes of the
+         molecules to be deleted.
+
+   find_group_by_name(name: str)
+
+      Get the index of a group in a system given its name.
+
+      Parameters:
+         **name** (*str*) -- Name of the index
+
+      Returns group_index:
+         index of the group
+
+      Rtype group_index:
+         int
+
+   find_molecule_by_resname(resname: str)
+
+      Find the molecules in a system with the given residue name.
+
+      Parameters:
+         **resname** (*str*) -- residue name of the molecules to be
+         found.
+
+      Returns mol_list:
+         list of indexes of the molecules with the given residue name.
+
+      Rtype mol_list:
+         list
+
+   find_simulation_by_name(name: str)
+
+      Find simulations by their name
+
+      Parameters:
+         **name** (*str*) -- Name of the simulation.
+
+      Returns simulation:
+         Simulation object
+
+      Rtype simulation:
+         object
+
+   find_simulations_by_type(simtype: str)
+
+      Find simulations by their type
+
+      Parameters:
+         **simtype** (*str*) -- Type of simulation (e.g. 'em', 'md').
+
+      Returns:
+         List of simulation indexes.
+
+      Return type:
+         list.
+
+   property gromacs
+
+   property groups
+
+   static help()
+
+   property index
+
+   insert_molecules(name: str, molstruct: str, initial_conf: Optional[str] = None, final_conf: str = 'inserted.pdb', nmol: int = 1, exact: bool = True)
+
+      Insert molecules in random positions.
+
+      Parameters:
+         * **name** (*str*) -- name of the molecule.
+
+         * **molstruct** (*str*) -- structure file of the molecule to
+           insert. PN: it supports only structures with a single
+           molecule.
+
+         * **initial_conf** (*str**, **optional*) -- structure file
+           into which the new molecules are inserted. Defaults to
+           None. If no initial configuration is given, an empty box is
+           created and populated. System.box need to have been already
+           defined.
+
+         * **final_conf** (*str**, **optional*) -- final structure
+           file (in PDB format) with the inserted molecules. Defaults
+           to inserted.pdb.
+
+         * **nmol** (*int**, **optional*) -- number of molecules to
+           insert. Defaults to 1.
+
+   property last_saved_structure
+
+   property molecules
+
+   property name
+
+   property path
+
+   rename_molecules(idx_list: list, new_name_list: list)
+
+      Rename the molecule in the Molecule object
+
+      Parameters:
+         **new_name** (*str*) -- New name of the molecule (string of 3
+         letters)
+
+   reorder_molecules(order=None)
+
+      Reorder the molecules in the system by Molecule.resname.
+      Default behavior (order==None) is to keep the order by
+      appearance in the system with the exception of WAT or SOL
+      residues  that are assumed to be solvent.
+
+      Parameters:
+         **order** (*list**, **optional*) -- Desired order of
+         molecules as a list of names, e.g. ['ML1', 'ML2', 'WAT'].
+         Defaults to None
+
+   replicate_cell(repl: list = [1, 1, 1])
+
+      Replicate the given box in the 3 directions.
+
+      Parameters:
+         **repl** (*list**, **optional*) -- number of times the cell
+         is replicated in each direction. Defaults to [1, 1, 1]
+
+   save_pdb(pdb_filename: str)
+
+      Save a PDB file with the current configuration of the system.
+
+      Parameters:
+         **pdb_filename** (*str*) -- output PDB file.
+
+   property simulations
+
+   property species
+
+   property topology
+
+class sim_launch_py.gromacs.EnergyMinimization(name: str, index: int)
+
+class sim_launch_py.gromacs.MD(name: str, index: int)
+
+   property biases
+
+   property cvs
+
+class sim_launch_py.gromacs.Posre_MD(name: str, index: int)
+
+   property biases
+
+   property cvs
+
+class sim_launch_py.gromacs._Simulation(name: str, index: int)
+
+   _print_gmx_command()
+
+      Create the list of commands used to preprocess (grompp) and run
+      (mdrun) the simulation
+
+      Returns gmx_commands:
+         Gromacs commands.
+
+      Rtype gmx_commands:
+         list
+
+   add_bias(name: str, biastype: str, cv: object, bias_dict: Optional[dict] = None)
+
+      Add a bias to the simulation
+
+      Parameters:
+         * **name** (*str*) -- name of the bias
+
+         * **biastype** (*str*) -- type of bias to apply, available
+           types are:  'METAD'
+
+         * **cv** (*object*) -- name of the collective variable to
+           bias
+
+      :param bias_dict : dict of parameters for the bias. Defaults to
+      None. :type bias_dict: dict, optional.
+
+   add_cv(name: str, cv_type: str, cv_dict: Optional[dict] = None)
+
+      Add a Collective Variable to the Simulation.
+
+      Parameters:
+         * **name** (*str*) -- Name of the new collective variable.
+
+         * **cv_type** (*str*) -- Type of collective variable. See
+           documentation of sim_launch_py.plumed for details.
+
+         * **cv_dict** (*dict**, **optional*) -- dict with the
+           parameters for the collective variable. Defaults to None.
+
+      Returns:
+   property coordinates
+
+   property cvs
+
+   property gromacs
+
+   property index
+
+   property maxwarn
+
+   property mdp
+
+   property mdrun_options
+
+   property name
+
+   property nsteps
+
+   property path
+
+   property simtype
+
+   property state
+
+   property topology
+
+   property tpr
+
+sim_launch_py.ffparms.amb2gmx(molecule_name: str)
+
+   Run amb2gmx for a molecule
+
+   Parameters:
+      **molecule_name** (*str*) -- molecule name
+
+sim_launch_py.ffparms.extract_atomtypes_from_gmx_top(topfile: str)
+
+   This function takes a gromacs topology file and extracts the atom
+   types in the [ atomtypes ] section
+
+   Parameters:
+      **topfile** (*str*) -- name of the gromacs topology (.top) file
+
+sim_launch_py.ffparms.extract_molecule_from_gmx_top(topfile: str)
+
+   This function takes a gromacs topology file of a single molecule
+   type and extracts the following sections:     [ moleculetype ], [
+   atoms ], [ bonds ], [ pairs ], [ angles ], [ dihedrals ])
+
+   Parameters:
+      **topfile** (*str*) -- path of the gromacs topology (.top) file
+
+sim_launch_py.ffparms.gaff(molecule: str, path_output: str, res_name: str = 'UNK', generate_charges: str = 'bcc', atomtype: str = 'gaff2', overwrite: bool = False)
+
+sim_launch_py.ffparms.getTop(molecule: str, fromPath: str = '', toPath: str = '')
+
+   obtain topology file
+
+   Parameters:
+      * **molecule** (*str*) -- molecule name
+
+      * **fromPath** (*str**, **optional*) -- path where the topology
+        is. Defaults to ''.
+
+      * **toPath** (*str**, **optional*) -- path where the topology
+        goes. Defaults to ''.
+
+class sim_launch_py.plumed.LowerWalls(name: str, cv: str, at: Optional[list] = None, kappa: Optional[list] = None, exp: Optional[list] = None, eps: Optional[list] = None, offset: Optional[list] = None)
+
+class sim_launch_py.plumed.Metad(name: str, cv: list, bias_dict: dict)
+
+class sim_launch_py.plumed.PotentialEnergy(name: str)
+
+   property directive
+
+class sim_launch_py.plumed.Torsion(name: str, atoms: [])
+
+   property atoms
+
+   property directive
+
+class sim_launch_py.plumed.UpperWalls(name: str, cv: str, kappa: Optional[list] = None, at: Optional[list] = None, expon: Optional[list] = None, eps: Optional[list] = None, offset: Optional[list] = None)
+
+class sim_launch_py.plumed._Bias(name: str)
+
+   property biastype
+
+   property name
+
+class sim_launch_py.plumed._CV(name: str, print_cv: bool = True)
+
+   property cvtype
+
+   property name
+
+   property print_cv
+
+sim_launch_py.plumed.write_plumed_file(plumed_file: str, simulation: object, colvar: Optional[str] = None, printstride: int = 500)
+
+   Write Plumed File
+
+   Parameters:
+      * **plumed_file** (*str*) -- path of the output plumed file
+
+      * **simulation** -- simulation with groups, cvs, and biases to
+        use.n    :type simulation: object
+
+      * **colvar** (*str**, **optional*) -- name of the colvar file
+        where values of CVs will be saved. Defaults to None.
+
+      * **printstride** (*int**, **optional*) -- stride for output of
+        colvar file. Defaults to 500 steps.
+
+sim_launch_py.utilities.calc_fractional_coords(coords, box=None)
+
+sim_launch_py.utilities.countMolecules(structure_file, molecule)
+
+   Count number of molecules of a given type in a structure file
+
+   Args:
+      structure_file (str) : name of the structure file molecule
+      (Molecule() object) : molecule
+
+   Return:
+      nmols (int) : number of molecules
+
+sim_launch_py.utilities.create(path, arg_type, backup=True)
+
+   Generate a new directory or a new file. TODO Rewrite in a more
+   compact way. Use os.remove instead of os.system(rm ...) :param
+   path: Path of the directory/file to generate :param arg_type: Is it
+   a file or directory? :param backup: If the directory/file already
+   exists, create a backup directory/file :return:
+
+sim_launch_py.utilities.estimateNumMolecules(box_volume, mass, density)
+
+   Estimate the number of molecules in a box at a given density
+
+   Args:
+      box_volume (float) : volume of the simulation box in [nm**3]
+      mass (float) : mass of the molecule type in [g/mol] density
+      (float) : density of molecules in [g/L]
+
+   Return:
+      n (int) : number of molecules
+
+sim_launch_py.utilities.get_distance(sel_coords, ref=[0, 0, 0], box=None)
+
+sim_launch_py.utilities.numberOfAtomsFromTop(top_path)
+
+Functions to define molecular properties that can be used in the
+calculation of collective variables and analysis of simulations
+
+sim_launch_py.external.molecules.findTorsionalAngles(structure: str, structure_format='pdb')
+
+      Args:
+         structure (str): structure file of the molecule.
+         structure_format (str, optional): format of the structure
+         file. Defaults to 'pdb'.
+
+      Returns:
+         torsion_angle_indices (list): list of lists identifying the
+         dihedral angles of the molecule. Values are 0-indexed.
+
+   Adapted from code by Edgar Olehnovics
+
+sim_launch_py.external.gaussianFit._histogram(dihedral_angles: str, datacol: int = 1, probcutoff: float = 0.0025)
+
+   Compute the probability distribution given a timeseries of dihedral
+   angles
+
+      centers,histo (list,list) : centers of the bins and values of
+      the probability distribution.
+
+   Parameters:
+      * **dihedral_angles** (*str*) -- text file with the timeseries.
+        Angle values are assumed to be in the second column of the
+        file.
+
+      * **datacol** (*int**, **optional*) -- column (0-indexed) where
+        data is. Defaults to 1.
+
+      * **probcutoff** (*float**, **optional*) -- cutoff value for the
+        population of a bin to take into account in the final
+        histogram. Defaults to 0.001
+
+   Returns centers:
+      centers of the bins of the probability distribution.
+
+   Rtype centers:
+      list
+
+   Returns histo:
+      values of the histogram of the probability distribution
+
+   Rtype histo:
+      list
+
+sim_launch_py.external.gaussianFit._sumGaussFunct(x: list, *parameters: list)
+
+   Sum of Gaussian functions
+
+   Parameters:
+      * **x** (*list*) -- x axis values
+
+      * **parameters** (*list*) -- list of parameters of length 3*N
+        where N is the number of Gaussians to estimate. Order of the
+        parameters is A,mu,sigma.
+
+   Returns f:
+      y axis values
+
+   Rtype f:
+      list
+
+sim_launch_py.external.gaussianFit.gaussianFit(dihedral_angles: str, datacol: int = 1, plotFit: bool = False)
+
+   Estimate fit parameters
+
+   Parameters:
+      * **dihedral_angles** (*str*) -- text file with the values of
+        dihedral angles
+
+      * **datacol** (*int**, **optional*) -- column (0-indexed) where
+        data is. Defaults to 1.
+
+      * **plotFit** (*bool**, **optional*) -- plot the original
+        histogram and the fitted gaussians? Defaults to False.
+
+   Returns centers:
+      centers of the fitted distributions
+
+   Rtype centers:
+      list
+
+   Returns sigma:
+      sigma values of the fitted distributions
+
+   Rtype sigma:
+      list
