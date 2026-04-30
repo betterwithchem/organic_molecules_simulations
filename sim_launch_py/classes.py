@@ -937,9 +937,9 @@ class System():
                                     for idim,rf in enumerate(factor):
                                         #print(im,ia,factor)
                                         new_cart_coords[idim]=a.coordinates[idim]+\
-                                            xmult*self.box[0]*M[0][idim]+\
-                                            ymult*self.box[1]*M[1][idim]+\
-                                            zmult*self.box[2]*M[2][idim]
+                                            xmult*M[0][idim]+\
+                                            ymult*M[1][idim]+\
+                                            zmult*M[2][idim]
 
                                     a.coordinates=new_cart_coords
                                     #print(im,ia,a.coordinates)
@@ -1576,7 +1576,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         M_perm = M_rot[order]                     # reorder rows  
 
         # rebuild in standard orientation (lower triangular, a along x)
-        new_box = self._matrix_to_cell_params(self._box_matrix(self._matrix_to_cell_params(M_perm)))
+        new_box = [ b for b in self._matrix_to_cell_params(self._box_matrix(self._matrix_to_cell_params(M_perm)))]
         
         self.box = new_box
 
