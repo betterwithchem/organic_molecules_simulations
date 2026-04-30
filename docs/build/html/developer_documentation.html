@@ -501,6 +501,12 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._get_box_center">
+<span class="sig-name descname"><span class="pre">_get_box_center</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._get_box_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>_get_box_center _summary_</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._loadfrommol2">
 <span class="sig-name descname"><span class="pre">_loadfrommol2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol2file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._loadfrommol2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load molecules from a MOL2 structure file.</p>
@@ -516,9 +522,27 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._matrix_to_cell_params">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_matrix_to_cell_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._matrix_to_cell_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert matrix of row vectors back to cell parameters.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._renumber_atoms">
 <span class="sig-name descname"><span class="pre">_renumber_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._renumber_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assign the absolute index to each atom of the system</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._rotate_atoms">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_rotate_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">az</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._rotate_atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._rotation_matrix">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">az</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._rotation_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a combined rotation matrix from three Euler angles (in radians).
+Order: first rotate around X, then Y, then Z.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -866,6 +890,23 @@ that are assumed to be solvent.</p>
 <dd class="field-odd"><p><strong>repl</strong> (<em>list</em><em>, </em><em>optional</em>) – number of times the cell is replicated in each direction. Defaults to [1, 1, 1]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.rotate_cell">
+<span class="sig-name descname"><span class="pre">rotate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recenter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.rotate_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the system around indicated axes by the given angles</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>angles</strong> (<em>list</em>) – list of 3 values corresponding to rotations around x,y, and z axes. Values can be in degrees (argument degrees=True, default) or radiants (argument degrees=False).</p></li>
+<li><p><strong>recenter</strong> (<em>bool</em><em>, </em><em>optional</em>) – recenter the system in the box after rotation, defaults to True</p></li>
+<li><p><strong>rotation_center</strong> (<em>list</em><em>, </em><em>optional</em>) – list of the coordinates of the rotation center, default is the center of the cell</p></li>
+<li><p><strong>degrees</strong> (<em>bool</em><em>, </em><em>optional</em>) – rotation angles in degrees? Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Thanks to Dr. Emmanuele Parisi (Politecnico di Torino) for the inital contribution of this function.</p>
 </dd></dl>
 
 <dl class="py method">
