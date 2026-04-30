@@ -615,7 +615,7 @@ class System():
 
 
     def insert_molecules(self, name: str, molstruct: str, initial_conf: str=None, final_conf: str='inserted.pdb', 
-                         nmol: int=1, exact: bool=True, try:int = 10):
+                         nmol: int=1, exact: bool=True):
         """Insert molecules in random positions.
 
         :param name: name of the molecule.
@@ -628,10 +628,8 @@ class System():
         :type final_conf: str, optional
         :param nmol: number of molecules to insert. Defaults to 1.
         :type nmol: int, optional
-        :param try: number of trials per molecule. Defaults to 10.
-        :type try: int, optional
-        
-        """
+
+                """
         if len(self.molecules)>0 and initial_conf==None:
             print("ERROR: you are trying to insert new molecules without taking into account molecules " \
                   "that are already in the system.")
