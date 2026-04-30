@@ -1576,7 +1576,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         M_perm = M_rot[order]                     # reorder rows  
 
         # rebuild in standard orientation (lower triangular, a along x)
-        new_box = self._matrix_to_cell_params(self._box_matrix(self._matrix_to_cell_params(M_perm)))
+        new_box = [ b for b in self._matrix_to_cell_params(self._box_matrix(self._matrix_to_cell_params(M_perm)))]
         
         self.box = new_box
 
