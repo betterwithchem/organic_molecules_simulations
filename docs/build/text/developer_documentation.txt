@@ -89,7 +89,7 @@ class sim_launch_py.classes.Group(name)
 
    property name
 
-class sim_launch_py.classes.Molecule(name: str, resname='UNK', index=None)
+class sim_launch_py.classes.Molecule(resname='UNK', index=None)
 
    The molecule class that stores and manage all the information and
    methods.
@@ -141,8 +141,6 @@ class sim_launch_py.classes.Molecule(name: str, resname='UNK', index=None)
    property index
 
    property mw
-
-   property name
 
    property resname
 
@@ -267,7 +265,7 @@ class sim_launch_py.classes.Project(name: str, path: str)
 
    static help()
 
-   load_project()
+   load_project(project_folder: str)
 
       Load an existing project. The Project object is saved in the
       project directory every time the command Project.save()
@@ -284,7 +282,7 @@ class sim_launch_py.classes.Project(name: str, path: str)
 
    property name
 
-   new_project(path: str, overwrite=False, check_gmx: bool = True, check_ambertools: bool = True)
+   new_project(name: str, path: str, overwrite=False, check_gmx: bool = True, check_ambertools: bool = True)
 
       Add new project
 
@@ -380,7 +378,7 @@ class sim_launch_py.classes.System(name: str, path=None)
    * print_command(self, bash_file): print the bash script file to run
      the simulations.
 
-   _assign_atoms_to_molecules(name: str, atoms: list)
+   _assign_atoms_to_molecules(atoms: list)
 
       Add atom objects to molecule objects.
 
@@ -405,7 +403,11 @@ class sim_launch_py.classes.System(name: str, path=None)
       Rtype M:
          list
 
-   _loadfrommol2(name: str, mol2file: str, keep_coordinates: bool = True)
+   _get_box_center()
+
+      _get_box_center _summary_
+
+   _loadfrommol2(mol2file: str, keep_coordinates: bool = True)
 
       Load molecules from a MOL2 structure file.
 
@@ -417,9 +419,40 @@ class sim_launch_py.classes.System(name: str, path=None)
          * **keep_coordinates** (*bool**, **optional*) -- keep
            coordinates read from the structure file. Defaults to True.
 
+   static _matrix_to_cell_params(M)
+
+      Convert matrix of row vectors back to cell parameters.
+
    _renumber_atoms()
 
       Assign the absolute index to each atom of the system
+
+   static _rotate_atoms(self, atoms_coords, ax=0, ay=0, az=0)
+
+      _rotate_atoms _summary_
+
+      Parameters:
+         * **atoms_coords** (*_type_*) -- _description_
+
+         * **ax** (*int**, **optional*) -- _description_, defaults to
+           0
+
+         * **ay** (*int**, **optional*) -- _description_, defaults to
+           0
+
+         * **az** (*int**, **optional*) -- _description_, defaults to
+           0
+
+      Returns:
+         _description_
+
+      Return type:
+         _type_
+
+   static _rotation_matrix(ax, ay, az)
+
+      Build a combined rotation matrix from three Euler angles (in
+      radians). Order: first rotate around X, then Y, then Z.
 
    _update_atom_absolute_indexes()
 
@@ -460,14 +493,12 @@ class sim_launch_py.classes.System(name: str, path=None)
          * **shape** (*str**, **optioal*) -- shape of the box.
            Defaults to 'cubic'.
 
-   add_molecule(name: str, structure_file: Optional[str] = None, keep_coordinates: bool = True, keep_box: bool = True)
+   add_molecule(structure_file: Optional[str] = None, keep_coordinates: bool = True, keep_box: bool = True)
 
       Add new molecules to a system starting from a structure file
       (e.g. a PDB file).
 
       Parameters:
-         * **name** (*str*) -- name of the molecule.
-
          * **structure_file** (*str**, **optional*) -- name of the
            structure file to be read. Defaults to None.
 
@@ -510,6 +541,10 @@ class sim_launch_py.classes.System(name: str, path=None)
 
       Returns:
    property ambertools
+
+   property atoms
+
+      Returns the list of atoms in the System.
 
    property atomtypes
 
@@ -644,7 +679,7 @@ class sim_launch_py.classes.System(name: str, path=None)
 
    property index
 
-   insert_molecules(name: str, molstruct: str, initial_conf: Optional[str] = None, final_conf: str = 'inserted.pdb', nmol: int = 1, exact: bool = True)
+   insert_molecules(molstruct: str, initial_conf: str, final_conf: str, nmol: int = 1, exact: bool = True)
 
       Insert molecules in random positions.
 
@@ -696,13 +731,36 @@ class sim_launch_py.classes.System(name: str, path=None)
          molecules as a list of names, e.g. ['ML1', 'ML2', 'WAT'].
          Defaults to None
 
-   replicate_cell(repl: list = [1, 1, 1])
+   replicate_cell(repl: list)
 
       Replicate the given box in the 3 directions.
 
       Parameters:
-         **repl** (*list**, **optional*) -- number of times the cell
-         is replicated in each direction. Defaults to [1, 1, 1]
+         **repl** (*list*) -- multipliers for the three directions,
+         repl=[1, 1, 1] would mean that the cell is not replicated.
+
+   rotate_cell(angles: list, recenter: bool = True, rotation_center=None, degrees=True)
+
+      Rotate the system around indicated axes by the given angles
+
+      Parameters:
+         * **angles** (*list*) -- list of 3 values corresponding to
+           rotations around x,y, and z axes. Values can be in degrees
+           (argument degrees=True, default) or radiants (argument
+           degrees=False).
+
+         * **recenter** (*bool**, **optional*) -- recenter the system
+           in the box after rotation, defaults to True
+
+         * **rotation_center** (*list**, **optional*) -- list of the
+           coordinates of the rotation center, default is the center
+           of the cell
+
+         * **degrees** (*bool**, **optional*) -- rotation angles in
+           degrees? Defaults to True.
+
+      Thanks to Dr. Emmanuele Parisi (Politecnico di Torino) for the
+      inital contribution of this function.
 
    save_pdb(pdb_filename: str)
 
@@ -716,6 +774,19 @@ class sim_launch_py.classes.System(name: str, path=None)
    property species
 
    property topology
+
+   write_ndx(filename: str = 'index.ndx', overwrite=False)
+
+      Write a GROMACS compatible index (.ndx) file containing the
+      groups defined in the system. A [ System ] group will always be
+      added with all atoms.
+
+      Parameters:
+         * **filename** (*str**, **optional*) -- name of the index
+           file, defaults to 'index.ndx'
+
+         * **overwrite** (*bool**, **optional*) -- overwrite existing
+           files? Defaults to False
 
 class sim_launch_py.gromacs.EnergyMinimization(name: str, index: int)
 

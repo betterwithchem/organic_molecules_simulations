@@ -1,27 +1,8 @@
 
 # organic_molecules_simulations
 
-#### Last update 30/04/2026
-
-##### Added
-
-- `System.rotate_cell(angles: list, recenter=True, rotation_center=None, degrees=True)` to arbitrarily rotate the cell. Final orientation will have the `a` component aligned along the `x` axis.
-- `System.write_ndx(filename:str = 'index.ndx', overwrite=False)` to create GROMACS compatible index (.ndx) files from the groups defined in the system.
-
-##### 23/04/2026
-
-##### Bug fixes:
-
-- `System.delete_molecule()` had an issue in the numbering of the indexes
-- `System._update_composition()` now removes from the `System.species` `dict` species that don't have any molecule with that resname (e.g. following deletion or renaming)
-- Fixed bug that was not allowing to update the absolute indexes of the atoms, with repercussions of groups creation.
-
-##### Added:
-
-- `System.rename_molecules(idx_list:list, new_name_list: list)` to easily rename selected `Molecule` objects.
-- `System.reorder_molecules()` to reorder the molecules in the `System`.
-
 ## Installation
+
 Needed python packages can be found in environment.yaml. 
 On top of these, when creating a project, 
 the code will look for Gromacs and Ambertools in $PATH, for their installation refer to the respective online documentation.
@@ -67,6 +48,26 @@ This is due to a modification of PYTHONPATH when sourcing AmberTools. Running
 export PYTHONPATH="" 
 ```
 
-
 solves it.
+
+#### Last update 30/04/2026
+
+##### Added
+
+- `System.rotate_cell(angles: list, recenter=True, rotation_center=None, degrees=True)` to arbitrarily rotate the cell. Final orientation will have the `a` component aligned along the `x` axis.
+- `System.write_ndx(filename:str = 'index.ndx', overwrite=False)` to create GROMACS compatible index (.ndx) files from the groups defined in the system.
+
+##### 23/04/2026
+
+##### Bug fixes:
+
+- `System.delete_molecule()` had an issue in the numbering of the indexes
+- `System._update_composition()` now removes from the `System.species` `dict` species that don't have any molecule with that resname (e.g. following deletion or renaming)
+- Fixed bug that was not allowing to update the absolute indexes of the atoms, with repercussions of groups creation.
+
+##### Added:
+
+- `System.rename_molecules(idx_list:list, new_name_list: list)` to easily rename selected `Molecule` objects.
+- `System.reorder_molecules()` to reorder the molecules in the `System`.
+
 

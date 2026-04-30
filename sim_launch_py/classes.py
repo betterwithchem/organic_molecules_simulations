@@ -147,7 +147,7 @@ class Project():
     - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. 
     - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.""")
 
-    def new_project(name: str, path: str, overwrite=False, check_gmx: bool=True, check_ambertools: bool=True):
+    def new_project(self, name: str, path: str, overwrite=False, check_gmx: bool=True, check_ambertools: bool=True):
         """Add new project
 
         :param name: Project Name.
@@ -166,35 +166,35 @@ class Project():
         """
         
         path=os.path.abspath(path)
-        nproject = Project(path=path, name=name)
+        new_project = Project(path=path, name=name)
 
-        if not os.path.exists(nproject._path):
-            print("New Project: {}".format(nproject._name))
+        if not os.path.exists(new_project._path):
+            print("New Project: {}".format(new_project._name))
             print("=" * 100)
-            util.create(nproject._path, arg_type='dir', backup=False)
+            util.create(new_project._path, arg_type='dir', backup=False)
         else:
             if overwrite:
-                print("New Project: {}".format(nproject._name))
+                print("New Project: {}".format(new_project._name))
                 print("=" * 100)
-                util.create(nproject._path, arg_type='dir', backup=False)
+                util.create(new_project._path, arg_type='dir', backup=False)
             else:
                 print("ERROR: Folder already exists.\n "
                       "You can change directory name or overwrite with 'overwrite=True' "
                       "(everything inside will be deleted)")
                 
-        util.create(nproject._path+'/'+nproject._systems_path, arg_type='dir')
+        util.create(new_project._path+'/'+new_project._systems_path, arg_type='dir')
         #util.create(nproject._init_struct_path, arg_type='dir')
         #util.create(nproject._topology_path, arg_type='dir')
         #util.create(nproject._mdp_path, arg_type='dir')
 
         os.chdir(path)
         
-        return nproject
+        return new_project
 
     def save(self):
         """
-	Save project to project folder.
-	"""
+        Save project to project folder.
+        """
         print("\nSaving Project...", end="")
         import pickle
         import os
@@ -204,7 +204,7 @@ class Project():
             pickle.dump(self, file_pickle)
             print("done")
 
-    def load_project(project_folder: str):
+    def load_project(self, project_folder: str):
         """Load an existing project. The Project object is saved in the project directory every time the command Project.save()
 
         :param project_folder: Location of the project to be loaded.
@@ -329,9 +329,9 @@ class Project():
     def _checkGromacs(self):
         
         """Look for Gromacs binary and add it to the project.
-            This method looks for standard names of gromacs binaries (i.e. 'gmx' and 'gmx_mpi'). If either of these is not found,
-            it will prompt the user to input manually the absolute path of the gromacs executable.
-            The value of the attribute is the absolute path of the binary (/path/to/gmx or /path/to/gmx_mpi or /path/to/gmx_bin_custom_name).
+           This method looks for standard names of gromacs binaries (i.e. 'gmx' and 'gmx_mpi'). If either of these is not found,
+           it will prompt the user to input manually the absolute path of the gromacs executable.
+           The value of the attribute is the absolute path of the binary (/path/to/gmx or /path/to/gmx_mpi or /path/to/gmx_bin_custom_name).
 
         """
         
@@ -614,7 +614,7 @@ class System():
 
 
 
-    def insert_molecules(self, name: str, molstruct: str, initial_conf: str=None, final_conf: str='inserted.pdb', 
+    def insert_molecules(self, molstruct: str, initial_conf: str, final_conf: str, 
                          nmol: int=1, exact: bool=True):
         """Insert molecules in random positions.
 
@@ -708,9 +708,8 @@ class System():
                 exit()
             else:
                 print("Warning! {}".format(added_line))
-                print("Will continue with {0} new molecules of {1}, since it was not required to add " \
-                      "exactly {2} molecules (usually done for solvents).".format(added,
-                                                                                 name,
+                print("Will continue with {} new molecules, since it was not required to add " \
+                      "exactly {} molecules (usually done for solvents).".format(added,
                                                                                  nmol))
                 
 
@@ -899,16 +898,11 @@ class System():
 
         print('Written file {} for system {}'.format(filename,self.name))
     
-
-
-    
-
-
-    def replicate_cell(self,repl: list=[1, 1, 1]):
+    def replicate_cell(self,repl: list):
         """Replicate the given box in the 3 directions.
 
-        :param repl:  number of times the cell is replicated in each direction. Defaults to [1, 1, 1]
-        :type repl: list, optional
+        :param repl: multipliers for the three directions, repl=[1, 1, 1] would mean that the cell is not replicated.
+        :type repl: list
 
         """
 
@@ -949,7 +943,6 @@ class System():
 
         for i in range(3):
             self.box[i]*=repl[i]
-        
         
         self.molecules+=newmolecules
         self._update_molecule_indexes()
@@ -1019,7 +1012,6 @@ class System():
     def _renumber_atoms(self):
 
         """Assign the absolute index to each atom of the system
-
         """
 
         index=0
@@ -1028,13 +1020,11 @@ class System():
                 a.absindex=index
                 index+=1
 
-         
-
     def _update_composition(self):
 
         """Update the 'nmols' attribute of self.species dictionary by checking the residue names of the molecules in the system
-
         """
+
         found_species={}
         for m in self.molecules:
             if m.resname not in found_species:
@@ -1056,10 +1046,7 @@ class System():
         for sp in species_to_be_removed:        
             self.species.pop(sp)
 
-        
-         
-        
-        
+
     def add_simulation(self, name: str, simtype: str, simulation_dict: dict=None):
 
         """Add a simulation to the current system object.
@@ -1083,11 +1070,8 @@ class System():
 
         util.create('{}/{}'.format(self.path,name), arg_type='dir', backup=False)
 
-        
-
         newsim_index=len(self.simulations)
         newsim_path='{}/{}'.format(self.path,name)
-        
         
         if simtype=='em':
             newsim=sim.EnergyMinimization(name, newsim_index)
@@ -1108,11 +1092,12 @@ class System():
                 return
             newsim.posre=os.path.relpath(newsim.posre,start=newsim_path)
 
-
+            print("Warning: at the moment this code doesn't check if a POSRE section is defined in the topology:")
+            print("it is up to the user to make sure that the final .top contains the appropriate section and if needed a posre.itp")
+            print("file is provided in the needed simulation directories. Refer to GROMACS manual for info on topology and include topology files.")
         
         newsim.path=newsim_path
         newsim.state='Pending'
-        
         
         try:
             newsim.coordinates=simulation_dict.pop('coordinates')
@@ -1201,8 +1186,9 @@ class System():
 #$ -cwd 
 
 # load gromacs
-module unload -f compilers mpi
-module load compilers/intel/2018/update3 mpi/intel/2018/update3/intel libmatheval flex plumed/2.5.2/intel-2018 gromacs/2019.3/plumed/intel-2018
+module unload gcc-libs
+module unload mpi
+module load gromacs/2021.3/plumed/gnu-10.2.0
 
 export OMP_NUM_THREADS={3}
 
@@ -1440,10 +1426,6 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         
         f.close()
 
-
-        
-        
-
     def add_box(self, box_side: float, shape: str='cubic'):
         """ Create simulation box.
  
@@ -1473,7 +1455,6 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
     def center_box(self):
 
         """Center the atoms in the box with gmx editconf (equivalent to gmx editconf -c)
-
         """
 
         import subprocess
@@ -1487,21 +1468,6 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         self._last_saved_structure=self.path+'/CENTERED_STRUCT.pdb'
         
         self._update_coordinates(self.path+'/CENTERED_STRUCT.pdb')
-
-#    def cell_params_to_matrix(a, b, c, alpha, beta, gamma):
-#        """Convert cell parameters to matrix of row vectors [a_vec, b_vec, c_vec]."""
-#        alpha, beta, gamma = np.deg2rad(alpha), np.deg2rad(beta), np.deg2rad(gamma)
-        
-#        ax = a
-#        bx = b * np.cos(gamma)
-#        by = b * np.sin(gamma)
-#        cx = c * np.cos(beta)
-#        cy = c * (np.cos(alpha) - np.cos(beta)*np.cos(gamma)) / np.sin(gamma)
-#        cz = np.sqrt(c**2 - cx**2 - cy**2)
-        
-#        return np.array([[ax, 0,  0 ],
-#                        [bx, by, 0 ],
-#                        [cx, cy, cz]])
 
     @staticmethod
     def _rotation_matrix(ax, ay, az):
@@ -1528,7 +1494,20 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         return Rz @ Ry @ Rx  # applied right-to-left: first Rx, then Ry, then Rz
 
     @staticmethod
-    def _rotate_atoms(self,atoms_coords, ax=0, ay=0, az=0):
+    def _rotate_atoms(self, atoms_coords, ax=0, ay=0, az=0):
+        """_rotate_atoms _summary_
+
+        :param atoms_coords: _description_
+        :type atoms_coords: _type_
+        :param ax: _description_, defaults to 0
+        :type ax: int, optional
+        :param ay: _description_, defaults to 0
+        :type ay: int, optional
+        :param az: _description_, defaults to 0
+        :type az: int, optional
+        :return: _description_
+        :rtype: _type_
+        """
         R = self._rotation_matrix(ax, ay, az)
         return atoms_coords @ R.T
 
@@ -1587,6 +1566,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
     @staticmethod
     def _matrix_to_cell_params(M):
         """Convert matrix of row vectors back to cell parameters."""
+
         a_vec, b_vec, c_vec = M[0], M[1], M[2]
         
         a = np.linalg.norm(a_vec)
@@ -1653,12 +1633,6 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
                         iatom+=1
                         prev_iresid=iresid
-
-                    
-
-
-                                            
-                    
 
     def _loadfrommol2(self,mol2file: str, keep_coordinates: bool=True):
         """Load molecules from a MOL2 structure file.
@@ -1834,17 +1808,10 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         
         if add_solvent:
             reordered+=final_chunk
-           
-        
-
+     
         self.molecules=reordered
         self._update_molecule_indexes()
         self._update_composition()
-        
-        
-
-                
-
 
 class Molecule():
     """The molecule class that stores and manage all the information and methods.
@@ -2136,7 +2103,6 @@ class Atom():
             return masses[element]
         else:
             print('ERROR: element not known')
-    
 
 class Group():
 
@@ -2216,11 +2182,3 @@ class Group():
             new_atoms_list.append(self._atoms[ival])
 
         self.atoms=new_atoms_list
-        
-
-    
-        
-
-    
-        
-
