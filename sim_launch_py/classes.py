@@ -937,9 +937,9 @@ class System():
                                     for idim,rf in enumerate(factor):
                                         #print(im,ia,factor)
                                         new_cart_coords[idim]=a.coordinates[idim]+\
-                                            xmult*self.box[0]*M[0][idim]+\
-                                            ymult*self.box[1]*M[1][idim]+\
-                                            zmult*self.box[2]*M[2][idim]
+                                            xmult*M[0][idim]+\
+                                            ymult*M[1][idim]+\
+                                            zmult*M[2][idim]
 
                                     a.coordinates=new_cart_coords
                                     #print(im,ia,a.coordinates)
