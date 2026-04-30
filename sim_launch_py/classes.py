@@ -431,6 +431,18 @@ class System():
         return self._molecules
 
     @property
+    def atoms(self):
+        """Returns the list of atoms in the System.
+        """
+
+        atoms_list = []
+        for m in self.molecules:
+            for a in m.atoms:
+                atoms_list.append(a)
+        return atoms_list
+
+
+    @property
     def simulations(self):
         return self._simulations
 
@@ -534,11 +546,9 @@ class System():
     - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''): add simulation to the system.
     - print_command(self, bash_file): print the bash script file to run the simulations.""")
     
-    def add_molecule(self, name: str, structure_file: str=None, keep_coordinates: bool=True, keep_box: bool=True):
+    def add_molecule(self, structure_file: str=None, keep_coordinates: bool=True, keep_box: bool=True):
         """Add new molecules to a system starting from a structure file (e.g. a PDB file).
 
-        :param name: name of the molecule. 
-        :type name: str
         :param structure_file: name of the structure file to be read. Defaults to None.
         :type structure_file: str, optional
         :param keep_coordinates: keep the coordinates read from the structure file. Defaults to True.
@@ -572,7 +582,7 @@ class System():
 
         os.chdir(curdir)
 
-        self._loadfrommol2(name,mol2file,keep_coordinates=keep_coordinates)
+        self._loadfrommol2(mol2file,keep_coordinates=keep_coordinates)
 
         found_box=False
         if keep_box:
@@ -713,7 +723,8 @@ class System():
         index_last_new_mol=index_first_new_mol+nmol-1
 
         #print(len(self.molecules))
-        self.add_molecule(name,structure_file=molstruct,keep_coordinates=False,keep_box=False)
+        self.add_molecule(name=None, structure_file=molstruct, 
+                          keep_coordinates=False, keep_box=False)
         #print(len(self.molecules))
 
         if nmol>1:
@@ -737,7 +748,6 @@ class System():
         self._renumber_atoms()
         
         print("{} molecules of residue {} have been added. The file {} has been created.".format(added,new_molecule.resname, os.path.relpath(final_conf)))
-
 
         
     def create_group(self, name: str, atoms_list: list=None,molecules_list: list=None):
@@ -797,18 +807,18 @@ class System():
         gindex=self.find_group_by_name(name)
         g=self.groups[gindex]
 
-        if atoms is not None:
-            for atom in atoms:
+        if atoms_list is not None:
+            for atom in atoms_list:
                 g.atoms.append(atom)
 
-        if molecules is not None:
-            for molecule in molecules:
+        if molecules_lists is not None:
+            for molecule in molecules_list:
                 for atom in molecule.atoms:
                     g.atoms.append(atom)
+                    if name not in atom.groups:
+                        atom.groups.append(name)
 
-        g._check_duplicates()
-
-    
+        g._check_duplicates()    
 
 
     def find_group_by_name(self, name: str):
@@ -844,6 +854,54 @@ class System():
                 kept_groups.append(g)
 
         self.groups=kept_groups
+
+    def write_ndx(self, filename:str = 'index.ndx', overwrite=False):
+        """Write a GROMACS compatible index (.ndx) file containing the groups defined in the system.
+        A [ System ] group will always be added with all atoms.
+
+        :param filename: name of the index file, defaults to 'index.ndx'
+        :type filename: str, optional
+        :param overwrite: overwrite existing files? Defaults to False
+        :type overwrite: bool, optional
+        """
+
+        if os.path.exists(self.path+'/'+filename):
+            if not overwrite:
+                print("File {} already exists! If you want to overwrite it rerun the command specifying overwrite=True".format(filename))
+                return
+            else:
+                print("File {} already exists and it will be overwritten".format(filename))
+
+        elements_per_line = 10
+
+        with open(self.path+'/'+filename,'w') as f:
+            f.write('[ System ]\n')
+            iel = 0
+            for m in self.molecules:
+                for a in m.atoms:
+                    f.write('{:d} '.format(a.absindex+1))
+                    iel+=1
+                    if iel>=elements_per_line:
+                        f.write('\n')
+                        iel=0
+            f.write('\n')
+
+            for g in self.groups:
+                f.write('[ {} ]\n'.format(g.name))
+                iel=0
+                for a in g.atoms:
+                    f.write('{:d} '.format(a.absindex+1))
+                    iel+=1
+                    if iel>=elements_per_line:
+                        f.write('\n')
+                        iel=0
+                f.write('\n')
+
+        print('Written file {} for system {}'.format(filename,self.name))
+    
+
+
+    
 
 
     def replicate_cell(self,repl: list=[1, 1, 1]):
@@ -1602,7 +1660,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
                                             
                     
 
-    def _loadfrommol2(self,name: str, mol2file: str, keep_coordinates: bool=True):
+    def _loadfrommol2(self,mol2file: str, keep_coordinates: bool=True):
         """Load molecules from a MOL2 structure file.
 
         :param name: name of the MOL2 structure file.
@@ -1667,10 +1725,10 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
                             atoms[j_index].bonds.append(ia)                            
                     #bond_matrix[i_index, j_index]
 
-        self._assign_atoms_to_molecules(name,atoms)
+        self._assign_atoms_to_molecules(atoms)
         
 
-    def _assign_atoms_to_molecules(self, name: str, atoms: list):
+    def _assign_atoms_to_molecules(self, atoms: list):
         """Add atom objects to molecule objects.
 
         :param name: name of the molecule.
@@ -1684,11 +1742,11 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         for ia,a in enumerate(atoms):
 
             if ia==0:
-                newmolecule=Molecule(name,resname=a.resname,index=a.resid)
+                newmolecule=Molecule(resname=a.resname,index=a.resid)
                 prev_id=a.resid
             elif a.resid!=prev_id:
                 molecules.append(newmolecule)
-                newmolecule=Molecule(name,resname=a.resname,index=a.resid)
+                newmolecule=Molecule(resname=a.resname,index=a.resid)
                 prev_id=a.resid
 
             newmolecule.atoms.append(a)     
@@ -1732,8 +1790,6 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         :type new_name: str
         """
 
-        print([m.resname for m in self.molecules])
-
         for im,idx in enumerate(idx_list):
             new_name = new_name_list[im]
             if len(new_name)!=3:
@@ -1741,8 +1797,6 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
                 self._update_composition()
                 return 
             self.molecules[idx].resname=new_name
-
-        print([m.resname for m in self.molecules])
 
         self._update_composition()
         
@@ -1759,6 +1813,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         existing_species = [s for s in self.species]
         reordered = [] 
+        add_solvent = False
 
         if order == None:
             reordering_species = existing_species
@@ -1771,7 +1826,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         for ispecies,name in enumerate(reordering_species):
             _chunk = [m for m in self.molecules if m.resname==name ]
-            if name in ['SOL','WAT']:
+            if name in ['SOL','WAT'] and order is None:
                 final_chunk = _chunk
                 add_solvent = True
             else:
@@ -1780,6 +1835,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         if add_solvent:
             reordered+=final_chunk
            
+        
 
         self.molecules=reordered
         self._update_molecule_indexes()
@@ -1806,7 +1862,7 @@ class Molecule():
 
     """
 
-    def __init__(self, name: str, resname='UNK', index=None):
+    def __init__(self, resname='UNK', index=None):
 
         """Molecule Class Constructor
 
@@ -1819,7 +1875,7 @@ class Molecule():
 
         """
         
-        self._name=name
+        #self._name=name
         self._resname=resname
         self._index=index
         self._mw=None
@@ -1827,9 +1883,9 @@ class Molecule():
         self._contact_matrix=None
         self._com=None
 
-    @property
-    def name(self):
-        return self._name
+    #@property
+    #def name(self):
+    #    return self._name
 
     @property
     def resname(self):
@@ -2015,7 +2071,7 @@ class Atom():
     @property
     def bonds(self):
         return self._bonds
-
+    
     @property
     def resname(self):
         return self._resname
@@ -2047,7 +2103,6 @@ class Atom():
     @coordinates.setter
     def coordinates(self,x):
         self._coordinates=x
-
         
     @staticmethod
     def _get_element(atomtype):
@@ -2089,9 +2144,10 @@ class Group():
     """ 
 
     def __init__(self,name):
-        """TODO describe function
+        """Group Class Constructor
 
-        :returns: 
+        :param name: Name of the group.
+        :type name: str
 
         """
 
