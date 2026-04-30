@@ -6,6 +6,7 @@
 ##### Added
 
 - `System.rotate_cell(angles: list, recenter=True, rotation_center=None, degrees=True)` to arbitrarily rotate the cell. Final orientation will have the `a` component aligned along the `x` axis.
+- `System.write_ndx(filename:str = 'index.ndx', overwrite=False)` to create GROMACS compatible index (.ndx) files from the groups defined in the system.
 
 ##### 23/04/2026
 
