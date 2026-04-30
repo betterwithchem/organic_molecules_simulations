@@ -490,6 +490,23 @@ that are assumed to be solvent.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.rotate_cell">
+<span class="sig-name descname"><span class="pre">rotate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recenter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.rotate_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the system around indicated axes by the given angles</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>angles</strong> (<em>list</em>) – list of 3 values corresponding to rotations around x,y, and z axes. Values can be in degrees (argument degrees=True, default) or radiants (argument degrees=False).</p></li>
+<li><p><strong>recenter</strong> (<em>bool</em><em>, </em><em>optional</em>) – recenter the system in the box after rotation, defaults to True</p></li>
+<li><p><strong>rotation_center</strong> (<em>list</em><em>, </em><em>optional</em>) – list of the coordinates of the rotation center, default is the center of the cell</p></li>
+<li><p><strong>degrees</strong> (<em>bool</em><em>, </em><em>optional</em>) – rotation angles in degrees? Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Thanks to Dr. Emmanuele Parisi (Politecnico di Torino) for the inital contribution of this function.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.save_pdb">
 <span class="sig-name descname"><span class="pre">save_pdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdb_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.save_pdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save a PDB file with the current configuration of the system.</p>

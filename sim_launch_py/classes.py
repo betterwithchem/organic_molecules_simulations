@@ -1273,16 +1273,16 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         """
 
-        deg2rad=np.pi/180
         radbox=[0,0,0,0,0,0]
-        for i in range(3,6):
-            radbox[i]=box[i]*deg2rad
+        radbox[3:]=np.deg2rad(np.array(box[3:]))
             
-
         n2=(np.cos(radbox[3])-np.cos(radbox[5])*np.cos(radbox[4]))/np.sin(radbox[5])
-        M=np.array([[1, 0, 0],
-                    [np.cos(radbox[5]), np.sin(radbox[5]), 0],
-                    [np.cos(radbox[4]), n2,             np.sqrt(np.sin(radbox[4])**2-n2*n2)]])
+
+        M=np.array([[1,                                 0,                                      0],
+                    [np.cos(radbox[5]), np.sin(radbox[5]),                                      0],
+                    [np.cos(radbox[4]),                n2, np.sqrt(np.sin(radbox[4])**2-n2*n2)]])
+        
+        M*=np.array(box[0:3])
 
         return M
         
@@ -1429,6 +1429,127 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         self._last_saved_structure=self.path+'/CENTERED_STRUCT.pdb'
         
         self._update_coordinates(self.path+'/CENTERED_STRUCT.pdb')
+
+#    def cell_params_to_matrix(a, b, c, alpha, beta, gamma):
+#        """Convert cell parameters to matrix of row vectors [a_vec, b_vec, c_vec]."""
+#        alpha, beta, gamma = np.deg2rad(alpha), np.deg2rad(beta), np.deg2rad(gamma)
+        
+#        ax = a
+#        bx = b * np.cos(gamma)
+#        by = b * np.sin(gamma)
+#        cx = c * np.cos(beta)
+#        cy = c * (np.cos(alpha) - np.cos(beta)*np.cos(gamma)) / np.sin(gamma)
+#        cz = np.sqrt(c**2 - cx**2 - cy**2)
+        
+#        return np.array([[ax, 0,  0 ],
+#                        [bx, by, 0 ],
+#                        [cx, cy, cz]])
+
+    @staticmethod
+    def _rotation_matrix(ax, ay, az):
+        """
+        Build a combined rotation matrix from three Euler angles (in radians).
+        Order: first rotate around X, then Y, then Z.
+        """
+        cx, sx = np.cos(ax), np.sin(ax)
+        cy, sy = np.cos(ay), np.sin(ay)
+        cz, sz = np.cos(az), np.sin(az)
+
+        Rx = np.array([[1,  0,   0 ],
+                    [0,  cx, -sx],
+                    [0,  sx,  cx]])
+
+        Ry = np.array([[ cy, 0, sy],
+                    [ 0,  1, 0 ],
+                    [-sy, 0, cy]])
+
+        Rz = np.array([[cz, -sz, 0],
+                    [sz,  cz, 0],
+                    [0,   0,  1]])
+
+        return Rz @ Ry @ Rx  # applied right-to-left: first Rx, then Ry, then Rz
+
+    @staticmethod
+    def _rotate_atoms(self,atoms_coords, ax=0, ay=0, az=0):
+        R = self._rotation_matrix(ax, ay, az)
+        return atoms_coords @ R.T
+
+
+    def rotate_cell(self, angles:list , recenter:bool=True, rotation_center = None,
+                    degrees=True ):
+        """Rotate the system around indicated axes by the given angles
+
+        :param angles: list of 3 values corresponding to rotations around x,y, and z axes. Values can be in degrees (argument degrees=True, default) or radiants (argument degrees=False).
+        :type angles: list
+        :param recenter: recenter the system in the box after rotation, defaults to True
+        :type recenter: bool, optional
+        :param rotation_center: list of the coordinates of the rotation center, default is the center of the cell
+        :type rotation_center: list, optional
+        :param degrees: rotation angles in degrees? Defaults to True.
+        :type degrees: bool, optional
+
+        Thanks to Dr. Emmanuele Parisi (Politecnico di Torino) for the inital contribution of this function. 
+        """
+
+        if degrees:
+            angles = np.deg2rad(angles)
+
+        M = self._box_matrix(self.box)
+        R = self._rotation_matrix(*angles)
+        M_rot = M @ R.T
+
+        if rotation_center is None:
+            rotation_center = self._get_box_center()
+
+        for im,m in enumerate(self.molecules):
+            for ia,a in enumerate(m.atoms):
+                a.coordinates = R @ ( a.coordinates - rotation_center )
+                a.coordinates += rotation_center
+
+        # Find permutation: which rotated row is closest to each original axis?
+        axes = np.eye(3)                          # x, y, z
+        order = []
+        for ax in axes:
+            # find which row of M_rot is most aligned with this axis
+            dots = [abs(np.dot(M_rot[i] / np.linalg.norm(M_rot[i]), ax)) for i in range(3)]
+            order.append(np.argmax(dots))
+        
+        print(order)
+        M_perm = M_rot[order]                     # reorder rows  
+
+        # rebuild in standard orientation (lower triangular, a along x)
+        new_box = self._matrix_to_cell_params(self._box_matrix(self._matrix_to_cell_params(M_perm)))
+        
+        self.box = new_box
+
+        if recenter:
+            self.center_box()
+
+
+    @staticmethod
+    def _matrix_to_cell_params(M):
+        """Convert matrix of row vectors back to cell parameters."""
+        a_vec, b_vec, c_vec = M[0], M[1], M[2]
+        
+        a = np.linalg.norm(a_vec)
+        b = np.linalg.norm(b_vec)
+        c = np.linalg.norm(c_vec)
+        
+        alpha = np.degrees(np.arccos(np.dot(b_vec, c_vec) / (b * c)))
+        beta  = np.degrees(np.arccos(np.dot(a_vec, c_vec) / (a * c)))
+        gamma = np.degrees(np.arccos(np.dot(a_vec, b_vec) / (a * b)))
+        
+        return a, b, c, alpha, beta, gamma
+
+    def _get_box_center(self):
+        """_get_box_center _summary_
+        """
+
+        # Center of the monoclinic box of size [a, b, c, alpha, beta, gamma]
+        box_matrix = self._box_matrix(self.box)
+        box_center = 1/2 *  box_matrix.sum(axis=0)
+
+        return box_center
 
         
     def _update_coordinates(self,structure_file,start=0,end=np.inf):

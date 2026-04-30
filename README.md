@@ -1,7 +1,13 @@
 
 # organic_molecules_simulations
 
-#### Last update 23/04/2026
+#### Last update 30/04/2026
+
+##### Added
+
+- `System.rotate_cell(angles: list, recenter=True, rotation_center=None, degrees=True)` to arbitrarily rotate the cell. Final orientation will have the `a` component aligned along the `x` axis.
+
+##### 23/04/2026
 
 ##### Bug fixes:
 
@@ -11,7 +17,7 @@
 
 ##### Added:
 
-- `System.rename_molecules(self, idx_list:list, new_name_list: list)` to easily rename selected `Molecule` objects.
+- `System.rename_molecules(idx_list:list, new_name_list: list)` to easily rename selected `Molecule` objects.
 - `System.reorder_molecules()` to reorder the molecules in the `System`.
 
 ## Installation
