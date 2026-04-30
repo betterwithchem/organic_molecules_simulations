@@ -147,7 +147,7 @@ class Project():
     - load_project(project_folder: str) : load Project() stored in project_folde/.multisim.pkl. 
     - write_sub_command(self,scriptname: str,hpc_system: str, template: str): write job submission/run scripts for the given HPC system for each System() and a global bash script to call all the job scripts.""")
 
-    def new_project(self, name: str, path: str, overwrite=False, check_gmx: bool=True, check_ambertools: bool=True):
+    def new_project(name: str, path: str, overwrite=False, check_gmx: bool=True, check_ambertools: bool=True):
         """Add new project
 
         :param name: Project Name.
