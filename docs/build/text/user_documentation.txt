@@ -170,7 +170,7 @@ class sim_launch_py.classes.Project(name: str, path: str)
       Rtype project:
          object
 
-   new_project(name: str, path: str, overwrite=False, check_gmx: bool = True, check_ambertools: bool = True)
+   new_project(path: str, overwrite=False, check_gmx: bool = True, check_ambertools: bool = True)
 
       Add new project
 
@@ -492,28 +492,20 @@ class sim_launch_py.classes.System(name: str, path=None)
          **repl** (*list*) -- multipliers for the three directions,
          repl=[1, 1, 1] would mean that the cell is not replicated.
 
-   rotate_cell(angles: list, recenter: bool = True, rotation_center=None, degrees=True)
+   rotate_cell(angles, degrees=True, recenter=True)
 
-      Rotate the system around indicated axes by the given angles
+      Rotate the simulation box by arbitrary angles
 
       Parameters:
-         * **angles** (*list*) -- list of 3 values corresponding to
-           rotations around x,y, and z axes. Values can be in degrees
-           (argument degrees=True, default) or radiants (argument
-           degrees=False).
+         * **angles** (*list*) -- List of angles for the rotation
+           (around the 3 axes). Values can be assigned in degrees or
+           radians. If radians, select degrees=False.
 
-         * **recenter** (*bool**, **optional*) -- recenter the system
-           in the box after rotation, defaults to True
+         * **degrees** (*bool**, **optional*) -- Input angles in
+           degrees? Defaults to True
 
-         * **rotation_center** (*list**, **optional*) -- list of the
-           coordinates of the rotation center, default is the center
-           of the cell
-
-         * **degrees** (*bool**, **optional*) -- rotation angles in
-           degrees? Defaults to True.
-
-      Thanks to Dr. Emmanuele Parisi (Politecnico di Torino) for the
-      inital contribution of this function.
+         * **recenter** (*bool**, **optional*) -- Recenter the rotated
+           structure in the box? Defaults to True
 
    save_pdb(pdb_filename: str)
 

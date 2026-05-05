@@ -50,7 +50,13 @@ export PYTHONPATH=""
 
 solves it.
 
-#### Last update 30/04/2026
+#### Last update 05/05/2026
+
+##### Fixed
+
+- Bug in cell rotation that was introducing a misalignment between the coordinates of the atoms and the box, affecting PBCs in structures that span the whole box (e.g. bulk crystals or membranes)
+
+#### 30/04/2026
 
 ##### Added
 

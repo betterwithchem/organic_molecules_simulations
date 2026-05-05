@@ -8,7 +8,6 @@ Welcome to sim_launch_py's documentation!
 
 .. toctree::
    user_documentation
-   developer_documentation
    :maxdepth: 3
    :caption: Contents:
 	     

@@ -1493,74 +1493,38 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         return Rz @ Ry @ Rx  # applied right-to-left: first Rx, then Ry, then Rz
 
-    @staticmethod
-    def _rotate_atoms(self, atoms_coords, ax=0, ay=0, az=0):
-        """_rotate_atoms _summary_
+    def rotate_cell(self, angles, degrees=True, recenter=True):
+        """Rotate the simulation box by arbitrary angles
 
-        :param atoms_coords: _description_
-        :type atoms_coords: _type_
-        :param ax: _description_, defaults to 0
-        :type ax: int, optional
-        :param ay: _description_, defaults to 0
-        :type ay: int, optional
-        :param az: _description_, defaults to 0
-        :type az: int, optional
-        :return: _description_
-        :rtype: _type_
-        """
-        R = self._rotation_matrix(ax, ay, az)
-        return atoms_coords @ R.T
-
-
-    def rotate_cell(self, angles:list , recenter:bool=True, rotation_center = None,
-                    degrees=True ):
-        """Rotate the system around indicated axes by the given angles
-
-        :param angles: list of 3 values corresponding to rotations around x,y, and z axes. Values can be in degrees (argument degrees=True, default) or radiants (argument degrees=False).
-        :type angles: list
-        :param recenter: recenter the system in the box after rotation, defaults to True
-        :type recenter: bool, optional
-        :param rotation_center: list of the coordinates of the rotation center, default is the center of the cell
-        :type rotation_center: list, optional
-        :param degrees: rotation angles in degrees? Defaults to True.
+        :param angles: List of angles for the rotation (around the 3 axes). Values can be assigned in degrees or radians. If radians, select degrees=False.
+        :type angles: list 
+        :param degrees: Input angles in degrees? Defaults to True
         :type degrees: bool, optional
-
-        Thanks to Dr. Emmanuele Parisi (Politecnico di Torino) for the inital contribution of this function. 
+        :param recenter: Recenter the rotated structure in the box? Defaults to True
+        :type recenter: bool, optional
         """
-
+        
         if degrees:
             angles = np.deg2rad(angles)
 
         M = self._box_matrix(self.box)
         R = self._rotation_matrix(*angles)
-        M_rot = M @ R.T
-
-        if rotation_center is None:
-            rotation_center = self._get_box_center()
-
-        for im,m in enumerate(self.molecules):
-            for ia,a in enumerate(m.atoms):
-                a.coordinates = R @ ( a.coordinates - rotation_center )
-                a.coordinates += rotation_center
-
-        # Find permutation: which rotated row is closest to each original axis?
-        axes = np.eye(3)                          # x, y, z
-        order = []
-        for ax in axes:
-            # find which row of M_rot is most aligned with this axis
-            dots = [abs(np.dot(M_rot[i] / np.linalg.norm(M_rot[i]), ax)) for i in range(3)]
-            order.append(np.argmax(dots))
         
-        print(order)
-        M_perm = M_rot[order]                     # reorder rows  
+        # Rotate coordinates of the atoms
 
-        # rebuild in standard orientation (lower triangular, a along x)
-        new_box = [ b for b in self._matrix_to_cell_params(self._box_matrix(self._matrix_to_cell_params(M_perm)))]
-        
-        self.box = new_box
+        for m in self.molecules:
+            for a in m.atoms:
+                a.coordinates = np.array(a.coordinates) @ R.T
+
+        # Rotate box representation (i.e. update a,b,c,alpha,beta,gamma)
+
+        M_new = R @ M
+
+        self.box = self._matrix_to_cell_params(M_new)
 
         if recenter:
             self.center_box()
+
 
 
     @staticmethod
@@ -1577,7 +1541,9 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         beta  = np.degrees(np.arccos(np.dot(a_vec, c_vec) / (a * c)))
         gamma = np.degrees(np.arccos(np.dot(a_vec, b_vec) / (a * b)))
         
-        return a, b, c, alpha, beta, gamma
+        box = [a, b, c, alpha, beta, gamma]
+
+        return box
 
     def _get_box_center(self):
         """_get_box_center _summary_
