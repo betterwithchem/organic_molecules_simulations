@@ -15,8 +15,7 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Developer Documentation" href="developer_documentation.html" />
-    <link rel="prev" title="Welcome to sim_launch_py’s documentation!" href="index.html" />
+    <link rel="prev" title="Welcome to sim_launch_py&#39;s documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -172,7 +171,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Project.new_project">
-<span class="sig-name descname"><span class="pre">new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_gmx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ambertools</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.new_project" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_gmx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ambertools</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.new_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add new project</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -496,19 +495,17 @@ that are assumed to be solvent.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.rotate_cell">
-<span class="sig-name descname"><span class="pre">rotate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recenter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.rotate_cell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rotate the system around indicated axes by the given angles</p>
+<span class="sig-name descname"><span class="pre">rotate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.rotate_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the simulation box by arbitrary angles</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angles</strong> (<em>list</em>) – list of 3 values corresponding to rotations around x,y, and z axes. Values can be in degrees (argument degrees=True, default) or radiants (argument degrees=False).</p></li>
-<li><p><strong>recenter</strong> (<em>bool</em><em>, </em><em>optional</em>) – recenter the system in the box after rotation, defaults to True</p></li>
-<li><p><strong>rotation_center</strong> (<em>list</em><em>, </em><em>optional</em>) – list of the coordinates of the rotation center, default is the center of the cell</p></li>
-<li><p><strong>degrees</strong> (<em>bool</em><em>, </em><em>optional</em>) – rotation angles in degrees? Defaults to True.</p></li>
+<li><p><strong>angles</strong> (<em>list</em>) – List of angles for the rotation (around the 3 axes). Values can be assigned in degrees or radians. If radians, select degrees=False.</p></li>
+<li><p><strong>degrees</strong> (<em>bool</em><em>, </em><em>optional</em>) – Input angles in degrees? Defaults to True</p></li>
+<li><p><strong>recenter</strong> (<em>bool</em><em>, </em><em>optional</em>) – Recenter the rotated structure in the box? Defaults to True</p></li>
 </ul>
 </dd>
 </dl>
-<p>Thanks to Dr. Emmanuele Parisi (Politecnico di Torino) for the inital contribution of this function.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -707,15 +704,13 @@ structure_format (str, optional): format of the structure file. Defaults to ‘p
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">User Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developer_documentation.html">Developer Documentation</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to sim_launch_py’s documentation!</a></li>
-      <li>Next: <a href="developer_documentation.html" title="next chapter">Developer Documentation</a></li>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to sim_launch_py's documentation!</a></li>
   </ul></li>
 </ul>
 </div>

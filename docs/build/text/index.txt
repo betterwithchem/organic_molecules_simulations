@@ -1,4 +1,4 @@
-Welcome to sim_launch_py’s documentation!
+Welcome to sim_launch_py's documentation!
 *****************************************
 
 
@@ -6,8 +6,6 @@ Contents:
 ^^^^^^^^^
 
 * User Documentation
-
-* Developer Documentation
 
 
 Indices and tables

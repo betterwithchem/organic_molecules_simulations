@@ -15,7 +15,6 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="User Documentation" href="user_documentation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -294,7 +293,7 @@ The value of the attribute is the absolute path of antechamber (/path/to/bin/ant
 <dt class="sig sig-object py" id="sim_launch_py.classes.Project._checkGromacs">
 <span class="sig-name descname"><span class="pre">_checkGromacs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project._checkGromacs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Look for Gromacs binary and add it to the project.
-This method looks for standard names of gromacs binaries (i.e. 'gmx' and 'gmx_mpi'). If either of these is not found,
+This method looks for standard names of gromacs binaries (i.e. ‘gmx’ and ‘gmx_mpi’). If either of these is not found,
 it will prompt the user to input manually the absolute path of the gromacs executable.
 The value of the attribute is the absolute path of the binary (/path/to/gmx or /path/to/gmx_mpi or /path/to/gmx_bin_custom_name).</p>
 </dd></dl>
@@ -311,7 +310,7 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dd><p>Add system to project</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) -- system name.</p>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – system name.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -327,7 +326,7 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dd><p>Change path of the project 
 :param newpath: new position of the project. The new position of the project will be newpath/Project.name 
 :type newpath: str
-:param reset_program_paths: Update programs (Gromacs, Ambertools, ...) paths? Defaults to False
+:param reset_program_paths: Update programs (Gromacs, Ambertools, …) paths? Defaults to False
 :type reset_program_paths: bool, optional</p>
 </dd></dl>
 
@@ -342,7 +341,7 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dd><p>Delete a system from project and update the index of remaining systems.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>delete_list</strong> -- list of system indexes</p>
+<dd class="field-odd"><p><strong>delete_list</strong> – list of system indexes</p>
 </dd>
 </dl>
 </dd></dl>
@@ -368,7 +367,7 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dd><p>Load an existing project. The Project object is saved in the project directory every time the command Project.save()</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>project_folder</strong> (<em>str</em>) -- Location of the project to be loaded.</p>
+<dd class="field-odd"><p><strong>project_folder</strong> (<em>str</em>) – Location of the project to be loaded.</p>
 </dd>
 <dt class="field-even">Returns project</dt>
 <dd class="field-even"><p>Loaded project.</p>
@@ -386,16 +385,16 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Project.new_project">
-<span class="sig-name descname"><span class="pre">new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_gmx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ambertools</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.new_project" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_gmx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ambertools</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.new_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add new project</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) -- Project Name.</p></li>
-<li><p><strong>path</strong> (<em>str</em>) -- Project path.</p></li>
-<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Overwrite previous project? Defaults to False.</p></li>
-<li><p><strong>check_gmx</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Check if GROMACS is in PATH? Defaults to True.</p></li>
-<li><p><strong>check_ambertools</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Check if AmberTools is in PATH? Defaults to True.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Project Name.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – Project path.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – Overwrite previous project? Defaults to False.</p></li>
+<li><p><strong>check_gmx</strong> (<em>bool</em><em>, </em><em>optional</em>) – Check if GROMACS is in PATH? Defaults to True.</p></li>
+<li><p><strong>check_ambertools</strong> (<em>bool</em><em>, </em><em>optional</em>) – Check if AmberTools is in PATH? Defaults to True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns nproject</dt>
@@ -457,11 +456,11 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <ul class="simple">
 <li><p>help() : print the help for this class</p></li>
 <li><p>add_molecule(self, name: str, moltype=None, knownmolecules=None) : add species to the system.</p></li>
-<li><p>add_box(self, box_side: float, shape='cubic') : create simulation box.</p></li>
-<li><p>createSolventBox(self, solvent: object, output_structure=&quot;solvent_box.pdb&quot;, density=None, nmols=None): add solvent molecules to the simulation box.</p></li>
-<li><p>insertSolute(self, solute: object, solvent: object, solvent_box=&quot;solvent_box.pdb&quot;, concentration=0, output_structure=&quot;start.pdb&quot;): add solute molecules to the box and remove excess solvent molecules.</p></li>
+<li><p>add_box(self, box_side: float, shape=’cubic’) : create simulation box.</p></li>
+<li><p>createSolventBox(self, solvent: object, output_structure=”solvent_box.pdb”, density=None, nmols=None): add solvent molecules to the simulation box.</p></li>
+<li><p>insertSolute(self, solute: object, solvent: object, solvent_box=”solvent_box.pdb”, concentration=0, output_structure=”start.pdb”): add solute molecules to the box and remove excess solvent molecules.</p></li>
 <li><p>writeTop(self, atomtypes_path: str, molecules: objects): write the topology file for the system in gromacs format.</p></li>
-<li><p>add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''): add simulation to the system.</p></li>
+<li><p>add_simulation(self, simtype: str, mdrun_options=’’, mdp=’’, print_bash=True, name=’’,maxwarn=0, start_coord=’’,gmxbin=’’): add simulation to the system.</p></li>
 <li><p>print_command(self, bash_file): print the bash script file to run the simulations.</p></li>
 </ul>
 <dl class="py method">
@@ -471,8 +470,8 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) -- name of the molecule.</p></li>
-<li><p><strong>atoms</strong> (<em>list</em>) -- list of atom objects.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – name of the molecule.</p></li>
+<li><p><strong>atoms</strong> (<em>list</em>) – list of atom objects.</p></li>
 </ul>
 </dd>
 </dl>
@@ -484,7 +483,7 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dd><p>Given a box vector [a, b, c, alpha, beta, gamma], compute the box matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>box</strong> (<em>list</em>) -- box vector. box vectors (a,b,c) are assumed to be i nm, angles (alpha, beta, gamma) are assumed to be in degrees.</p>
+<dd class="field-odd"><p><strong>box</strong> (<em>list</em>) – box vector. box vectors (a,b,c) are assumed to be i nm, angles (alpha, beta, gamma) are assumed to be in degrees.</p>
 </dd>
 <dt class="field-even">Returns M</dt>
 <dd class="field-even"><p>box matrix</p>
@@ -508,9 +507,9 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) -- name of the MOL2 structure file.</p></li>
-<li><p><strong>mol2file</strong> (<em>str</em>) -- name of the MOL2 structure file.</p></li>
-<li><p><strong>keep_coordinates</strong> (<em>bool</em><em>, </em><em>optional</em>) -- keep coordinates read from the structure file. Defaults to True.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – name of the MOL2 structure file.</p></li>
+<li><p><strong>mol2file</strong> (<em>str</em>) – name of the MOL2 structure file.</p></li>
+<li><p><strong>keep_coordinates</strong> (<em>bool</em><em>, </em><em>optional</em>) – keep coordinates read from the structure file. Defaults to True.</p></li>
 </ul>
 </dd>
 </dl>
@@ -529,28 +528,6 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sim_launch_py.classes.System._rotate_atoms">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_rotate_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">az</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._rotate_atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>_rotate_atoms _summary_</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms_coords</strong> (<em>_type_</em>) -- _description_</p></li>
-<li><p><strong>ax</strong> (<em>int</em><em>, </em><em>optional</em>) -- _description_, defaults to 0</p></li>
-<li><p><strong>ay</strong> (<em>int</em><em>, </em><em>optional</em>) -- _description_, defaults to 0</p></li>
-<li><p><strong>az</strong> (<em>int</em><em>, </em><em>optional</em>) -- _description_, defaults to 0</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_description_</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>_type_</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._rotation_matrix">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">az</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._rotation_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a combined rotation matrix from three Euler angles (in radians).
@@ -566,7 +543,7 @@ Order: first rotate around X, then Y, then Z.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._update_composition">
 <span class="sig-name descname"><span class="pre">_update_composition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._update_composition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the 'nmols' attribute of self.species dictionary by checking the residue names of the molecules in the system</p>
+<dd><p>Update the ‘nmols’ attribute of self.species dictionary by checking the residue names of the molecules in the system</p>
 </dd></dl>
 
 <dl class="py method">
@@ -576,9 +553,9 @@ Order: first rotate around X, then Y, then Z.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure_file</strong> (<em>str</em>) -- PDB file from which coordinates are read.</p></li>
-<li><p><strong>start</strong> (<em>int</em><em>, </em><em>optional</em>) -- index of the first molecule of the system for which atomic coordinates are updated. Defaults to 0.</p></li>
-<li><p><strong>end</strong> (<em>int</em><em>, </em><em>optional</em>) -- index of the last molecule (included) of the system for which atomic coordinates are updated. Defaults to np.inf.</p></li>
+<li><p><strong>structure_file</strong> (<em>str</em>) – PDB file from which coordinates are read.</p></li>
+<li><p><strong>start</strong> (<em>int</em><em>, </em><em>optional</em>) – index of the first molecule of the system for which atomic coordinates are updated. Defaults to 0.</p></li>
+<li><p><strong>end</strong> (<em>int</em><em>, </em><em>optional</em>) – index of the last molecule (included) of the system for which atomic coordinates are updated. Defaults to np.inf.</p></li>
 </ul>
 </dd>
 </dl>
@@ -597,8 +574,8 @@ Order: first rotate around X, then Y, then Z.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>box_side</strong> (<em>float</em>) -- side of the box in nm.</p></li>
-<li><p><strong>shape</strong> (<em>str</em><em>, </em><em>optioal</em>) -- shape of the box. Defaults to 'cubic'.</p></li>
+<li><p><strong>box_side</strong> (<em>float</em>) – side of the box in nm.</p></li>
+<li><p><strong>shape</strong> (<em>str</em><em>, </em><em>optioal</em>) – shape of the box. Defaults to ‘cubic’.</p></li>
 </ul>
 </dd>
 </dl>
@@ -611,9 +588,9 @@ Order: first rotate around X, then Y, then Z.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>structure_file</strong> (<em>str</em><em>, </em><em>optional</em>) -- name of the structure file to be read. Defaults to None.</p></li>
-<li><p><strong>keep_coordinates</strong> (<em>bool</em><em>, </em><em>optional</em>) -- keep the coordinates read from the structure file. Defaults to True.</p></li>
-<li><p><strong>keep_box</strong> (<em>bool</em><em>, </em><em>optional</em>) -- read the box parameters from the structure file and use them to define/update the box attribute of the system. Defaults to True.</p></li>
+<li><p><strong>structure_file</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the structure file to be read. Defaults to None.</p></li>
+<li><p><strong>keep_coordinates</strong> (<em>bool</em><em>, </em><em>optional</em>) – keep the coordinates read from the structure file. Defaults to True.</p></li>
+<li><p><strong>keep_box</strong> (<em>bool</em><em>, </em><em>optional</em>) – read the box parameters from the structure file and use them to define/update the box attribute of the system. Defaults to True.</p></li>
 </ul>
 </dd>
 </dl>
@@ -626,9 +603,9 @@ Order: first rotate around X, then Y, then Z.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) -- Name of the simulation object</p></li>
-<li><p><strong>simtype</strong> (<em>str</em>) -- Type of simulation. Available types are 'em' and 'md'.</p></li>
-<li><p><strong>simulation_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) -- dict with simulation specific parameters. Defaults to None. Values in the dict are: 'coordinates', 'mdrun_options', 'topology', 'path_mdp', 'maxwarn', 'tpr', 'nsteps', 'plumed'.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the simulation object</p></li>
+<li><p><strong>simtype</strong> (<em>str</em>) – Type of simulation. Available types are ‘em’ and ‘md’.</p></li>
+<li><p><strong>simulation_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – dict with simulation specific parameters. Defaults to None. Values in the dict are: ‘coordinates’, ‘mdrun_options’, ‘topology’, ‘path_mdp’, ‘maxwarn’, ‘tpr’, ‘nsteps’, ‘plumed’.</p></li>
 </ul>
 </dd>
 </dl>
@@ -641,9 +618,9 @@ Order: first rotate around X, then Y, then Z.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) -- Name of the group to which atoms will be added.</p></li>
-<li><p><strong>atoms</strong> (<em>list</em><em>, </em><em>optional</em>) -- List of atoms to add. Defaults to None.</p></li>
-<li><p><strong>molecules</strong> (<em>list</em><em>, </em><em>optional</em>) -- List of molecules to add. Defaults to None.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the group to which atoms will be added.</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>, </em><em>optional</em>) – List of atoms to add. Defaults to None.</p></li>
+<li><p><strong>molecules</strong> (<em>list</em><em>, </em><em>optional</em>) – List of molecules to add. Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -686,9 +663,9 @@ Order: first rotate around X, then Y, then Z.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) -- Name of the new group</p></li>
-<li><p><strong>atoms</strong> (<em>list</em><em>, </em><em>optional</em>) -- list of atoms to add to the group. Defaults to None</p></li>
-<li><p><strong>molecules</strong> (<em>list</em><em>, </em><em>optional</em>) -- list of molecules to add to the group (its atoms will be added to the group). Defaults to None.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the new group</p></li>
+<li><p><strong>atoms</strong> (<em>list</em><em>, </em><em>optional</em>) – list of atoms to add to the group. Defaults to None</p></li>
+<li><p><strong>molecules</strong> (<em>list</em><em>, </em><em>optional</em>) – list of molecules to add to the group (its atoms will be added to the group). Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -704,10 +681,10 @@ Order: first rotate around X, then Y, then Z.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scriptname</strong> (<em>str</em>) -- name of the final script to launch the simulations.</p></li>
-<li><p><strong>simulations</strong> (<em>list</em>) -- which simulations need to be run. Defaults to None (which means all simulations. I know...)</p></li>
-<li><p><strong>platform</strong> (<em>str</em><em>, </em><em>optional</em>) -- type of platform on which simulations will be run. Available are 'bash' for running locally, 'myriad' to run on Myriad HPC &#64; UCL, and 'archer' to run on Archer2 HPC. Defaults to 'bash'. 'myriad' is a good starting point for GridEngine-like submission scripts, 'archer' is a good starting point for SLURM submission scripts.</p></li>
-<li><p><strong>platform_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) -- dict with platform specific parameters. Defaults to None.</p></li>
+<li><p><strong>scriptname</strong> (<em>str</em>) – name of the final script to launch the simulations.</p></li>
+<li><p><strong>simulations</strong> (<em>list</em>) – which simulations need to be run. Defaults to None (which means all simulations. I know…)</p></li>
+<li><p><strong>platform</strong> (<em>str</em><em>, </em><em>optional</em>) – type of platform on which simulations will be run. Available are ‘bash’ for running locally, ‘myriad’ to run on Myriad HPC &#64; UCL, and ‘archer’ to run on Archer2 HPC. Defaults to ‘bash’. ‘myriad’ is a good starting point for GridEngine-like submission scripts, ‘archer’ is a good starting point for SLURM submission scripts.</p></li>
+<li><p><strong>platform_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – dict with platform specific parameters. Defaults to None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -719,7 +696,7 @@ Order: first rotate around X, then Y, then Z.</p>
 <dd><p>Create topology for the current system</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>topology</strong> (<em>str</em><em>, </em><em>optional</em>) -- name of the resulting topology file. Defaults to 'topology.top'.</p>
+<dd class="field-odd"><p><strong>topology</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the resulting topology file. Defaults to ‘topology.top’.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -730,7 +707,7 @@ Order: first rotate around X, then Y, then Z.</p>
 <dd><p>Delete a group from the system</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) -- Name of the group to eliminate.</p>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the group to eliminate.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
@@ -744,7 +721,7 @@ Order: first rotate around X, then Y, then Z.</p>
 <dd><p>Delete molecules from a system and update the index of the remaining molecules.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>delete_list</strong> (<em>list</em>) -- list of the indexes of the molecules to be deleted.</p>
+<dd class="field-odd"><p><strong>delete_list</strong> (<em>list</em>) – list of the indexes of the molecules to be deleted.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -755,7 +732,7 @@ Order: first rotate around X, then Y, then Z.</p>
 <dd><p>Get the index of a group in a system given its name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) -- Name of the index</p>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the index</p>
 </dd>
 <dt class="field-even">Returns group_index</dt>
 <dd class="field-even"><p>index of the group</p>
@@ -772,7 +749,7 @@ Order: first rotate around X, then Y, then Z.</p>
 <dd><p>Find the molecules in a system with the given residue name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>resname</strong> (<em>str</em>) -- residue name of the molecules to be found.</p>
+<dd class="field-odd"><p><strong>resname</strong> (<em>str</em>) – residue name of the molecules to be found.</p>
 </dd>
 <dt class="field-even">Returns mol_list</dt>
 <dd class="field-even"><p>list of indexes of the molecules with the given residue name.</p>
@@ -789,7 +766,7 @@ Order: first rotate around X, then Y, then Z.</p>
 <dd><p>Find simulations by their name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) -- Name of the simulation.</p>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Name of the simulation.</p>
 </dd>
 <dt class="field-even">Returns simulation</dt>
 <dd class="field-even"><p>Simulation object</p>
@@ -806,7 +783,7 @@ Order: first rotate around X, then Y, then Z.</p>
 <dd><p>Find simulations by their type</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>simtype</strong> (<em>str</em>) -- Type of simulation (e.g. 'em', 'md').</p>
+<dd class="field-odd"><p><strong>simtype</strong> (<em>str</em>) – Type of simulation (e.g. ‘em’, ‘md’).</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>List of simulation indexes.</p>
@@ -844,11 +821,11 @@ Order: first rotate around X, then Y, then Z.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) -- name of the molecule.</p></li>
-<li><p><strong>molstruct</strong> (<em>str</em>) -- structure file of the molecule to insert. PN: it supports only structures with a single molecule.</p></li>
-<li><p><strong>initial_conf</strong> (<em>str</em><em>, </em><em>optional</em>) -- structure file into which the new molecules are inserted. Defaults to None. If no initial configuration is given, an empty box is created and populated. System.box need to have been already defined.</p></li>
-<li><p><strong>final_conf</strong> (<em>str</em><em>, </em><em>optional</em>) -- final structure file (in PDB format) with the inserted molecules. Defaults to inserted.pdb.</p></li>
-<li><p><strong>nmol</strong> (<em>int</em><em>, </em><em>optional</em>) -- number of molecules to insert. Defaults to 1.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – name of the molecule.</p></li>
+<li><p><strong>molstruct</strong> (<em>str</em>) – structure file of the molecule to insert. PN: it supports only structures with a single molecule.</p></li>
+<li><p><strong>initial_conf</strong> (<em>str</em><em>, </em><em>optional</em>) – structure file into which the new molecules are inserted. Defaults to None. If no initial configuration is given, an empty box is created and populated. System.box need to have been already defined.</p></li>
+<li><p><strong>final_conf</strong> (<em>str</em><em>, </em><em>optional</em>) – final structure file (in PDB format) with the inserted molecules. Defaults to inserted.pdb.</p></li>
+<li><p><strong>nmol</strong> (<em>int</em><em>, </em><em>optional</em>) – number of molecules to insert. Defaults to 1.</p></li>
 </ul>
 </dd>
 </dl>
@@ -880,7 +857,7 @@ Order: first rotate around X, then Y, then Z.</p>
 <dd><p>Rename the molecule in the Molecule object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>new_name</strong> (<em>str</em>) -- New name of the molecule (string of 3 letters)</p>
+<dd class="field-odd"><p><strong>new_name</strong> (<em>str</em>) – New name of the molecule (string of 3 letters)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -893,7 +870,7 @@ Default behavior (order==None) is to keep the order by appearance in the system 
 that are assumed to be solvent.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>order</strong> (<em>list</em><em>, </em><em>optional</em>) -- Desired order of molecules as a list of names, e.g. ['ML1', 'ML2', 'WAT']. Defaults to None</p>
+<dd class="field-odd"><p><strong>order</strong> (<em>list</em><em>, </em><em>optional</em>) – Desired order of molecules as a list of names, e.g. [‘ML1’, ‘ML2’, ‘WAT’]. Defaults to None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -904,26 +881,24 @@ that are assumed to be solvent.</p>
 <dd><p>Replicate the given box in the 3 directions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>repl</strong> (<em>list</em>) -- multipliers for the three directions, repl=[1, 1, 1] would mean that the cell is not replicated.</p>
+<dd class="field-odd"><p><strong>repl</strong> (<em>list</em>) – multipliers for the three directions, repl=[1, 1, 1] would mean that the cell is not replicated.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.rotate_cell">
-<span class="sig-name descname"><span class="pre">rotate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recenter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.rotate_cell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rotate the system around indicated axes by the given angles</p>
+<span class="sig-name descname"><span class="pre">rotate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.rotate_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the simulation box by arbitrary angles</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angles</strong> (<em>list</em>) -- list of 3 values corresponding to rotations around x,y, and z axes. Values can be in degrees (argument degrees=True, default) or radiants (argument degrees=False).</p></li>
-<li><p><strong>recenter</strong> (<em>bool</em><em>, </em><em>optional</em>) -- recenter the system in the box after rotation, defaults to True</p></li>
-<li><p><strong>rotation_center</strong> (<em>list</em><em>, </em><em>optional</em>) -- list of the coordinates of the rotation center, default is the center of the cell</p></li>
-<li><p><strong>degrees</strong> (<em>bool</em><em>, </em><em>optional</em>) -- rotation angles in degrees? Defaults to True.</p></li>
+<li><p><strong>angles</strong> (<em>list</em>) – List of angles for the rotation (around the 3 axes). Values can be assigned in degrees or radians. If radians, select degrees=False.</p></li>
+<li><p><strong>degrees</strong> (<em>bool</em><em>, </em><em>optional</em>) – Inp ut angles in degrees? Defaults to True</p></li>
+<li><p><strong>recenter</strong> (<em>bool</em><em>, </em><em>optional</em>) – Recenter the rotated structure in the box? Defaults to True</p></li>
 </ul>
 </dd>
 </dl>
-<p>Thanks to Dr. Emmanuele Parisi (Politecnico di Torino) for the inital contribution of this function.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -932,7 +907,7 @@ that are assumed to be solvent.</p>
 <dd><p>Save a PDB file with the current configuration of the system.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pdb_filename</strong> (<em>str</em>) -- output PDB file.</p>
+<dd class="field-odd"><p><strong>pdb_filename</strong> (<em>str</em>) – output PDB file.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -960,8 +935,8 @@ A [ System ] group will always be added with all atoms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) -- name of the index file, defaults to 'index.ndx'</p></li>
-<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) -- overwrite existing files? Defaults to False</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the index file, defaults to ‘index.ndx’</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – overwrite existing files? Defaults to False</p></li>
 </ul>
 </dd>
 </dl>
@@ -1028,9 +1003,9 @@ A [ System ] group will always be added with all atoms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) -- name of the bias</p></li>
-<li><p><strong>biastype</strong> (<em>str</em>) -- type of bias to apply, available types are:  'METAD'</p></li>
-<li><p><strong>cv</strong> (<em>object</em>) -- name of the collective variable to bias</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – name of the bias</p></li>
+<li><p><strong>biastype</strong> (<em>str</em>) – type of bias to apply, available types are:  ‘METAD’</p></li>
+<li><p><strong>cv</strong> (<em>object</em>) – name of the collective variable to bias</p></li>
 </ul>
 </dd>
 </dl>
@@ -1045,9 +1020,9 @@ A [ System ] group will always be added with all atoms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) -- Name of the new collective variable.</p></li>
-<li><p><strong>cv_type</strong> (<em>str</em>) -- Type of collective variable. See documentation of sim_launch_py.plumed for details.</p></li>
-<li><p><strong>cv_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) -- dict with the parameters for the collective variable. Defaults to None.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the new collective variable.</p></li>
+<li><p><strong>cv_type</strong> (<em>str</em>) – Type of collective variable. See documentation of sim_launch_py.plumed for details.</p></li>
+<li><p><strong>cv_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – dict with the parameters for the collective variable. Defaults to None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1134,7 +1109,7 @@ A [ System ] group will always be added with all atoms.</p>
 <dd><p>Run amb2gmx for a molecule</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>molecule_name</strong> (<em>str</em>) -- molecule name</p>
+<dd class="field-odd"><p><strong>molecule_name</strong> (<em>str</em>) – molecule name</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1145,7 +1120,7 @@ A [ System ] group will always be added with all atoms.</p>
 <dd><p>This function takes a gromacs topology file and extracts the atom types in the [ atomtypes ] section</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>topfile</strong> (<em>str</em>) -- name of the gromacs topology (.top) file</p>
+<dd class="field-odd"><p><strong>topfile</strong> (<em>str</em>) – name of the gromacs topology (.top) file</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1156,7 +1131,7 @@ A [ System ] group will always be added with all atoms.</p>
 <dd><p>This function takes a gromacs topology file of a single molecule type and extracts the following sections:     [ moleculetype ], [ atoms ], [ bonds ], [ pairs ], [ angles ], [ dihedrals ])</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>topfile</strong> (<em>str</em>) -- path of the gromacs topology (.top) file</p>
+<dd class="field-odd"><p><strong>topfile</strong> (<em>str</em>) – path of the gromacs topology (.top) file</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1173,9 +1148,9 @@ A [ System ] group will always be added with all atoms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>molecule</strong> (<em>str</em>) -- molecule name</p></li>
-<li><p><strong>fromPath</strong> (<em>str</em><em>, </em><em>optional</em>) -- path where the topology is. Defaults to ''.</p></li>
-<li><p><strong>toPath</strong> (<em>str</em><em>, </em><em>optional</em>) -- path where the topology goes. Defaults to ''.</p></li>
+<li><p><strong>molecule</strong> (<em>str</em>) – molecule name</p></li>
+<li><p><strong>fromPath</strong> (<em>str</em><em>, </em><em>optional</em>) – path where the topology is. Defaults to ‘’.</p></li>
+<li><p><strong>toPath</strong> (<em>str</em><em>, </em><em>optional</em>) – path where the topology goes. Defaults to ‘’.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1263,10 +1238,10 @@ A [ System ] group will always be added with all atoms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>plumed_file</strong> (<em>str</em>) -- path of the output plumed file</p></li>
-<li><p><strong>simulation</strong> -- simulation with groups, cvs, and biases to use.n    :type simulation: object</p></li>
-<li><p><strong>colvar</strong> (<em>str</em><em>, </em><em>optional</em>) -- name of the colvar file where values of CVs will be saved. Defaults to None.</p></li>
-<li><p><strong>printstride</strong> (<em>int</em><em>, </em><em>optional</em>) -- stride for output of colvar file. Defaults to 500 steps.</p></li>
+<li><p><strong>plumed_file</strong> (<em>str</em>) – path of the output plumed file</p></li>
+<li><p><strong>simulation</strong> – simulation with groups, cvs, and biases to use.n    :type simulation: object</p></li>
+<li><p><strong>colvar</strong> (<em>str</em><em>, </em><em>optional</em>) – name of the colvar file where values of CVs will be saved. Defaults to None.</p></li>
+<li><p><strong>printstride</strong> (<em>int</em><em>, </em><em>optional</em>) – stride for output of colvar file. Defaults to 500 steps.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1294,7 +1269,7 @@ molecule (Molecule() object) : molecule</p>
 <dt class="sig sig-object py" id="sim_launch_py.utilities.create">
 <span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.utilities.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a new directory or a new file.
-TODO Rewrite in a more compact way. Use os.remove instead of os.system(rm ...)
+TODO Rewrite in a more compact way. Use os.remove instead of os.system(rm …)
 :param path: Path of the directory/file to generate
 :param arg_type: Is it a file or directory?
 :param backup: If the directory/file already exists, create a backup directory/file
@@ -1333,7 +1308,7 @@ the calculation of collective variables and analysis of simulations</p>
 <dd><blockquote>
 <div><dl class="simple">
 <dt>Args:</dt><dd><p>structure (str): structure file of the molecule.
-structure_format (str, optional): format of the structure file. Defaults to 'pdb'.</p>
+structure_format (str, optional): format of the structure file. Defaults to ‘pdb’.</p>
 </dd>
 <dt>Returns:</dt><dd><p>torsion_angle_indices (list): list of lists identifying the dihedral angles of the molecule. Values are 0-indexed.</p>
 </dd>
@@ -1352,9 +1327,9 @@ structure_format (str, optional): format of the structure file. Defaults to 'pdb
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dihedral_angles</strong> (<em>str</em>) -- text file with the timeseries. Angle values are assumed to be in the second column of the file.</p></li>
-<li><p><strong>datacol</strong> (<em>int</em><em>, </em><em>optional</em>) -- column (0-indexed) where data is. Defaults to 1.</p></li>
-<li><p><strong>probcutoff</strong> (<em>float</em><em>, </em><em>optional</em>) -- cutoff value for the population of a bin to take into account in the final histogram. Defaults to 0.001</p></li>
+<li><p><strong>dihedral_angles</strong> (<em>str</em>) – text file with the timeseries. Angle values are assumed to be in the second column of the file.</p></li>
+<li><p><strong>datacol</strong> (<em>int</em><em>, </em><em>optional</em>) – column (0-indexed) where data is. Defaults to 1.</p></li>
+<li><p><strong>probcutoff</strong> (<em>float</em><em>, </em><em>optional</em>) – cutoff value for the population of a bin to take into account in the final histogram. Defaults to 0.001</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns centers</dt>
@@ -1379,8 +1354,8 @@ structure_format (str, optional): format of the structure file. Defaults to 'pdb
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>list</em>) -- x axis values</p></li>
-<li><p><strong>parameters</strong> (<em>list</em>) -- list of parameters of length 3*N where N is the number of Gaussians to estimate. Order of the parameters is A,mu,sigma.</p></li>
+<li><p><strong>x</strong> (<em>list</em>) – x axis values</p></li>
+<li><p><strong>parameters</strong> (<em>list</em>) – list of parameters of length 3*N where N is the number of Gaussians to estimate. Order of the parameters is A,mu,sigma.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns f</dt>
@@ -1399,9 +1374,9 @@ structure_format (str, optional): format of the structure file. Defaults to 'pdb
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dihedral_angles</strong> (<em>str</em>) -- text file with the values of dihedral angles</p></li>
-<li><p><strong>datacol</strong> (<em>int</em><em>, </em><em>optional</em>) -- column (0-indexed) where data is. Defaults to 1.</p></li>
-<li><p><strong>plotFit</strong> (<em>bool</em><em>, </em><em>optional</em>) -- plot the original histogram and the fitted gaussians? Defaults to False.</p></li>
+<li><p><strong>dihedral_angles</strong> (<em>str</em>) – text file with the values of dihedral angles</p></li>
+<li><p><strong>datacol</strong> (<em>int</em><em>, </em><em>optional</em>) – column (0-indexed) where data is. Defaults to 1.</p></li>
+<li><p><strong>plotFit</strong> (<em>bool</em><em>, </em><em>optional</em>) – plot the original histogram and the fitted gaussians? Defaults to False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns centers</dt>
@@ -1439,16 +1414,14 @@ structure_format (str, optional): format of the structure file. Defaults to 'pdb
 
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="user_documentation.html">User Documentation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer Documentation</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="user_documentation.html" title="previous chapter">User Documentation</a></li>
   </ul></li>
 </ul>
 </div>
