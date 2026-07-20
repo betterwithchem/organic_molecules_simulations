@@ -30,23 +30,7 @@ You can access up-to-date html documentation opening `docs/build/hml/index.html`
 
 Jupyter notebooks can be found in `examples/notebooks`
 
-## Known Issues
-
-Sometimes it happens that Python throws the following error when importing numpy:
-
-```
-ImportError: Error importing numpy: you should not try to import numpy from
-        its source directory; please exit the numpy source tree, and relaunch
-        your python interpreter from there.  
-```
-
-This is due to a modification of PYTHONPATH when sourcing AmberTools. Running
-
-```
-export PYTHONPATH="" 
-```
-
-solves it.
+## Updates
 
 ##### Last update 20/07/2026
 
@@ -81,3 +65,20 @@ solves it.
 - `System.reorder_molecules()` to reorder the molecules in the `System`.
 
 
+## Known Issues
+
+Sometimes it happens that Python throws the following error when importing numpy:
+
+```
+ImportError: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.  
+```
+
+This is due to a modification of PYTHONPATH when sourcing AmberTools. Running
+
+```
+export PYTHONPATH="" 
+```
+
+solves it.
