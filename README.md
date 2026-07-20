@@ -11,9 +11,7 @@ A typical installation procedure would be:
 
 ```
 conda create -n myenv python=3.12 mamba 
-
 conda activate myenv 
-
 mamba install -c conda-forge numpy pandas scipy jupyter parmed mdanalysis matplotlib rdkit nglview ipykernel  
 ```
 
@@ -50,9 +48,11 @@ export PYTHONPATH=""
 
 solves it.
 
-#### Last update 20/07/2026
+##### Last update 20/07/2026
 
-- Added the possibility to solvate the box with 3-point water using the gmx solvate tool. This is available through System.solvate(initial_conf: str, final_conf:str)
+##### Added
+
+- Added the possibility to solvate the box with 3-point water using the gmx solvate tool. This is available through System.solvate(initial_conf: str, final_conf:str). To this end, the directories structures/solvents has been added to the library with inside a structure of a single 3-point water molecule (water.pdb) that is used by the code. This can also be used as an example/guideline to expand the code to use other solvents (e.g. 4-point water). 
 
 ####05/05/2026
 
