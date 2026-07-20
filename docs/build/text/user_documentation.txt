@@ -1,7 +1,7 @@
 User Documentation
 ******************
 
-class sim_launch_py.classes.Atom(name: str, index: Optional[int] = None, atomtype: Optional[str] = None, resname: Optional[str] = None, coordinates: Optional[list] = None, resid: Optional[int] = None)
+class sim_launch_py.classes.Atom(name: str, index: int = None, atomtype: str = None, resname: str = None, coordinates: list = None, resid: int = None)
 
    The atom class that stores and manage all the information and
    methods.
@@ -268,7 +268,7 @@ class sim_launch_py.classes.System(name: str, path=None)
          * **shape** (*str**, **optioal*) -- shape of the box.
            Defaults to 'cubic'.
 
-   add_molecule(structure_file: Optional[str] = None, keep_coordinates: bool = True, keep_box: bool = True)
+   add_molecule(structure_file: str = None, keep_coordinates: bool = True, keep_box: bool = True)
 
       Add new molecules to a system starting from a structure file
       (e.g. a PDB file).
@@ -285,7 +285,7 @@ class sim_launch_py.classes.System(name: str, path=None)
            define/update the box attribute of the system. Defaults to
            True.
 
-   add_simulation(name: str, simtype: str, simulation_dict: Optional[dict] = None)
+   add_simulation(name: str, simtype: str, simulation_dict: dict = None)
 
       Add a simulation to the current system object.
 
@@ -300,7 +300,7 @@ class sim_launch_py.classes.System(name: str, path=None)
            the dict are: 'coordinates', 'mdrun_options', 'topology',
            'path_mdp', 'maxwarn', 'tpr', 'nsteps', 'plumed'.
 
-   add_to_group(name: str, atoms_list: Optional[list] = None, molecules_list: Optional[list] = None)
+   add_to_group(name: str, atoms_list: list = None, molecules_list: list = None)
 
       Add atoms to an existing group.
 
@@ -324,7 +324,7 @@ class sim_launch_py.classes.System(name: str, path=None)
       Center the atoms in the box with gmx editconf (equivalent to gmx
       editconf -c)
 
-   create_group(name: str, atoms_list: Optional[list] = None, molecules_list: Optional[list] = None)
+   create_group(name: str, atoms_list: list = None, molecules_list: list = None)
 
       Create a new group of atoms
 
@@ -339,7 +339,7 @@ class sim_launch_py.classes.System(name: str, path=None)
            Defaults to None.
 
       Returns:
-   create_run_script(scriptname: str, simulations: Optional[list] = None, platform: str = 'bash', platform_dict: Optional[dict] = None)
+   create_run_script(scriptname: str, simulations: list = None, platform: str = 'bash', platform_dict: dict = None)
 
       Create the script to run the simulations.
 
@@ -514,6 +514,17 @@ class sim_launch_py.classes.System(name: str, path=None)
       Parameters:
          **pdb_filename** (*str*) -- output PDB file.
 
+   solvate(initial_conf: str, final_conf: str, solventbox='spc216.gro', use_gromacs=True)
+
+      Add water to the box using gmx solvate. AT THE MOMENT IT ONLY
+      WORKS WITH 3-POINT WATER!
+
+      Args:
+         initial_conf (str): name of the input pdb file final_conf
+         (str): name of the output pdb file solventbox (str,
+         optional): Structure with the solvent box. Defaults to
+         'spc216.gro'.
+
    write_ndx(filename: str = 'index.ndx', overwrite=False)
 
       Write a GROMACS compatible index (.ndx) file containing the
@@ -564,7 +575,7 @@ sim_launch_py.ffparms.getTop(molecule: str, fromPath: str = '', toPath: str = ''
       * **toPath** (*str**, **optional*) -- path where the topology
         goes. Defaults to ''.
 
-sim_launch_py.plumed.write_plumed_file(plumed_file: str, simulation: object, colvar: Optional[str] = None, printstride: int = 500)
+sim_launch_py.plumed.write_plumed_file(plumed_file: str, simulation: object, colvar: str = None, printstride: int = 500)
 
    Write Plumed File
 

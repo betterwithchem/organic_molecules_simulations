@@ -477,7 +477,7 @@ class System():
     @property
     def species(self):
         return self._species
-    
+
     @property
     def last_saved_structure(self):
         return self._last_saved_structure
@@ -568,20 +568,16 @@ class System():
                 
         # convert structure_file to mol2
 
-
         extension=structure_file.split('.')[-1]
         basename_structure_file=os.path.basename(os.path.splitext(structure_file)[0])
                 
         mol2file=self.path+'/{}'.format(basename_structure_file+'.mol2')
 
-        if not os.path.isfile(mol2file):
-
-            result=subprocess.run('{3} -i {0} -fi {1} -o {2} -fo mol2 -j 5 -dr no -at gaff2'.format(structure_file,
-                                                                                                    extension,
-                                                                                                    basename_structure_file+'.mol2',
-                                                                                                    self.ambertools),
-                                stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
-
+        result=subprocess.run('{3} -i {0} -fi {1} -o {2} -fo mol2 -j 5 -dr no -at gaff2'.format(structure_file,
+                                                                                                extension,
+                                                                                                basename_structure_file+'.mol2',
+                                                                                                self.ambertools),
+                              stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
 
         os.chdir(curdir)
 
@@ -603,7 +599,7 @@ class System():
                             self.box[5]=float(line[47:54])
                             break
             else:
-                print('WARNING: only PDB files are supported to include box data from structure files.' \
+                print('ERROR: only PDB files are supported to include box data from structure files.' \
                       'You can add manually box data with system.add_box().')
         
 
@@ -615,128 +611,6 @@ class System():
         self._renumber_atoms()
         self._update_composition()
 
-
-
-
-    def solvate(self, initial_conf: str, final_conf:str, 
-                solventbox='spc216.gro', use_gromacs=True):
-        """Add water to the box using gmx solvate. AT THE MOMENT IT ONLY WORKS WITH 3-POINT WATER!
-
-        Args:
-            initial_conf (str): name of the input pdb file
-            final_conf (str): name of the output pdb file
-            solventbox (str, optional): Structure with the solvent box. Defaults to 'spc216.gro'.
-        """
-
-        final_conf_ext=final_conf.split('.')[-1]
-        if final_conf_ext!='pdb':
-            print('ERROR while inserting new molecules: Only PDB format is accepted for final_conf')
-            exit()
-
-        directory,filename=os.path.split(final_conf)
-        if os.path.isabs(final_conf):
-            if directory==self.path:
-                pass
-            else:
-                print('Warning: path given for the final configuration is not in {0}. Path has been changed to {0}.'.format(self.path))
-                final_conf=self.path+'/{}'.format(filename)
-        else:
-            final_conf=self.path+'/{}'.format(filename)
-
-        if not initial_conf:
-
-            initial_conf=self.path+'/{}'.format('TEMP_EMPTY_BOX.pdb')
-            if self.box==None:
-                print('ERROR: when adding molecules without an initial configuration, a box must have been already defined')
-                return
-
-            with open('{}'.format(initial_conf),'w') as f:
-                f.write('TITLE	MOLECULES IN A BOX\n')
-                f.write('{:6s}{:9.3f}{:9.3f}{:9.3f}{:7.2f}{:7.2f}{:7.2f}'.format("CRYST1",
-                                                                                 self.box[0]*10,  # sides in A
-                                                                                 self.box[1]*10,
-                                                                                 self.box[2]*10,
-                                                                                 self.box[3],	  # anglse in degrees
-                                                                                 self.box[4],
-                                                                                 self.box[5]))
-        else:
-
-            if os.path.isabs(initial_conf):
-                if os.path.isfile(initial_conf):
-                    pass
-                else:
-                    print('ERROR: file {} does not exist'.format(initial_conf))
-                    return
-            elif not os.path.isabs(initial_conf):
-                if os.path.isfile(self.path+'/{}'.format(initial_conf)):
-                    initial_conf=self.path+'/{}'.format(initial_conf)
-                elif  os.path.isfile(initial_conf):
-                    pass
-                else:
-                    print('ERROR: file {} does not exist'.format(initial_conf))
-                    return
-                
-        import subprocess        
-        if use_gromacs:
-            result=subprocess.run(['which','gmx'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-            base_gmx=result.split('bin')[0]
-            solventbox_with_path=base_gmx+'share/gromacs/top/'+solventbox
-        result=subprocess.run(['gmx', 'solvate', '-cp', initial_conf, '-cs', solventbox_with_path, '-o', \
-                               final_conf], stdout=subprocess.PIPE,stderr=subprocess.PIPE).stderr.decode('utf-8')
-
-        # check inserted solvent molecules looking for the line "Number of solvent molecules:" in gmx solvate output
-        
-        for iline,line in enumerate(result.split('\n')):
-            if line.startswith('Number of solvent molecules'):
-                n_added_molecules = int(line.strip().split()[-1])
-        #print('got number of added water ({})'.format(n_added_molecules))
-        
-        self._last_saved_structure=final_conf
-
-        print('Added {} solvent molecules'.format(n_added_molecules))
-        print('Solvated structure saved conf in {} '.format(final_conf))
-
-
-        # now add/create Molecule and Atom objects
-
-        index_first_new_mol=len(self.molecules)
-        index_last_new_mol=index_first_new_mol+n_added_molecules-1
-
-        if initial_conf.split('.')[-1] != 'pdb':
-            outname = initial_conf.split('/')[-1].split('.')[0]+'.pdb'
-        else:
-            outname = initial_conf.split('/')[-1]
-        
-        subprocess.run(['gmx', 'editconf', '-f', initial_conf, '-o',  outname], stdout=subprocess.PIPE,stderr=subprocess.PIPE).stderr.decode('utf-8')
-
-        if solventbox=='spc216.gro':
-            import inspect
-            path_lib = os.path.dirname(inspect.getfile(inspect.currentframe()))
-
-
-            #print(path_lib)
-            solvent_molecule = path_lib+'/structures/solvents/'+'water.pdb'
-        else:
-            print('At the moment only spc216.gro is supported.')
-            print('Note that a .pdb file has been generated, but the System object has NOT been updated.')
-            return(-1)
-
-        self.add_molecule(structure_file=solvent_molecule,
-                            keep_coordinates=False, keep_box=False)
-        
-        import copy
-        for imol in range(n_added_molecules-1):
-            #print(imol+2)
-            self.molecules.append(copy.deepcopy(self.molecules[-1]))
-      
-        index_first_new_mol=len(self.molecules)-1-n_added_molecules
-        index_last_new_mol=len(self.molecules)-1
-
-        self._update_coordinates(final_conf, start=index_first_new_mol, end=index_last_new_mol)
-        self._renumber_atoms()
-        self._update_atom_absolute_indexes()
-        self._update_composition()
-        self._update_molecule_indexes()
 
 
     def insert_molecules(self, molstruct: str, initial_conf: str, final_conf: str, 
@@ -815,7 +689,7 @@ class System():
             
 
         import subprocess        
-        result=subprocess.run("{0} insert-molecules -f {1} -ci {2} -nmol {3} -o {4} -try 5  ".format("gmx",
+        result=subprocess.run("{0} insert-molecules -f {1} -ci {2} -nmol {3} -o {4}  ".format("gmx",
                                                                                             initial_conf,
                                                                                             molstruct,
                                                                                             nmol,

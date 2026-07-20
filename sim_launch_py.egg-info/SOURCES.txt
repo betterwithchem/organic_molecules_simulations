@@ -1,5 +1,6 @@
 README.md
 setup.py
+sim_launch_py/__init__.py
 sim_launch_py/classes.py
 sim_launch_py/ffparms.py
 sim_launch_py/gromacs.py
