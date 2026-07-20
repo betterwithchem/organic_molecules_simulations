@@ -50,7 +50,11 @@ export PYTHONPATH=""
 
 solves it.
 
-#### Last update 05/05/2026
+#### Last update 20/07/2026
+
+- Added the possibility to solvate the box with 3-point water using the gmx solvate tool. This is available through System.solvate(initial_conf: str, final_conf:str)
+
+####05/05/2026
 
 ##### Fixed
 

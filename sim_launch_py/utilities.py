@@ -237,3 +237,22 @@ def calc_fractional_coords(coords,box=None):
             #d=np.sqrt(d)
 
         return frac_coords
+
+
+def solvents(solvent='water'):
+    
+    import os
+    
+    available_solvents = ['water']
+
+    lib_position = self.__file__
+
+    if solvent not in ['water']:
+        print("Selected solvent ({}) not available yet.".format(solvent))
+        print("Available solvents are {}".format(available_solvents))
+        return
+
+    print(lib_position)    
+
+    
+
