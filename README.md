@@ -32,11 +32,18 @@ Jupyter notebooks can be found in `examples/notebooks`
 
 ## Updates
 
-##### Last update 20/07/2026
+##### Last update 04/08/2026
 
 ##### Added
 
-- Added the possibility to solvate the box with 3-point water using the gmx solvate tool. This is available through System.solvate(initial_conf: str, final_conf:str). To this end, the directories structures/solvents has been added to the library with inside a structure of a single 3-point water molecule (water.pdb) that is used by the code. This can also be used as an example/guideline to expand the code to use other solvents (e.g. 4-point water). 
+- Added 4-point water (based on TIP4P) as a choice for solvation boxes witn `System.solvate()`.
+
+
+##### 20/07/2026
+
+##### Added
+
+- Added the possibility to solvate the box with 3-point water using the gmx solvate tool. This is available through `System.solvate(initial_conf: str, final_conf:str)`. To this end, the directories structures/solvents has been added to the library with inside a structure of a single 3-point water molecule (water.pdb) that is used by the code. This can also be used as an example/guideline to expand the code to use other solvents (e.g. 4-point water). 
 
 ##### 05/05/2026
 

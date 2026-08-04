@@ -62,7 +62,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Atom._get_element">
 <span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_get_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Atom._get_element" title="Link to this definition">¶</a></dt>
-<dd><p>Assign atomic element of the atom based on its name.</p>
+<dd><p>Assign atomic element of the atom based on its name.
+MW are dummy atoms, like those used in TIP4P water.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -920,8 +921,10 @@ that are assumed to be solvent.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.solvate">
 <span class="sig-name descname"><span class="pre">solvate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_conf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_conf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solventbox</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spc216.gro'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_gromacs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.solvate" title="Link to this definition">¶</a></dt>
-<dd><p>Add water to the box using gmx solvate. AT THE MOMENT IT ONLY WORKS WITH 3-POINT WATER!</p>
-<dl class="simple">
+<dd><dl class="simple">
+<dt>Add water to the box using gmx solvate. Choices at the moment are: </dt><dd><p>‘spc216.gro’ for 3-point water
+‘tip4p.gro’ for 4-point water</p>
+</dd>
 <dt>Args:</dt><dd><p>initial_conf (str): name of the input pdb file
 final_conf (str): name of the output pdb file
 solventbox (str, optional): Structure with the solvent box. Defaults to ‘spc216.gro’.</p>
@@ -1261,7 +1264,7 @@ A [ System ] group will always be added with all atoms.</p>
 
 <dl class="py function" id="module-sim_launch_py.utilities">
 <dt class="sig sig-object py" id="sim_launch_py.utilities.calc_fractional_coords">
-<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">calc_fractional_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.utilities.calc_fractional_coords" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sim_launch_py.utilities.</span></span><span class="sig-name descname"><span class="pre">calc_fractional_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.utilities.calc_fractional_coords" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
