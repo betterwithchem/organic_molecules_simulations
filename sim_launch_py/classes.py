@@ -555,6 +555,7 @@ class System():
         :type keep_coordinates: bool, optional
         :param keep_box: read the box parameters from the structure file and use them to define/update the box attribute of the system. Defaults to True.
         :type keep_box: bool, optional
+        
 
         """
         import subprocess
@@ -568,22 +569,29 @@ class System():
                 
         # convert structure_file to mol2
 
-
         extension=structure_file.split('.')[-1]
-        basename_structure_file=os.path.basename(os.path.splitext(structure_file)[0])
-                
-        mol2file=self.path+'/{}'.format(basename_structure_file+'.mol2')
 
-        if not os.path.isfile(mol2file):
+        if extension != 'mol2':
 
-            result=subprocess.run('{3} -i {0} -fi {1} -o {2} -fo mol2 -j 5 -dr no -at gaff2'.format(structure_file,
-                                                                                                    extension,
-                                                                                                    basename_structure_file+'.mol2',
-                                                                                                    self.ambertools),
-                                stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+            basename_structure_file=os.path.basename(os.path.splitext(structure_file)[0])
+                    
+            mol2file=self.path+'/{}'.format(basename_structure_file+'.mol2')
 
+            if not os.path.isfile(mol2file):
+
+                result=subprocess.run('{3} -i {0} -fi {1} -o {2} -fo mol2 -j 5 -dr no -at gaff2'.format(structure_file,
+                                                                                                        extension,
+                                                                                                        basename_structure_file+'.mol2',
+                                                                                                        self.ambertools),
+                                    stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+
+            
+        else:
+
+            mol2file = structure_file
 
         os.chdir(curdir)
+
 
         self._loadfrommol2(mol2file,keep_coordinates=keep_coordinates)
 
@@ -620,7 +628,9 @@ class System():
 
     def solvate(self, initial_conf: str, final_conf:str, 
                 solventbox='spc216.gro', use_gromacs=True):
-        """Add water to the box using gmx solvate. AT THE MOMENT IT ONLY WORKS WITH 3-POINT WATER!
+        """Add water to the box using gmx solvate. Choices at the moment are: 
+           'spc216.gro' for 3-point water
+           'tip4p.gro' for 4-point water
 
         Args:
             initial_conf (str): name of the input pdb file
@@ -713,16 +723,25 @@ class System():
             import inspect
             path_lib = os.path.dirname(inspect.getfile(inspect.currentframe()))
 
+            #print(path_lib)
+            solvent_molecule = path_lib+'/structures/solvents/'+'water-3point.mol2'
+            self.add_molecule(structure_file=solvent_molecule   ,
+                              keep_coordinates=False, keep_box=False)
+
+        elif solventbox=='tip4p.gro':
+            import inspect
+            path_lib = os.path.dirname(inspect.getfile(inspect.currentframe()))
 
             #print(path_lib)
-            solvent_molecule = path_lib+'/structures/solvents/'+'water.pdb'
+            solvent_molecule = path_lib+'/structures/solvents/'+'water-4point.mol2'
+            self.add_molecule(structure_file=solvent_molecule   ,
+                              keep_coordinates=False, keep_box=False)
+
         else:
-            print('At the moment only spc216.gro is supported.')
+            print('At the moment only spc216.gro and tip4p.gro is supported.')
             print('Note that a .pdb file has been generated, but the System object has NOT been updated.')
             return(-1)
 
-        self.add_molecule(structure_file=solvent_molecule,
-                            keep_coordinates=False, keep_box=False)
         
         import copy
         for imol in range(n_added_molecules-1):
@@ -2165,15 +2184,18 @@ class Atom():
     @staticmethod
     def _get_element(atomtype):
         """Assign atomic element of the atom based on its name.
+           MW are dummy atoms, like those used in TIP4P water.
         """
 
         if atomtype[0].upper() in ['H','C','N','O','F','S']:
             return atomtype[0].upper()
-        elif atomtype[0].upper()+atomtype[1].lower() in ['Cl']:
+        elif atomtype[0].upper()+atomtype[1].lower() in ['Cl', 'Na']:
             return atomtype[0].upper()+atomtype[1].lower()
+        elif atomtype.upper() in ['MW']:
+            return atomtype.upper()
         else:
             print("ERROR: Couldn't recognize the element from the atom type")
-            exit()
+            
 
 
     @staticmethod

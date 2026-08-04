@@ -516,8 +516,9 @@ class sim_launch_py.classes.System(name: str, path=None)
 
    solvate(initial_conf: str, final_conf: str, solventbox='spc216.gro', use_gromacs=True)
 
-      Add water to the box using gmx solvate. AT THE MOMENT IT ONLY
-      WORKS WITH 3-POINT WATER!
+      Add water to the box using gmx solvate. Choices at the moment
+      are:
+         'spc216.gro' for 3-point water 'tip4p.gro' for 4-point water
 
       Args:
          initial_conf (str): name of the input pdb file final_conf

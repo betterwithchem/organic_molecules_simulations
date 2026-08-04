@@ -197,46 +197,42 @@ def get_distance(sel_coords,ref=[0, 0, 0],box=None):
     
         
     
-def calc_fractional_coords(coords,box=None):
+def calc_fractional_coords(coords,box):
 
-    d=0
-    
     import numpy as np
 
+    d=0
     deg2rad=np.pi/180
 
     frac_coords=[]
-
-    print(box)
     
-    if box is not None:
-        n2=(np.cos(box[3]*deg2rad)-np.cos(box[5]*deg2rad)*np.cos(box[4]*deg2rad))/np.sin(box[5]*deg2rad)
-        M=np.array([[box[0], 0, 0],
-                   [box[0]*np.cos(box[5]*deg2rad), box[1]*np.sin(box[5]*deg2rad), 0],
-                   [box[0]*np.cos(box[4]*deg2rad), box[1]*n2, box[2]*np.sqrt(np.sin(box[4]*deg2rad)**2-n2*n2)]])
+    n2=(np.cos(box[3]*deg2rad)-np.cos(box[5]*deg2rad)*np.cos(box[4]*deg2rad))/np.sin(box[5]*deg2rad)
+    M=np.array([[box[0], 0, 0],
+                [box[0]*np.cos(box[5]*deg2rad), box[1]*np.sin(box[5]*deg2rad), 0],
+                [box[0]*np.cos(box[4]*deg2rad), box[1]*n2, box[2]*np.sqrt(np.sin(box[4]*deg2rad)**2-n2*n2)]])
 
 
-        M_inv=np.linalg.inv(M)
+    M_inv=np.linalg.inv(M)
 
-        frac_ref_coords=M_inv.dot(np.array([0, 0, 0]))
+    frac_ref_coords=M_inv.dot(np.array([0, 0, 0]))
 
-        for icoord,coord in enumerate(coords):
-            frac_sel_coords=M_inv.dot(coord)
-           
-            sij=frac_sel_coords-frac_ref_coords
-            sij-=np.rint(sij)
-           
-            frac_coords.append(sij)
+    for icoord,coord in enumerate(coords):
+        frac_sel_coords=M_inv.dot(coord)
+        
+        sij=frac_sel_coords-frac_ref_coords
+        sij-=np.rint(sij)
+        
+        frac_coords.append(sij)
 
-            rij=M.dot(sij)
+        rij=M.dot(sij)
 
-            d=(rij**2).sum()
+        d=(rij**2).sum()
 
-            #print(sel_coords,ref,d,rij,box)
+        #print(sel_coords,ref,d,rij,box)
 
-            #d=np.sqrt(d)
+        #d=np.sqrt(d)
 
-        return frac_coords
+    return frac_coords
 
 
 def solvents(solvent='water'):

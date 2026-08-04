@@ -40,7 +40,8 @@ class sim_launch_py.classes.Atom(name: str, index: int = None, atomtype: str = N
 
    static _get_element(atomtype)
 
-      Assign atomic element of the atom based on its name.
+      Assign atomic element of the atom based on its name. MW are
+      dummy atoms, like those used in TIP4P water.
 
    static _get_mw(element)
 
@@ -743,8 +744,9 @@ class sim_launch_py.classes.System(name: str, path=None)
 
    solvate(initial_conf: str, final_conf: str, solventbox='spc216.gro', use_gromacs=True)
 
-      Add water to the box using gmx solvate. AT THE MOMENT IT ONLY
-      WORKS WITH 3-POINT WATER!
+      Add water to the box using gmx solvate. Choices at the moment
+      are:
+         'spc216.gro' for 3-point water 'tip4p.gro' for 4-point water
 
       Args:
          initial_conf (str): name of the input pdb file final_conf
@@ -939,7 +941,7 @@ sim_launch_py.plumed.write_plumed_file(plumed_file: str, simulation: object, col
       * **printstride** (*int**, **optional*) -- stride for output of
         colvar file. Defaults to 500 steps.
 
-sim_launch_py.utilities.calc_fractional_coords(coords, box=None)
+sim_launch_py.utilities.calc_fractional_coords(coords, box)
 
 sim_launch_py.utilities.countMolecules(structure_file, molecule)
 
