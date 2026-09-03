@@ -481,18 +481,55 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._box_matrix">
 <span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_box_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._box_matrix" title="Link to this definition">¶</a></dt>
-<dd><p>Given a box vector [a, b, c, alpha, beta, gamma], compute the box matrix.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>box</strong> (<em>list</em>) – box vector. box vectors (a,b,c) are assumed to be i nm, angles (alpha, beta, gamma) are assumed to be in degrees.</p>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._canonicalize_box">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_canonicalize_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._canonicalize_box" title="Link to this definition">¶</a></dt>
+<dd><p>Given rotated lattice vectors (rows of L) whose face-normal is already
+aligned to +z, produce the canonical PDB/GROMACS form:
+- vector ‘a’ lies purely on +x
+- vector ‘b’ lies in the xy-plane (bz = 0)
+- vector ‘c’ has cz &gt; 0
+- matrix is right-handed (det &gt; 0)</p>
+<p>This needs TWO kinds of operation:
+(i)  relabeling (permutation P) + sign flips (S) – picking which</p>
+<blockquote>
+<div><p>physical vector we call a/b/c, and which direction is “positive”.
+These are NOT spatial transformations: they must NEVER be applied
+to atomic coordinates (doing so shears/stretches them, since P/S
+can swap vectors of different lengths). They only affect how the
+box is labeled/written.</p>
+</div></blockquote>
+<ol class="lowerroman simple" start="2">
+<li><p>an additional rotation ABOUT the z-axis (Rz_correction) – this</p></li>
+</ol>
+<blockquote>
+<div><p>IS a genuine rotation, safe and necessary to apply to atoms too.</p>
+</div></blockquote>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>L_final<span class="classifier">(3,3) ndarray</span></dt><dd><p>Final lattice vectors (rows a,b,c) in PDB/GROMACS convention.</p>
 </dd>
-<dt class="field-even">Returns M<span class="colon">:</span></dt>
-<dd class="field-even"><p>box matrix</p>
+<dt>Rz_correction<span class="classifier">(3,3) ndarray</span></dt><dd><p>The pure rotation-about-z that was applied (for the winning
+perm/sign candidate) AFTER the permutation/sign-flip. This is the
+rotation you must also apply to atomic coordinates, IN ADDITION to
+the R_align used to bring the face-normal onto +z. It is exposed
+here specifically so the caller can build:</p>
+<blockquote>
+<div><p>R_total = Rz_correction &#64; R_align</p>
+</div></blockquote>
+<p>and apply R_total (and ONLY R_total) to atom coordinates.</p>
 </dd>
-<dt class="field-odd">Rtype M<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list</p>
+<dt>perm<span class="classifier">tuple</span></dt><dd><p>The winning row permutation of L (for reference/debugging only –
+do not apply to atoms).</p>
+</dd>
+<dt>signs<span class="classifier">tuple</span></dt><dd><p>The winning sign flips of L (for reference/debugging only – do
+not apply to atoms).</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
@@ -890,17 +927,12 @@ that are assumed to be solvent.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.rotate_cell">
 <span class="sig-name descname"><span class="pre">rotate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.rotate_cell" title="Link to this definition">¶</a></dt>
-<dd><p>Rotate the simulation box by arbitrary angles</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>angles</strong> (<em>list</em>) – List of angles for the rotation (around the 3 axes). Values can be assigned in degrees or radians. If radians, select degrees=False.</p></li>
-<li><p><strong>degrees</strong> (<em>bool</em><em>, </em><em>optional</em>) – Input angles in degrees? Defaults to True</p></li>
-<li><p><strong>recenter</strong> (<em>bool</em><em>, </em><em>optional</em>) – Recenter the rotated structure in the box? Defaults to True</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.save_gro">
+<span class="sig-name descname"><span class="pre">save_gro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gro_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.save_gro" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.save_pdb">

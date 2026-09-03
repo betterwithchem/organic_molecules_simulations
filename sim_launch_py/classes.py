@@ -1085,9 +1085,11 @@ class System():
 
                                 newmolecules.append(new_mol)
 
+        print('Old box was:',self.box)
         for i in range(3):
             self.box[i]*=repl[i]
-        
+        print('New box is:', self.box)
+
         self.molecules+=newmolecules
         self._update_molecule_indexes()
         self._update_composition()
@@ -1450,30 +1452,42 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         return sim_list
 
+    #@staticmethod
+    #def _box_matrix(box: list):
+    #    """Given a box vector [a, b, c, alpha, beta, gamma], compute the box matrix.
+
+    #    :param box: box vector. box vectors (a,b,c) are assumed to be i nm, angles (alpha, beta, gamma) are assumed to be in degrees.
+    #    :type box: list
+    #    :returns M: box matrix
+    #    :rtype M: list
+
+    #    """
+
+    #    radbox=[0,0,0,0,0,0]
+    #    radbox[3:]=np.deg2rad(np.array(box[3:]))
+            
+    #    n2=(np.cos(radbox[3])-np.cos(radbox[5])*np.cos(radbox[4]))/np.sin(radbox[5])
+
+    #    M=np.array([[1,                                 0,                                      0],
+    #                [np.cos(radbox[5]), np.sin(radbox[5]),                                      0],
+    #                [np.cos(radbox[4]),                n2, np.sqrt(np.sin(radbox[4])**2-n2*n2)]])
+        
+    #    M*=np.array(box[0:3])
+
+    #    return M
+
     @staticmethod
     def _box_matrix(box: list):
-        """Given a box vector [a, b, c, alpha, beta, gamma], compute the box matrix.
-
-        :param box: box vector. box vectors (a,b,c) are assumed to be i nm, angles (alpha, beta, gamma) are assumed to be in degrees.
-        :type box: list
-        :returns M: box matrix
-        :rtype M: list
-
-        """
-
-        radbox=[0,0,0,0,0,0]
-        radbox[3:]=np.deg2rad(np.array(box[3:]))
-            
-        n2=(np.cos(radbox[3])-np.cos(radbox[5])*np.cos(radbox[4]))/np.sin(radbox[5])
-
-        M=np.array([[1,                                 0,                                      0],
-                    [np.cos(radbox[5]), np.sin(radbox[5]),                                      0],
-                    [np.cos(radbox[4]),                n2, np.sqrt(np.sin(radbox[4])**2-n2*n2)]])
-        
-        M*=np.array(box[0:3])
-
+        radbox = [0,0,0,0,0,0]
+        radbox[3:] = np.deg2rad(np.array(box[3:]))
+        n2 = (np.cos(radbox[3]) - np.cos(radbox[5])*np.cos(radbox[4])) / np.sin(radbox[5])
+        M = np.array([[1,                  0,                  0],
+                    [np.cos(radbox[5]),  np.sin(radbox[5]),  0],
+                    [np.cos(radbox[4]),  n2,                 np.sqrt(np.sin(radbox[4])**2 - n2*n2)]])
+        M = M * np.array(box[0:3])[:, None]        # FIX: was M *= np.array(box[0:3])
         return M
-        
+
+    
     def delete_molecule(self,delete_list: list):
         """Delete molecules from a system and update the index of the remaining molecules.
 
@@ -1514,6 +1528,34 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         return mol_list
 
+    def save_gro(self,gro_filename: str):
+
+        f=open(self.path+'/{}'.format(gro_filename),'w')
+
+        f.write('{:s}\n'.format(self.name))
+        f.write(' {:d}\n'.format(len(self.atoms)))
+
+        for iatom,a in enumerate(self.atoms):
+
+            f.write("{:5d}{:<5s}{:5s}{:5d}{:8.3f}{:8.3f}{:8.3f}\n".format(a.resid+1,
+                                                                                               a.resname,
+                                                                                               a.name,
+                                                                                               a.absindex+1,
+                                                                                               *a.coordinates[0:3],
+                                                                                               ))
+
+        if self.box:
+            M = self._box_matrix(self.box)
+            f.write("   ")
+            f.write("{:f} {:f} {:f} {:f} {:f} {:f} {:f} {:f} {:f} ".format(M[0,0],M[1,1],M[2,2],
+                                                                  M[0,1],M[0,2],M[1,0],
+                                                                  M[1,2],M[2,0],M[2,1],))
+            f.write('\n')
+
+        f.close()
+
+        self.last_saved_structure=f.name
+
 
     def save_pdb(self,pdb_filename: str):
         """Save a PDB file with the current configuration of the system.
@@ -1530,7 +1572,7 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
                                                                              self.box[0]*10,  # sides in A
                                                                              self.box[1]*10,
                                                                              self.box[2]*10,
-                                                                             self.box[3],	  # anglse in degrees
+                                                                             self.box[3],	  # angles in degrees
                                                                              self.box[4],
                                                                              self.box[5]))
 
@@ -1638,38 +1680,152 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         return Rz @ Ry @ Rx  # applied right-to-left: first Rx, then Ry, then Rz
 
     def rotate_cell(self, angles, degrees=True, recenter=True):
-        """Rotate the simulation box by arbitrary angles
-
-        :param angles: List of angles for the rotation (around the 3 axes). Values can be assigned in degrees or radians. If radians, select degrees=False.
-        :type angles: list 
-        :param degrees: Input angles in degrees? Defaults to True
-        :type degrees: bool, optional
-        :param recenter: Recenter the rotated structure in the box? Defaults to True
-        :type recenter: bool, optional
-        """
-        
         if degrees:
             angles = np.deg2rad(angles)
 
-        M = self._box_matrix(self.box)
+        M = self._box_matrix(self.box)      # requires the row-scaling fix below
         R = self._rotation_matrix(*angles)
-        
-        # Rotate coordinates of the atoms
+
+        M_rot = M @ R.T                                          # FIX: was R @ M
+        M_final, Rz_correction, perm, signs = self._canonicalize_box(M_rot)
+        R_total = Rz_correction @ R
 
         for m in self.molecules:
             for a in m.atoms:
-                a.coordinates = np.array(a.coordinates) @ R.T
+                a.coordinates = np.array(a.coordinates) @ R_total.T   # FIX: was R.T alone
 
-        # Rotate box representation (i.e. update a,b,c,alpha,beta,gamma)
-
-        M_new = R @ M
-
-        self.box = self._matrix_to_cell_params(M_new)
+        self.box = self._matrix_to_cell_params(M_final)
 
         if recenter:
             self.center_box()
+            
+    #def rotate_cell(self, angles, degrees=True, recenter=True):
+    #    """Rotate the simulation box by arbitrary angles
 
+    #    :param angles: List of angles for the rotation (around the 3 axes). Values can be assigned in degrees or radians. If radians, select degrees=False.
+    #    :type angles: list 
+    #    :param degrees: Input angles in degrees? Defaults to True
+    #    :type degrees: bool, optional
+    #    :param recenter: Recenter the rotated structure in the box? Defaults to True
+    #    :type recenter: bool, optional
+    #    """
+        
+    #    if degrees:
+    #        angles = np.deg2rad(angles)
 
+    #    M = self._box_matrix(self.box)
+    #    R = self._rotation_matrix(*angles)
+        
+    #    # Rotate coordinates of the atoms
+
+    #    for m in self.molecules:
+    #        for a in m.atoms:
+    #            a.coordinates = np.array(a.coordinates) @ R.T
+
+    #    # Rotate box representation (i.e. update a,b,c,alpha,beta,gamma)
+
+    #    #M_new = R @ M
+    #    M_rot = R @ M.T
+
+    #    M_final, Rz_correction, perm, signs = self._canonicalize_box(M_rot)
+
+    #    R_total = Rz_correction @ R   # combined rotation to actually apply to atoms
+
+    #    for m in self.molecules:
+    #       for a in m.atoms:
+    #            a.coordinates = np.array(a.coordinates) @ R_total.T
+
+    #    self.box = self._matrix_to_cell_params(M_final)
+
+    #    if recenter:
+    #        self.center_box()
+
+    @staticmethod
+    def _canonicalize_box(L):
+        """
+        Given rotated lattice vectors (rows of L) whose face-normal is already
+        aligned to +z, produce the canonical PDB/GROMACS form:
+        - vector 'a' lies purely on +x
+        - vector 'b' lies in the xy-plane (bz = 0)
+        - vector 'c' has cz > 0
+        - matrix is right-handed (det > 0)
+
+        This needs TWO kinds of operation:
+        (i)  relabeling (permutation P) + sign flips (S) -- picking which
+            physical vector we call a/b/c, and which direction is "positive".
+            These are NOT spatial transformations: they must NEVER be applied
+            to atomic coordinates (doing so shears/stretches them, since P/S
+            can swap vectors of different lengths). They only affect how the
+            box is labeled/written.
+        (ii) an additional rotation ABOUT the z-axis (Rz_correction) -- this
+            IS a genuine rotation, safe and necessary to apply to atoms too.
+
+        Returns
+        -------
+        L_final : (3,3) ndarray
+            Final lattice vectors (rows a,b,c) in PDB/GROMACS convention.
+        Rz_correction : (3,3) ndarray
+            The pure rotation-about-z that was applied (for the winning
+            perm/sign candidate) AFTER the permutation/sign-flip. This is the
+            rotation you must also apply to atomic coordinates, IN ADDITION to
+            the R_align used to bring the face-normal onto +z. It is exposed
+            here specifically so the caller can build:
+                R_total = Rz_correction @ R_align
+            and apply R_total (and ONLY R_total) to atom coordinates.
+        perm : tuple
+            The winning row permutation of L (for reference/debugging only --
+            do not apply to atoms).
+        signs : tuple
+            The winning sign flips of L (for reference/debugging only -- do
+            not apply to atoms).
+        """
+        from itertools import permutations, product
+
+        best = None
+        for perm in permutations(range(3)):
+            for signs in product([1, -1], repeat=3):
+                M = np.array([signs[i] * L[perm[i]] for i in range(3)])
+                a, b, c = M
+
+                # Step (ii): rotate about z so that 'a' lands exactly on +x.
+                # This does not disturb the z-components of a, b, c (rotation
+                # about z leaves z untouched), so if a or b had a nonzero z
+                # component to begin with, this reduction isn't valid for that
+                # perm/sign choice -- skip it.
+                if abs(a[2]) > 1e-6 or abs(b[2]) > 1e-6:
+                    continue
+
+                theta = -np.arctan2(a[1], a[0])
+                cz_, sz_ = np.cos(theta), np.sin(theta)
+                Rz = np.array([[cz_, -sz_, 0],
+                                [sz_,  cz_, 0],
+                                [0,     0,  1]])
+                M2 = (Rz @ M.T).T
+                a2, b2, c2 = M2
+
+                if a2[0] <= 0 or abs(a2[1]) > 1e-6:
+                    continue
+                if b2[1] <= 0:
+                    continue
+                if c2[2] <= 0:
+                    continue
+                if np.linalg.det(M2) <= 0:
+                    continue
+
+                score = abs(a2[1])  # ~0 by construction; kept for tie-breaking
+                if best is None or score < best[0]:
+                    best = (score, M2.copy(), Rz.copy(), perm, signs)
+
+        if best is None:
+            raise RuntimeError(
+                "Could not reduce to PDB convention. This will happen if hkl is not "
+                "one of (1,0,0)/(0,1,0)/(0,0,1) (or a single-axis negative), since a "
+                "general hkl face is not spanned by two of the ORIGINAL a,b,c vectors -- "
+                "it requires a new in-plane lattice basis (integer combinations of a,b,c), "
+                "which this script does not construct."
+            )
+        _, L_final, Rz_correction, perm, signs = best
+        return L_final, Rz_correction, perm, signs
 
     @staticmethod
     def _matrix_to_cell_params(M):
