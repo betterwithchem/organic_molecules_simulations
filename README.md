@@ -32,7 +32,17 @@ Jupyter notebooks can be found in `examples/notebooks`
 
 ## Updates
 
-##### Last update 04/08/2026
+##### Last update 04/09/2026
+
+##### Added
+
+- Added `System.rotation_to_z()` which allows to rotate a box in order to expose one Miller face (at the moment restricted to 100, 010, 001) normal to the z cartesian axis. 
+
+##### Fix
+
+- Fixed a bug in `System.rotate_cell()` that for non-orthorombic boxes misaligned the rotated structures and the boxes, introducing small errors that created issues with PBC in large boxes.
+
+##### 04/08/2026
 
 ##### Added
 
