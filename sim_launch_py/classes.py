@@ -1679,6 +1679,104 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         return Rz @ Ry @ Rx  # applied right-to-left: first Rx, then Ry, then Rz
 
+    @staticmethod
+    def _build_lattice(a, b, c, alpha_deg, beta_deg, gamma_deg):
+        """Standard PDB/GROMACS convention real-space vectors as rows of a 3x3 matrix."""
+        al, be, ga = np.radians([alpha_deg, beta_deg, gamma_deg])
+        ax, ay, az = a, 0.0, 0.0
+        bx, by, bz = b * np.cos(ga), b * np.sin(ga), 0.0
+        cx = c * np.cos(be)
+        cy = c * (np.cos(al) - np.cos(be) * np.cos(ga)) / np.sin(ga)
+        cz_sq = c**2 - cx**2 - cy**2
+        if cz_sq < 0:
+            raise ValueError("Invalid cell parameters: negative cz^2, check angles.")
+        cz = np.sqrt(cz_sq)
+        return np.array([[ax, ay, az],
+                        [bx, by, bz],
+                        [cx, cy, cz]])  # rows = a, b, c
+
+
+    @staticmethod
+    def _reciprocal_vectors(L):
+        """Rows of L are a, b, c. Returns rows a*, b*, c* (direction + 1/spacing scale)."""
+        a, b, c = L
+        V = np.dot(a, np.cross(b, c))
+        astar = np.cross(b, c) / V
+        bstar = np.cross(c, a) / V
+        cstar = np.cross(a, b) / V
+        return np.array([astar, bstar, cstar]), V
+
+    @staticmethod
+    def _cell_params_from_lattice(L):
+        """Inverse of build_lattice: recover a,b,c,alpha,beta,gamma from row vectors."""
+        a, b, c = L
+        a_len = np.linalg.norm(a)
+        b_len = np.linalg.norm(b)
+        c_len = np.linalg.norm(c)
+        alpha = np.degrees(np.arccos(np.dot(b, c) / (b_len * c_len)))
+        beta = np.degrees(np.arccos(np.dot(a, c) / (a_len * c_len)))
+        gamma = np.degrees(np.arccos(np.dot(a, b) / (a_len * b_len)))
+        return a_len, b_len, c_len, alpha, beta, gamma
+
+    def rotation_to_z(self, hkl, recenter=True):
+
+        a_len, b_len, c_len = self.box[0:3] 
+        alpha, beta, gamma = self.box[3:]          # degrees
+
+        L = self._build_lattice(a_len, b_len, c_len, alpha, beta, gamma)
+        recip, V = self._reciprocal_vectors(L)
+        astar, bstar, cstar = recip
+
+        h, k, l = hkl
+        normal = h * astar + k * bstar + l * cstar
+        normal_unit = normal / np.linalg.norm(normal)
+        print(f"Face {tuple(hkl)} normal direction (unit vector): {normal_unit}\n")
+
+        v = normal_unit 
+        
+        """Rodrigues' rotation matrix that sends unit vector v -> +z (0,0,1)."""
+        v = v / np.linalg.norm(v)
+        z = np.array([0.0, 0.0, 1.0])
+        axis = np.cross(v, z)
+        s = np.linalg.norm(axis)
+        c = np.dot(v, z)
+        if s < 1e-12:
+            # already parallel (c=+1) or antiparallel (c=-1)
+            if c > 0:
+                return np.eye(3)
+            else:
+                # 180 degree rotation about any axis perpendicular to v
+                # pick a convenient perpendicular axis
+                perp = np.array([1.0, 0.0, 0.0]) if abs(v[0]) < 0.9 else np.array([0.0, 1.0, 0.0])
+                axis = np.cross(v, perp)
+                axis /= np.linalg.norm(axis)
+                K = np.array([[0, -axis[2], axis[1]],
+                            [axis[2], 0, -axis[0]],
+                            [-axis[1], axis[0], 0]])
+                return np.eye(3) + 2 * K @ K  # 180 deg Rodrigues simplification
+        axis = axis / s
+        K = np.array([[0, -axis[2], axis[1]],
+                    [axis[2], 0, -axis[0]],
+                    [-axis[1], axis[0], 0]])
+        R = np.eye(3) + K * s + K @ K * (1 - c)
+
+        L_rot = (R @ L.T).T
+
+        rotated_normal = R @ normal_unit
+        print(f"Sanity check: Rotated face-normal direction (should be ~[0,0,1]): {rotated_normal}\n")
+
+        L_final, Rz_correction, perm, signs = self._canonicalize_box(L_rot)
+
+        R_total = Rz_correction @ R
+
+        for m in self.molecules:
+            for a in m.atoms:
+                a.coordinates = np.array(a.coordinates) @ R_total.T   # FIX: was R.T alone
+
+        a2, b2, c2, alpha2, beta2, gamma2 = self._cell_params_from_lattice(L_final)
+        self.box = [a2,b2,c2, alpha2, beta2, gamma2]
+
+        
     def rotate_cell(self, angles, degrees=True, recenter=True):
         if degrees:
             angles = np.deg2rad(angles)
