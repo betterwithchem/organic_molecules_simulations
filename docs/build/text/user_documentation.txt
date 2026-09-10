@@ -155,6 +155,13 @@ class sim_launch_py.classes.Project(name: str, path: str)
       Parameters:
          **delete_list** -- list of system indexes
 
+   find_system_by_name(name)
+
+      Get a System, given the name.
+
+      Parameters:
+         **name** -- name of the wanted System
+
    load_project(project_folder: str)
 
       Load an existing project. The Project object is saved in the
@@ -236,8 +243,62 @@ class sim_launch_py.classes.System(name: str, path=None)
    * add_molecule(self, name: str, moltype=None, knownmolecules=None)
      : add species to the system.
 
+   * rename_molecules(self, idx_list:list, new_name_list: list):
+     rename molecules.
+
+   * reorder_molecules(self, order=None): reorder molecules to an
+     arbitrary order, by default water molecules (WAT or SOL) will be
+     moved to the end.
+
    * add_box(self, box_side: float, shape='cubic') : create simulation
      box.
+
+   * center_box(self) : center the molecules in the box.
+
+   * rotation_to_z(self, hkl, recenter=True): rotate the box to expose
+     the given Miller index (100,010,001) normal to the z-axis.
+
+   * solvate(self, initial_conf:str, final_conf:str): add solvent
+     molecules.
+
+   * insert_molecules(self, molstruct:str, initial_conf:str,
+     final_conf:str, nmol:int=1, exact:bool=True): insert new
+     molecules.
+
+   * delete_molecule(self,delete_list: list): delete molecules from
+     the system.
+
+   * find_molecule_by_resname(self,resname: str): find a molecule by
+     name.
+
+   * save_gro(self,gro_filename: str): save the current state to a
+     .gro file.
+
+   * save_pdb(self,pdb_filename: str): save the current state to a
+     .pdb file.
+
+   * create_group(self, name:str, atoms_list:list=None,
+     molecules_list:list=None): create a new group.
+
+   * add_to_group(self, name:str, atoms_list_list=None,
+     molecules_list:list=None): add molecules and atoms to a new
+     group.
+
+   * find_group_by_name(self, name:str): find a group by its name.
+
+   * delete_group(self, name:str): delete a group.
+
+   * write_ndx(self, filename:str='index.ndx, overwrite=False): write
+     a gromacs .ndx file.
+
+   * replicate_cell(self, repl:list): replicate the coordinates in
+     space.
+
+   * create_topology(self, topology:str='topology.top'): create a
+     gromacs .top topology file.
+
+   * writeTop(self, atomtypes_path: str, molecules: objects): write
+     the topology file for the system in gromacs format.
 
    * createSolventBox(self, solvent: object,
      output_structure="solvent_box.pdb", density=None, nmols=None):
@@ -245,18 +306,27 @@ class sim_launch_py.classes.System(name: str, path=None)
 
    * insertSolute(self, solute: object, solvent: object,
      solvent_box="solvent_box.pdb", concentration=0,
-     output_structure="start.pdb"): add solute molecules to the box
-     and remove excess solvent molecules.
+     output_structure="start.pdb"):
 
-   * writeTop(self, atomtypes_path: str, molecules: objects): write
-     the topology file for the system in gromacs format.
+   add solute molecules to the box and remove excess solvent
+   molecules.
 
    * add_simulation(self, simtype: str, mdrun_options='', mdp='',
      print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''):
      add simulation to the system.
 
+   * find_simulation_by_name(self,name: str): find a simulation by its
+     name.
+
+   * find_simulations_by_type(self,simtype: str): find a simulation by
+     its type.
+
    * print_command(self, bash_file): print the bash script file to run
      the simulations.
+
+   * create_run_command(self, scriptname: str, simulations: list=None,
+     platform: str='bash', platform_dict: dict=None): create the run
+     command to perform the simulations.
 
    add_box(box_side: float, shape: str = 'cubic')
 
@@ -492,21 +562,6 @@ class sim_launch_py.classes.System(name: str, path=None)
          **repl** (*list*) -- multipliers for the three directions,
          repl=[1, 1, 1] would mean that the cell is not replicated.
 
-   rotate_cell(angles, degrees=True, recenter=True)
-
-      Rotate the simulation box by arbitrary angles
-
-      Parameters:
-         * **angles** (*list*) -- List of angles for the rotation
-           (around the 3 axes). Values can be assigned in degrees or
-           radians. If radians, select degrees=False.
-
-         * **degrees** (*bool**, **optional*) -- Input angles in
-           degrees? Defaults to True
-
-         * **recenter** (*bool**, **optional*) -- Recenter the rotated
-           structure in the box? Defaults to True
-
    save_pdb(pdb_filename: str)
 
       Save a PDB file with the current configuration of the system.
@@ -520,11 +575,13 @@ class sim_launch_py.classes.System(name: str, path=None)
       are:
          'spc216.gro' for 3-point water 'tip4p.gro' for 4-point water
 
-      Args:
-         initial_conf (str): name of the input pdb file final_conf
-         (str): name of the output pdb file solventbox (str,
-         optional): Structure with the solvent box. Defaults to
-         'spc216.gro'.
+      Parameters:
+         * **initial_conf** -- name of the input pdb file
+
+         * **final_conf** -- name of the output pdb file
+
+         * **solventbox** -- (optional) Structure with the solvent
+           box. Defaults to 'spc216.gro'.
 
    write_ndx(filename: str = 'index.ndx', overwrite=False)
 

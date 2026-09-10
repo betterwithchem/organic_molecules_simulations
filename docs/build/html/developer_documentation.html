@@ -132,11 +132,6 @@ MW are dummy atoms, like those used in TIP4P water.</p>
 <dt class="sig sig-object py" id="sim_launch_py.classes.Group._check_duplicates">
 <span class="sig-name descname"><span class="pre">_check_duplicates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Group._check_duplicates" title="Link to this definition">¶</a></dt>
 <dd><p>Check if there are duplicate atoms in the group and return the sorted list of unique atom objects</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -350,7 +345,13 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Project.find_system_by_name">
 <span class="sig-name descname"><span class="pre">find_system_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.find_system_by_name" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get a System, given the name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – name of the wanted System</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Project.gromacs">
@@ -457,12 +458,35 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <ul class="simple">
 <li><p>help() : print the help for this class</p></li>
 <li><p>add_molecule(self, name: str, moltype=None, knownmolecules=None) : add species to the system.</p></li>
+<li><p>rename_molecules(self, idx_list:list, new_name_list: list): rename molecules.</p></li>
+<li><p>reorder_molecules(self, order=None): reorder molecules to an arbitrary order, by default water molecules (WAT or SOL) will be moved to the end.</p></li>
 <li><p>add_box(self, box_side: float, shape=’cubic’) : create simulation box.</p></li>
-<li><p>createSolventBox(self, solvent: object, output_structure=”solvent_box.pdb”, density=None, nmols=None): add solvent molecules to the simulation box.</p></li>
-<li><p>insertSolute(self, solute: object, solvent: object, solvent_box=”solvent_box.pdb”, concentration=0, output_structure=”start.pdb”): add solute molecules to the box and remove excess solvent molecules.</p></li>
+<li><p>center_box(self) : center the molecules in the box.</p></li>
+<li><p>rotation_to_z(self, hkl, recenter=True): rotate the box to expose the given Miller index (100,010,001) normal to the z-axis.</p></li>
+<li><p>solvate(self, initial_conf:str, final_conf:str): add solvent molecules.</p></li>
+<li><p>insert_molecules(self, molstruct:str, initial_conf:str, final_conf:str, nmol:int=1, exact:bool=True): insert new molecules.</p></li>
+<li><p>delete_molecule(self,delete_list: list): delete molecules from the system.</p></li>
+<li><p>find_molecule_by_resname(self,resname: str): find a molecule by name.</p></li>
+<li><p>save_gro(self,gro_filename: str): save the current state to a .gro file.</p></li>
+<li><p>save_pdb(self,pdb_filename: str): save the current state to a .pdb file.</p></li>
+<li><p>create_group(self, name:str, atoms_list:list=None, molecules_list:list=None): create a new group.</p></li>
+<li><p>add_to_group(self, name:str, atoms_list_list=None, molecules_list:list=None): add molecules and atoms to a new group.</p></li>
+<li><p>find_group_by_name(self, name:str): find a group by its name.</p></li>
+<li><p>delete_group(self, name:str): delete a group.</p></li>
+<li><p>write_ndx(self, filename:str=’index.ndx, overwrite=False): write a gromacs .ndx file.</p></li>
+<li><p>replicate_cell(self, repl:list): replicate the coordinates in space.</p></li>
+<li><p>create_topology(self, topology:str=’topology.top’): create a gromacs .top topology file.</p></li>
 <li><p>writeTop(self, atomtypes_path: str, molecules: objects): write the topology file for the system in gromacs format.</p></li>
+<li><p>createSolventBox(self, solvent: object, output_structure=”solvent_box.pdb”, density=None, nmols=None): add solvent molecules to the simulation box.</p></li>
+<li><p>insertSolute(self, solute: object, solvent: object, solvent_box=”solvent_box.pdb”, concentration=0, output_structure=”start.pdb”):</p></li>
+</ul>
+<p>add solute molecules to the box and remove excess solvent molecules.</p>
+<ul class="simple">
 <li><p>add_simulation(self, simtype: str, mdrun_options=’’, mdp=’’, print_bash=True, name=’’,maxwarn=0, start_coord=’’,gmxbin=’’): add simulation to the system.</p></li>
+<li><p>find_simulation_by_name(self,name: str): find a simulation by its name.</p></li>
+<li><p>find_simulations_by_type(self,simtype: str): find a simulation by its type.</p></li>
 <li><p>print_command(self, bash_file): print the bash script file to run the simulations.</p></li>
+<li><p>create_run_command(self, scriptname: str, simulations: list=None, platform: str=’bash’, platform_dict: dict=None): create the run command to perform the simulations.</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._assign_atoms_to_molecules">
@@ -484,6 +508,12 @@ The value of the attribute is the absolute path of the binary (/path/to/gmx or /
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._build_lattice">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_build_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma_deg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._build_lattice" title="Link to this definition">¶</a></dt>
+<dd><p>Standard PDB/GROMACS convention real-space vectors as rows of a 3x3 matrix.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._canonicalize_box">
 <span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_canonicalize_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._canonicalize_box" title="Link to this definition">¶</a></dt>
 <dd><p>Given rotated lattice vectors (rows of L) whose face-normal is already
@@ -492,44 +522,58 @@ aligned to +z, produce the canonical PDB/GROMACS form:
 - vector ‘b’ lies in the xy-plane (bz = 0)
 - vector ‘c’ has cz &gt; 0
 - matrix is right-handed (det &gt; 0)</p>
-<p>This needs TWO kinds of operation:
-(i)  relabeling (permutation P) + sign flips (S) – picking which</p>
-<blockquote>
-<div><p>physical vector we call a/b/c, and which direction is “positive”.
+<p>This needs TWO kinds of operation:</p>
+<ol class="lowerroman simple">
+<li><p>relabeling (permutation P) + sign flips (S) – picking which
+physical vector we call a/b/c, and which direction is “positive”.
 These are NOT spatial transformations: they must NEVER be applied
 to atomic coordinates (doing so shears/stretches them, since P/S
 can swap vectors of different lengths). They only affect how the
-box is labeled/written.</p>
-</div></blockquote>
-<ol class="lowerroman simple" start="2">
-<li><p>an additional rotation ABOUT the z-axis (Rz_correction) – this</p></li>
+box is labeled/written.</p></li>
+<li><p>an additional rotation ABOUT the z-axis (Rz_correction) – this is a genuine rotation, safe and necessary to apply to atoms too.</p></li>
 </ol>
-<blockquote>
-<div><p>IS a genuine rotation, safe and necessary to apply to atoms too.</p>
-</div></blockquote>
-<section id="returns">
-<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
-<dl>
-<dt>L_final<span class="classifier">(3,3) ndarray</span></dt><dd><p>Final lattice vectors (rows a,b,c) in PDB/GROMACS convention.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>L</strong> – input lattice vectors</p>
 </dd>
-<dt>Rz_correction<span class="classifier">(3,3) ndarray</span></dt><dd><p>The pure rotation-about-z that was applied (for the winning
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>L_final, Final lattice vectors (rows a,b,c) in PDB/GROMACS convention.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(3,3) ndarray</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Rz_correction, the pure rotation-about-z that was applied (for the winning
 perm/sign candidate) AFTER the permutation/sign-flip. This is the
 rotation you must also apply to atomic coordinates, IN ADDITION to
 the R_align used to bring the face-normal onto +z. It is exposed
-here specifically so the caller can build:</p>
-<blockquote>
-<div><p>R_total = Rz_correction &#64; R_align</p>
-</div></blockquote>
-<p>and apply R_total (and ONLY R_total) to atom coordinates.</p>
+here specifically so the caller can build: R_total = Rz_correction &#64; R_align
+and apply R_total (and ONLY R_total) to atom coordinates.</p>
 </dd>
-<dt>perm<span class="classifier">tuple</span></dt><dd><p>The winning row permutation of L (for reference/debugging only –
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(3,3) ndarray</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>perm, The winning row permutation of L (for reference/debugging only –
 do not apply to atoms).</p>
 </dd>
-<dt>signs<span class="classifier">tuple</span></dt><dd><p>The winning sign flips of L (for reference/debugging only – do
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>signs, The winning sign flips of L (for reference/debugging only – do
 not apply to atoms).</p>
 </dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
 </dl>
-</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._cell_params_from_lattice">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_cell_params_from_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._cell_params_from_lattice" title="Link to this definition">¶</a></dt>
+<dd><p>Inverse of build_lattice: recover a,b,c,alpha,beta,gamma from row vectors.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -557,6 +601,12 @@ not apply to atoms).</p>
 <dt class="sig sig-object py" id="sim_launch_py.classes.System._matrix_to_cell_params">
 <span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_matrix_to_cell_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._matrix_to_cell_params" title="Link to this definition">¶</a></dt>
 <dd><p>Convert matrix of row vectors back to cell parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System._reciprocal_vectors">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">_reciprocal_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System._reciprocal_vectors" title="Link to this definition">¶</a></dt>
+<dd><p>Rows of L are a, b, c. Returns rows a*, b*, c* (direction + 1/spacing scale).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -930,6 +980,11 @@ that are assumed to be solvent.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.System.rotation_to_z">
+<span class="sig-name descname"><span class="pre">rotation_to_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hkl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.rotation_to_z" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.save_gro">
 <span class="sig-name descname"><span class="pre">save_gro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gro_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.save_gro" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -957,9 +1012,14 @@ that are assumed to be solvent.</p>
 <dt>Add water to the box using gmx solvate. Choices at the moment are: </dt><dd><p>‘spc216.gro’ for 3-point water
 ‘tip4p.gro’ for 4-point water</p>
 </dd>
-<dt>Args:</dt><dd><p>initial_conf (str): name of the input pdb file
-final_conf (str): name of the output pdb file
-solventbox (str, optional): Structure with the solvent box. Defaults to ‘spc216.gro’.</p>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initial_conf</strong> – name of the input pdb file</p></li>
+<li><p><strong>final_conf</strong> – name of the output pdb file</p></li>
+<li><p><strong>solventbox</strong> – (optional) Structure with the solvent box. Defaults to ‘spc216.gro’.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

@@ -308,6 +308,11 @@ class Project():
         self._renumber_systems()
 
     def find_system_by_name(self,name):
+        """Get a System, given the name.
+
+        :param name: name of the wanted System
+        :type param: str
+        """
 
         for s in self.systems:
             if s.name==name:
@@ -385,12 +390,34 @@ class System():
     Methods:\n
     - help() : print the help for this class\n
     - add_molecule(self, name: str, moltype=None, knownmolecules=None) : add species to the system.\n
+    - rename_molecules(self, idx_list:list, new_name_list: list): rename molecules. \n
+    - reorder_molecules(self, order=None): reorder molecules to an arbitrary order, by default water molecules (WAT or SOL) will be moved to the end.\n
     - add_box(self, box_side: float, shape='cubic') : create simulation box.\n
-    - createSolventBox(self, solvent: object, output_structure="solvent_box.pdb", density=None, nmols=None): add solvent molecules to the simulation box.  \n
-    - insertSolute(self, solute: object, solvent: object, solvent_box="solvent_box.pdb", concentration=0, output_structure="start.pdb"): add solute molecules to the box and remove excess solvent molecules.\n
+    - center_box(self) : center the molecules in the box.\n
+    - rotation_to_z(self, hkl, recenter=True): rotate the box to expose the given Miller index (100,010,001) normal to the z-axis.\n
+    - solvate(self, initial_conf:str, final_conf:str): add solvent molecules.\n
+    - insert_molecules(self, molstruct:str, initial_conf:str, final_conf:str, nmol:int=1, exact:bool=True): insert new molecules.\n
+    - delete_molecule(self,delete_list: list): delete molecules from the system.\n
+    - find_molecule_by_resname(self,resname: str): find a molecule by name.\n
+    - save_gro(self,gro_filename: str): save the current state to a .gro file.\n
+    - save_pdb(self,pdb_filename: str): save the current state to a .pdb file.\n
+    - create_group(self, name:str, atoms_list:list=None, molecules_list:list=None): create a new group.\n
+    - add_to_group(self, name:str, atoms_list_list=None, molecules_list:list=None): add molecules and atoms to a new group.\n
+    - find_group_by_name(self, name:str): find a group by its name.\n
+    - delete_group(self, name:str): delete a group.\n
+    - write_ndx(self, filename:str='index.ndx, overwrite=False): write a gromacs .ndx file.\n
+    - replicate_cell(self, repl:list): replicate the coordinates in space.\n
+    - create_topology(self, topology:str='topology.top'): create a gromacs .top topology file.\n
     - writeTop(self, atomtypes_path: str, molecules: objects): write the topology file for the system in gromacs format.\n
+        
+    - createSolventBox(self, solvent: object, output_structure="solvent_box.pdb", density=None, nmols=None): add solvent molecules to the simulation box.  \n
+    - insertSolute(self, solute: object, solvent: object, solvent_box="solvent_box.pdb", concentration=0, output_structure="start.pdb"): 
+    add solute molecules to the box and remove excess solvent molecules.\n
     - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''): add simulation to the system.\n
+    - find_simulation_by_name(self,name: str): find a simulation by its name.\n
+    - find_simulations_by_type(self,simtype: str): find a simulation by its type.\n
     - print_command(self, bash_file): print the bash script file to run the simulations.\n
+    - create_run_command(self, scriptname: str, simulations: list=None, platform: str='bash', platform_dict: dict=None): create the run command to perform the simulations.\n
    
     """
     
@@ -632,10 +659,12 @@ class System():
            'spc216.gro' for 3-point water
            'tip4p.gro' for 4-point water
 
-        Args:
-            initial_conf (str): name of the input pdb file
-            final_conf (str): name of the output pdb file
-            solventbox (str, optional): Structure with the solvent box. Defaults to 'spc216.gro'.
+        :param initial_conf: name of the input pdb file
+        :type param: str
+        :param final_conf: name of the output pdb file
+        :type param: str
+        :param solventbox: (optional) Structure with the solvent box. Defaults to 'spc216.gro'.
+        :type param: str 
         """
 
         final_conf_ext=final_conf.split('.')[-1]
@@ -1778,6 +1807,13 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
 
         
     def rotate_cell(self, angles, degrees=True, recenter=True):
+
+        import warnings
+        warnings.warn('This function is now DEPRECATED and will need to be reviewed. \n' \
+        'If the rotated box cannot be written in canonical form, the function will fail.\n' \
+        'Consider using rotation_to_z().' 
+        )
+
         if degrees:
             angles = np.deg2rad(angles)
 
@@ -1848,34 +1884,33 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         - vector 'c' has cz > 0
         - matrix is right-handed (det > 0)
 
-        This needs TWO kinds of operation:
-        (i)  relabeling (permutation P) + sign flips (S) -- picking which
+
+        (i) relabeling (permutation P) + sign flips (S) -- picking which
             physical vector we call a/b/c, and which direction is "positive".
             These are NOT spatial transformations: they must NEVER be applied
             to atomic coordinates (doing so shears/stretches them, since P/S
             can swap vectors of different lengths). They only affect how the
             box is labeled/written.
-        (ii) an additional rotation ABOUT the z-axis (Rz_correction) -- this
-            IS a genuine rotation, safe and necessary to apply to atoms too.
+        (ii) an additional rotation ABOUT the z-axis (Rz_correction) -- this is a genuine rotation, safe and necessary to apply to atoms too.
 
-        Returns
-        -------
-        L_final : (3,3) ndarray
-            Final lattice vectors (rows a,b,c) in PDB/GROMACS convention.
-        Rz_correction : (3,3) ndarray
-            The pure rotation-about-z that was applied (for the winning
+        :param L: input lattice vectors
+        :type param: (3,3) ndarray 
+        :returns: L_final, Final lattice vectors (rows a,b,c) in PDB/GROMACS convention.
+        :rtype: (3,3) ndarray
+        :returns: Rz_correction, the pure rotation-about-z that was applied (for the winning
             perm/sign candidate) AFTER the permutation/sign-flip. This is the
             rotation you must also apply to atomic coordinates, IN ADDITION to
             the R_align used to bring the face-normal onto +z. It is exposed
-            here specifically so the caller can build:
-                R_total = Rz_correction @ R_align
+            here specifically so the caller can build: R_total = Rz_correction @ R_align
             and apply R_total (and ONLY R_total) to atom coordinates.
-        perm : tuple
-            The winning row permutation of L (for reference/debugging only --
-            do not apply to atoms).
-        signs : tuple
-            The winning sign flips of L (for reference/debugging only -- do
-            not apply to atoms).
+        :rtype: (3,3) ndarray
+        :returns: perm, The winning row permutation of L (for reference/debugging only --
+                    do not apply to atoms).
+        :rtype: tuple
+        :returns: signs, The winning sign flips of L (for reference/debugging only -- do
+                    not apply to atoms).
+        :rtype: tuple
+            
         """
         from itertools import permutations, product
 
@@ -2533,8 +2568,6 @@ class Group():
     def _check_duplicates(self):
 
         """Check if there are duplicate atoms in the group and return the sorted list of unique atom objects
-
-        :returns: 
 
         """
         atom_ids=[]
