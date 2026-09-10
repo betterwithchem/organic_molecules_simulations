@@ -153,6 +153,17 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sim_launch_py.classes.Project.find_system_by_name">
+<span class="sig-name descname"><span class="pre">find_system_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.find_system_by_name" title="Link to this definition">¶</a></dt>
+<dd><p>Get a System, given the name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – name of the wanted System</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.Project.load_project">
 <span class="sig-name descname"><span class="pre">load_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.Project.load_project" title="Link to this definition">¶</a></dt>
 <dd><p>Load an existing project. The Project object is saved in the project directory every time the command Project.save()</p>
@@ -222,12 +233,35 @@
 <ul class="simple">
 <li><p>help() : print the help for this class</p></li>
 <li><p>add_molecule(self, name: str, moltype=None, knownmolecules=None) : add species to the system.</p></li>
+<li><p>rename_molecules(self, idx_list:list, new_name_list: list): rename molecules.</p></li>
+<li><p>reorder_molecules(self, order=None): reorder molecules to an arbitrary order, by default water molecules (WAT or SOL) will be moved to the end.</p></li>
 <li><p>add_box(self, box_side: float, shape=’cubic’) : create simulation box.</p></li>
-<li><p>createSolventBox(self, solvent: object, output_structure=”solvent_box.pdb”, density=None, nmols=None): add solvent molecules to the simulation box.</p></li>
-<li><p>insertSolute(self, solute: object, solvent: object, solvent_box=”solvent_box.pdb”, concentration=0, output_structure=”start.pdb”): add solute molecules to the box and remove excess solvent molecules.</p></li>
+<li><p>center_box(self) : center the molecules in the box.</p></li>
+<li><p>rotation_to_z(self, hkl, recenter=True): rotate the box to expose the given Miller index (100,010,001) normal to the z-axis.</p></li>
+<li><p>solvate(self, initial_conf:str, final_conf:str): add solvent molecules.</p></li>
+<li><p>insert_molecules(self, molstruct:str, initial_conf:str, final_conf:str, nmol:int=1, exact:bool=True): insert new molecules.</p></li>
+<li><p>delete_molecule(self,delete_list: list): delete molecules from the system.</p></li>
+<li><p>find_molecule_by_resname(self,resname: str): find a molecule by name.</p></li>
+<li><p>save_gro(self,gro_filename: str): save the current state to a .gro file.</p></li>
+<li><p>save_pdb(self,pdb_filename: str): save the current state to a .pdb file.</p></li>
+<li><p>create_group(self, name:str, atoms_list:list=None, molecules_list:list=None): create a new group.</p></li>
+<li><p>add_to_group(self, name:str, atoms_list_list=None, molecules_list:list=None): add molecules and atoms to a new group.</p></li>
+<li><p>find_group_by_name(self, name:str): find a group by its name.</p></li>
+<li><p>delete_group(self, name:str): delete a group.</p></li>
+<li><p>write_ndx(self, filename:str=’index.ndx, overwrite=False): write a gromacs .ndx file.</p></li>
+<li><p>replicate_cell(self, repl:list): replicate the coordinates in space.</p></li>
+<li><p>create_topology(self, topology:str=’topology.top’): create a gromacs .top topology file.</p></li>
 <li><p>writeTop(self, atomtypes_path: str, molecules: objects): write the topology file for the system in gromacs format.</p></li>
+<li><p>createSolventBox(self, solvent: object, output_structure=”solvent_box.pdb”, density=None, nmols=None): add solvent molecules to the simulation box.</p></li>
+<li><p>insertSolute(self, solute: object, solvent: object, solvent_box=”solvent_box.pdb”, concentration=0, output_structure=”start.pdb”):</p></li>
+</ul>
+<p>add solute molecules to the box and remove excess solvent molecules.</p>
+<ul class="simple">
 <li><p>add_simulation(self, simtype: str, mdrun_options=’’, mdp=’’, print_bash=True, name=’’,maxwarn=0, start_coord=’’,gmxbin=’’): add simulation to the system.</p></li>
+<li><p>find_simulation_by_name(self,name: str): find a simulation by its name.</p></li>
+<li><p>find_simulations_by_type(self,simtype: str): find a simulation by its type.</p></li>
 <li><p>print_command(self, bash_file): print the bash script file to run the simulations.</p></li>
+<li><p>create_run_command(self, scriptname: str, simulations: list=None, platform: str=’bash’, platform_dict: dict=None): create the run command to perform the simulations.</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.add_box">
@@ -494,21 +528,6 @@ that are assumed to be solvent.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sim_launch_py.classes.System.rotate_cell">
-<span class="sig-name descname"><span class="pre">rotate_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.rotate_cell" title="Link to this definition">¶</a></dt>
-<dd><p>Rotate the simulation box by arbitrary angles</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>angles</strong> (<em>list</em>) – List of angles for the rotation (around the 3 axes). Values can be assigned in degrees or radians. If radians, select degrees=False.</p></li>
-<li><p><strong>degrees</strong> (<em>bool</em><em>, </em><em>optional</em>) – Input angles in degrees? Defaults to True</p></li>
-<li><p><strong>recenter</strong> (<em>bool</em><em>, </em><em>optional</em>) – Recenter the rotated structure in the box? Defaults to True</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="sim_launch_py.classes.System.save_pdb">
 <span class="sig-name descname"><span class="pre">save_pdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdb_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sim_launch_py.classes.System.save_pdb" title="Link to this definition">¶</a></dt>
 <dd><p>Save a PDB file with the current configuration of the system.</p>
@@ -526,9 +545,14 @@ that are assumed to be solvent.</p>
 <dt>Add water to the box using gmx solvate. Choices at the moment are: </dt><dd><p>‘spc216.gro’ for 3-point water
 ‘tip4p.gro’ for 4-point water</p>
 </dd>
-<dt>Args:</dt><dd><p>initial_conf (str): name of the input pdb file
-final_conf (str): name of the output pdb file
-solventbox (str, optional): Structure with the solvent box. Defaults to ‘spc216.gro’.</p>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initial_conf</strong> – name of the input pdb file</p></li>
+<li><p><strong>final_conf</strong> – name of the output pdb file</p></li>
+<li><p><strong>solventbox</strong> – (optional) Structure with the solvent box. Defaults to ‘spc216.gro’.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -734,6 +758,7 @@ structure_format (str, optional): format of the structure file. Defaults to ‘p
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.Project.add_system"><code class="docutils literal notranslate"><span class="pre">Project.add_system()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.Project.change_path"><code class="docutils literal notranslate"><span class="pre">Project.change_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.Project.delete_system"><code class="docutils literal notranslate"><span class="pre">Project.delete_system()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.Project.find_system_by_name"><code class="docutils literal notranslate"><span class="pre">Project.find_system_by_name()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.Project.load_project"><code class="docutils literal notranslate"><span class="pre">Project.load_project()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.Project.new_project"><code class="docutils literal notranslate"><span class="pre">Project.new_project()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.Project.save"><code class="docutils literal notranslate"><span class="pre">Project.save()</span></code></a></li>
@@ -759,7 +784,6 @@ structure_format (str, optional): format of the structure file. Defaults to ‘p
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.System.rename_molecules"><code class="docutils literal notranslate"><span class="pre">System.rename_molecules()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.System.reorder_molecules"><code class="docutils literal notranslate"><span class="pre">System.reorder_molecules()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.System.replicate_cell"><code class="docutils literal notranslate"><span class="pre">System.replicate_cell()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.System.rotate_cell"><code class="docutils literal notranslate"><span class="pre">System.rotate_cell()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.System.save_pdb"><code class="docutils literal notranslate"><span class="pre">System.save_pdb()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.System.solvate"><code class="docutils literal notranslate"><span class="pre">System.solvate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sim_launch_py.classes.System.write_ndx"><code class="docutils literal notranslate"><span class="pre">System.write_ndx()</span></code></a></li>
