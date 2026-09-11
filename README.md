@@ -32,11 +32,12 @@ Jupyter notebooks can be found in `examples/notebooks`
 
 ## Updates
 
+
 ##### Last update 11/09/2026
 
 ##### Added
 
-Now it is possible to use arbitrary solvents with System.solvate(). It is sufficient to provide a .pdb file of an equilibrated box of solvent (similar to gromacs solvent boxes). Please note that only pure solvent boxes are supported and that recognition of solvent molecules is based on the residue IDs, so consecutive molecules should have different residue IDs and each molecule should be considered as a single residue (i.e. a solvent of peptides, where each molecule is multiple residues, would fail).
+- Added Now it is possible to use arbitrary solvents with System.solvate(). It is sufficient to provide a .pdb file of an equilibrated box of solvent (similar to gromacs solvent boxes). Please note that only pure solvent boxes are supported and that recognition of solvent molecules is based on the residue IDs, so consecutive molecules should have different residue IDs and each molecule should be considered as a single residue (i.e. a solvent of peptides, where each molecule is multiple residues, would fail).
 
 ##### 04/09/2026
 
