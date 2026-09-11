@@ -573,7 +573,8 @@ class System():
     - add_simulation(self, simtype: str, mdrun_options='', mdp='', print_bash=True, name='',maxwarn=0, start_coord='',gmxbin=''): add simulation to the system.
     - print_command(self, bash_file): print the bash script file to run the simulations.""")
     
-    def add_molecule(self, structure_file: str=None, keep_coordinates: bool=True, keep_box: bool=True):
+    def add_molecule(self, structure_file: str=None, keep_coordinates: bool=True, keep_box: bool=True,
+                     debug=False):
         """Add new molecules to a system starting from a structure file (e.g. a PDB file).
 
         :param structure_file: name of the structure file to be read. Defaults to None.
@@ -611,6 +612,8 @@ class System():
                                                                                                         basename_structure_file+'.mol2',
                                                                                                         self.ambertools),
                                     stdout=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+                if debug:
+                    print(result)
 
             
         else:
@@ -720,6 +723,9 @@ class System():
             result=subprocess.run(['which','gmx'], stdout=subprocess.PIPE).stdout.decode('utf-8')
             base_gmx=result.split('bin')[0]
             solventbox_with_path=base_gmx+'share/gromacs/top/'+solventbox
+        else:
+            solventbox_with_path=solventbox
+
         result=subprocess.run(['gmx', 'solvate', '-cp', initial_conf, '-cs', solventbox_with_path, '-o', \
                                final_conf], stdout=subprocess.PIPE,stderr=subprocess.PIPE).stderr.decode('utf-8')
 
@@ -767,9 +773,16 @@ class System():
                               keep_coordinates=False, keep_box=False)
 
         else:
-            print('At the moment only spc216.gro and tip4p.gro is supported.')
-            print('Note that a .pdb file has been generated, but the System object has NOT been updated.')
-            return(-1)
+            ### MODIFY HERE ADDING RECOGNITION OF THE FIRST MOLECULE FROM THE SOLVENT BOX FILE
+
+            self._identify_first_molecule(solventbox_with_path, self.path)
+            self.add_molecule(structure_file='SOLV_SINGLE_MOL.pdb',
+                              keep_coordinates=False, keep_box=False,
+                              debug=False)
+
+            #print('At the moment only Gromacs spc216.gro and tip4p.gro are supported.')
+            #print('Note that a .pdb file has been generated, but the System object has NOT been updated.')
+            #return(-1)
 
         
         import copy
@@ -1683,6 +1696,47 @@ export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
         self._last_saved_structure=self.path+'/CENTERED_STRUCT.pdb'
         
         self._update_coordinates(self.path+'/CENTERED_STRUCT.pdb')
+
+    @staticmethod
+    def _identify_first_molecule(filename:str, outpath:None):
+
+        head = []
+        atoms = []
+        tail = []
+        prev_resid = None
+
+        with open(filename,'r') as f:
+            for iline,line in enumerate(f):
+                read = True
+                if line[0:4]=='ATOM' or line[0:6]=='HETATM':
+                    resid = line[22:26]
+                    if prev_resid is not None:
+                        if resid != prev_resid:
+                            continue
+                    else:
+                        prev_resid = resid
+                    atoms.append(line)
+                if line[0:6] in ['REMARK', 'TITLE ', 'CRYST1', 'MODEL ']:
+                    head.append(line)
+                if line[0:6] in ['TER   ', 'ENDMDL']:
+                    tail.append(line)
+
+        if outpath:
+            if not outpath.endswith('/'):
+                outpath+='/'
+            with open(outpath+'SOLV_SINGLE_MOL.pdb','w') as f:
+                for l in head:
+                    f.write(l)
+                for a in atoms:
+                    f.write(a)
+                for t in tail:
+                    f.write(t)
+        else:
+            print(head)
+            print(atoms)
+            print(tail)
+
+        
 
     @staticmethod
     def _rotation_matrix(ax, ay, az):
